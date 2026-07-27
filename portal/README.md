@@ -1,36 +1,44 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Peaker · Portal web
 
-## Getting Started
+Portal público de Peaker en Next.js 16 (App Router). Cubre los requisitos RF-WEB-01…09 de
+`.claude/docs/REQUIREMENTS.md` §10, según el blueprint de `.claude/docs/FRONTEND.md`.
 
-First, run the development server:
+## Puesta en marcha
 
 ```bash
+cp .env.example .env
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+`GATEWAY_URL` debe apuntar al api-gateway (`http://localhost:8080` en local,
+`http://gateway:8080` dentro de la red de Docker Compose). **Nunca lleva el prefijo
+`NEXT_PUBLIC_`**: expondría el gateway al navegador.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Comandos
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Comando | Qué hace |
+|---|---|
+| `npm run dev` | Servidor de desarrollo con Turbopack |
+| `npm run build` | Build de producción |
+| `npm run typecheck` | TypeScript en modo estricto, sin emitir |
+| `npm run lint` | ESLint: cero texto literal en JSX, cero clases direccionales físicas |
+| `npm test` | Tests unitarios y de componente (Vitest) |
+| `npm run test:coverage` | Igual, con el umbral del 80 % |
+| `npm run e2e` | Recorridos críticos (Playwright) |
+| `npm run check:messages` | Paridad de claves de los cinco diccionarios contra `en.json` |
+| `npm run check:rtl` | Verifica que no hay utilidades direccionales físicas en `src/` |
+| `npm run check:detail` | Verifica que `ProblemDetails.detail` no se renderiza |
+| `npm run verify` | Encadena todas las comprobaciones anteriores |
 
-## Learn More
+## Arquitectura en una pantalla
 
-To learn more about Next.js, take a look at the following resources:
+- **Un solo árbol de componentes** bajo `src/app/[locale]/`. Los cinco idiomas salen de
+  `messages/<locale>.json`. Duplicar pantallas por idioma es un error grave.
+- **El JWT nunca llega al navegador.** Vive en cookies `httpOnly` y solo el servidor de Next.js
+  habla con el gateway, a través de `src/app/api/bff/[...path]/route.ts`.
+- **Los errores se traducen por `ProblemDetails.title`**, que es el código estable.
+  `detail` viene en español fijo desde el backend y **nunca** se pinta.
+- **`src/proxy.ts`, no `middleware.ts`**: el convenio está deprecado en Next 16.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+El detalle normativo está en `.claude/docs/FRONTEND.md`; este README no lo duplica.
