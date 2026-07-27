@@ -1,0 +1,204 @@
+{
+  "common": {
+    "skipToContent": "跳转到主要内容",
+    "brand": "Peaker",
+    "locale": {
+      "label": "语言",
+      "en": "English",
+      "es": "Español",
+      "zh": "中文",
+      "fr": "Français",
+      "ar": "العربية"
+    },
+    "states": {
+      "loading": "加载中…",
+      "emptyTitle": "这里还没有内容",
+      "emptyDescription": "目前没有可显示的数据。",
+      "errorTitle": "出错了",
+      "retry": "重试"
+    },
+    "pagination": {
+      "label": "分页",
+      "previous": "上一页",
+      "next": "下一页",
+      "page": "第 {page} 页",
+      "summary": "第 {page} 页，共 {totalPages} 页"
+    },
+    "confirm": {
+      "cancel": "取消",
+      "confirm": "确认"
+    },
+    "breadcrumb": {
+      "label": "面包屑导航",
+      "home": "首页"
+    },
+    "actions": {
+      "save": "保存",
+      "saved": "已保存",
+      "cancel": "取消",
+      "delete": "删除",
+      "edit": "编辑",
+      "back": "返回"
+    }
+  },
+  "nav": {
+    "label": "主导航",
+    "openMenu": "打开菜单",
+    "closeMenu": "关闭菜单",
+    "home": "首页",
+    "peaks": "山峰",
+    "nearby": "附近",
+    "dashboard": "控制台",
+    "myAscents": "我的登顶记录",
+    "collections": "收藏夹",
+    "profile": "个人资料",
+    "account": "账户",
+    "signIn": "登录",
+    "signUp": "创建账户",
+    "signOut": "退出登录",
+    "accountMenu": "账户菜单"
+  },
+  "footer": {
+    "tagline": "搜索世界各地的山峰，记录你的每一次登顶。",
+    "rights": "保留所有权利。"
+  },
+  "units": {
+    "meters": "{value} 米",
+    "kilometers": "{value} 公里"
+  },
+  "visibility": {
+    "label": "可见性",
+    "Public": "公开",
+    "Private": "私密",
+    "publicHint": "任何人都可以在你的公开主页上看到。",
+    "privateHint": "只有你自己可以看到。"
+  },
+  "conditions": {
+    "label": "环境状况",
+    "unspecified": "未填写",
+    "snow": {
+      "label": "积雪",
+      "None": "无积雪",
+      "Patchy": "零星积雪",
+      "Continuous": "连续积雪",
+      "Deep": "深厚积雪"
+    },
+    "wind": {
+      "label": "风力",
+      "Calm": "无风",
+      "Moderate": "中等",
+      "Strong": "强风",
+      "Storm": "暴风"
+    },
+    "trail": {
+      "label": "路况",
+      "Good": "良好",
+      "Muddy": "泥泞",
+      "Icy": "结冰",
+      "Blocked": "受阻"
+    }
+  },
+  "stats": {
+    "totalAscents": "登顶总次数",
+    "distinctPeaks": "不同山峰数",
+    "highestAltitude": "最高海拔",
+    "lastAscent": "最近一次登顶",
+    "none": "暂无记录",
+    "publicOnly": "仅统计公开的登顶记录",
+    "eventualConsistency": "数据将在几秒后更新。"
+  },
+  "errors": {
+    "unknown": "出错了，请重试。",
+    "status": {
+      "400": "请求无效。",
+      "401": "请重新登录。",
+      "403": "你没有访问权限。",
+      "404": "未找到。",
+      "409": "与现有数据冲突。",
+      "429": "尝试次数过多，请稍候。",
+      "500": "服务器错误，请重试。",
+      "503": "服务暂时不可用。"
+    },
+    "notFound": {
+      "code": "404",
+      "title": "该页面不存在",
+      "description": "链接可能已失效，或内容已被删除。",
+      "goHome": "返回首页",
+      "searchPeaks": "搜索山峰"
+    },
+    "generic": {
+      "title": "出错了",
+      "description": "无法加载此页面。你可以重试或返回首页。",
+      "retry": "重试",
+      "goHome": "返回首页",
+      "reference": "技术参考编号"
+    },
+    "User": {
+      "EmailEmpty": "请输入你的电子邮箱。",
+      "EmailInvalid": "该电子邮箱无效。",
+      "EmailTooLong": "该电子邮箱过长。",
+      "UsernameEmpty": "请输入用户名。",
+      "UsernameInvalid": "请使用 3 到 30 个字符：字母、数字、点、连字符或下划线。必须以字母或数字开头和结尾，且不能连续使用两个分隔符。",
+      "PasswordHashMissing": "该账户尚未设置密码。",
+      "PasswordBreached": "该密码出现在已知的数据泄露中，请换一个。",
+      "EmailAlreadyRegistered": "该电子邮箱已被注册。",
+      "UsernameAlreadyRegistered": "该用户名已被占用。",
+      "InvalidCredentials": "登录信息无效。",
+      "EmailAlreadyConfirmed": "你的电子邮箱已完成验证。",
+      "AlreadyDeleted": "该账户已注销。",
+      "NotFound": "未找到该账户。"
+    },
+    "RefreshToken": {
+      "InvalidOrExpired": "登录状态已过期，请重新登录。"
+    },
+    "EmailConfirmation": {
+      "InvalidOrExpired": "该链接无效、已使用或已过期。",
+      "ResendTooSoon": "你刚刚已请求过链接，请等待两分钟后再试。",
+      "DeliveryFailed": "邮件发送失败，请稍后再试。"
+    },
+    "Profile": {
+      "DisplayNameEmpty": "请输入显示名称。",
+      "DisplayNameTooLong": "显示名称不能超过 60 个字符。",
+      "BioTooLong": "个人简介不能超过 500 个字符。",
+      "CountryCodeInvalid": "该国家或地区无效。",
+      "SlugInvalid": "请使用小写字母、数字和连字符，最多 80 个字符。",
+      "SlugAlreadyTaken": "该地址已被占用。",
+      "AvatarTooLarge": "图片不能超过 5 MB。",
+      "AvatarFormatNotSupported": "仅支持 JPEG、PNG 和 WebP 格式的图片。",
+      "AvatarUploadFailed": "图片保存失败，请稍后再试。",
+      "NotFound": "未找到该个人资料。",
+      "AlreadyExists": "该个人资料已存在。"
+    },
+    "Peak": {
+      "NotFound": "未找到该山峰。",
+      "LatitudeOutOfRange": "纬度必须介于 -90 和 90 之间。",
+      "LongitudeOutOfRange": "经度必须介于 -180 和 180 之间。",
+      "RadiusOutOfRange": "半径必须介于 1 至 200 公里之间。",
+      "AltitudeRangeInvalid": "最低海拔不能高于最高海拔。",
+      "CountryCodeInvalid": "该国家或地区无效。",
+      "RegionTooLong": "该地区名称过长。"
+    },
+    "Ascent": {
+      "DateInFuture": "登顶日期不能是将来的日期。",
+      "DateTooOld": "登顶日期不能早于 1900 年 1 月 1 日。",
+      "CompanionsTooLong": "同行者不能超过 500 个字符。",
+      "RouteNotesTooLong": "路线笔记不能超过 2000 个字符。",
+      "UnsupportedPhotoFormat": "仅支持 JPEG、PNG 和 WebP 格式的图片。",
+      "PhotoTooLarge": "每张照片不能超过 10 MB。",
+      "PhotoLimitReached": "一次登顶记录最多可上传 3 张照片。",
+      "EmailNotConfirmed": "请先验证你的电子邮箱，再记录登顶。",
+      "NotOwned": "该登顶记录不属于你。",
+      "NotFound": "未找到该登顶记录。",
+      "PhotoNotFound": "未找到该照片。",
+      "PeakNotFound": "该山峰已不在目录中。",
+      "ProfileNotVisible": "未找到该登顶记录。",
+      "PhotoUploadFailed": "图片保存失败，请重试。",
+      "PeakCatalogUnavailable": "山峰目录无响应，请稍后再试。",
+      "ProfileDirectoryUnavailable": "个人资料服务无响应，请稍后再试。"
+    },
+    "Pagination": {
+      "PageOutOfRange": "该页不存在。",
+      "SizeOutOfRange": "每页数量必须介于 1 和 100 之间。"
+    }
+  }
+}

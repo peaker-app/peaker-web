@@ -1,0 +1,204 @@
+{
+  "common": {
+    "skipToContent": "Aller au contenu",
+    "brand": "Peaker",
+    "locale": {
+      "label": "Langue",
+      "en": "English",
+      "es": "Español",
+      "zh": "中文",
+      "fr": "Français",
+      "ar": "العربية"
+    },
+    "states": {
+      "loading": "Chargement…",
+      "emptyTitle": "Rien à afficher pour l'instant",
+      "emptyDescription": "Il n'y a pas encore de données à afficher.",
+      "errorTitle": "Une erreur est survenue",
+      "retry": "Réessayer"
+    },
+    "pagination": {
+      "label": "Pagination",
+      "previous": "Page précédente",
+      "next": "Page suivante",
+      "page": "Page {page}",
+      "summary": "Page {page} sur {totalPages}"
+    },
+    "confirm": {
+      "cancel": "Annuler",
+      "confirm": "Confirmer"
+    },
+    "breadcrumb": {
+      "label": "Fil d'Ariane",
+      "home": "Accueil"
+    },
+    "actions": {
+      "save": "Enregistrer",
+      "saved": "Enregistré",
+      "cancel": "Annuler",
+      "delete": "Supprimer",
+      "edit": "Modifier",
+      "back": "Retour"
+    }
+  },
+  "nav": {
+    "label": "Navigation principale",
+    "openMenu": "Ouvrir le menu",
+    "closeMenu": "Fermer le menu",
+    "home": "Accueil",
+    "peaks": "Sommets",
+    "nearby": "À proximité",
+    "dashboard": "Tableau de bord",
+    "myAscents": "Mes ascensions",
+    "collections": "Collections",
+    "profile": "Profil",
+    "account": "Compte",
+    "signIn": "Se connecter",
+    "signUp": "Créer un compte",
+    "signOut": "Se déconnecter",
+    "accountMenu": "Menu du compte"
+  },
+  "footer": {
+    "tagline": "Explorez les montagnes du monde entier et consignez vos ascensions.",
+    "rights": "Tous droits réservés."
+  },
+  "units": {
+    "meters": "{value} m",
+    "kilometers": "{value} km"
+  },
+  "visibility": {
+    "label": "Visibilité",
+    "Public": "Publique",
+    "Private": "Privée",
+    "publicHint": "Tout le monde peut la voir sur votre profil public.",
+    "privateHint": "Vous seul pouvez la voir."
+  },
+  "conditions": {
+    "label": "Conditions",
+    "unspecified": "Non précisé",
+    "snow": {
+      "label": "Neige",
+      "None": "Aucune",
+      "Patchy": "Névés épars",
+      "Continuous": "Continue",
+      "Deep": "Profonde"
+    },
+    "wind": {
+      "label": "Vent",
+      "Calm": "Calme",
+      "Moderate": "Modéré",
+      "Strong": "Fort",
+      "Storm": "Tempête"
+    },
+    "trail": {
+      "label": "État du sentier",
+      "Good": "Bon",
+      "Muddy": "Boueux",
+      "Icy": "Verglacé",
+      "Blocked": "Impraticable"
+    }
+  },
+  "stats": {
+    "totalAscents": "Ascensions au total",
+    "distinctPeaks": "Sommets différents",
+    "highestAltitude": "Altitude maximale",
+    "lastAscent": "Dernière ascension",
+    "none": "Aucune pour l'instant",
+    "publicOnly": "Ascensions publiques uniquement",
+    "eventualConsistency": "Mise à jour dans quelques secondes."
+  },
+  "errors": {
+    "unknown": "Une erreur est survenue. Veuillez réessayer.",
+    "status": {
+      "400": "Requête invalide.",
+      "401": "Veuillez vous reconnecter.",
+      "403": "Vous n'avez pas accès à cet élément.",
+      "404": "Introuvable.",
+      "409": "Cela entre en conflit avec des données existantes.",
+      "429": "Trop de tentatives. Patientez un instant.",
+      "500": "Erreur du serveur. Veuillez réessayer.",
+      "503": "Service temporairement indisponible."
+    },
+    "notFound": {
+      "code": "404",
+      "title": "Cette page n'existe pas",
+      "description": "Le lien est peut-être rompu ou le contenu a peut-être été supprimé.",
+      "goHome": "Retour à l'accueil",
+      "searchPeaks": "Rechercher des sommets"
+    },
+    "generic": {
+      "title": "Une erreur est survenue",
+      "description": "Nous n'avons pas pu charger cette page. Vous pouvez réessayer ou revenir à l'accueil.",
+      "retry": "Réessayer",
+      "goHome": "Retour à l'accueil",
+      "reference": "Référence technique"
+    },
+    "User": {
+      "EmailEmpty": "Saisissez votre adresse e-mail.",
+      "EmailInvalid": "Cette adresse e-mail n'est pas valide.",
+      "EmailTooLong": "Cette adresse e-mail est trop longue.",
+      "UsernameEmpty": "Saisissez un nom d'utilisateur.",
+      "UsernameInvalid": "Utilisez de 3 à 30 caractères : lettres, chiffres, points, tirets ou traits de soulignement. Il doit commencer et finir par une lettre ou un chiffre, sans deux séparateurs consécutifs.",
+      "PasswordHashMissing": "Ce compte n'a pas de mot de passe défini.",
+      "PasswordBreached": "Ce mot de passe figure dans des fuites de données connues. Choisissez-en un autre.",
+      "EmailAlreadyRegistered": "Cette adresse e-mail est déjà enregistrée.",
+      "UsernameAlreadyRegistered": "Ce nom d'utilisateur est déjà pris.",
+      "InvalidCredentials": "Ces identifiants ne sont pas valides.",
+      "EmailAlreadyConfirmed": "Votre adresse e-mail est déjà confirmée.",
+      "AlreadyDeleted": "Ce compte a déjà été clôturé.",
+      "NotFound": "Nous n'avons pas trouvé ce compte."
+    },
+    "RefreshToken": {
+      "InvalidOrExpired": "Votre session a expiré. Veuillez vous reconnecter."
+    },
+    "EmailConfirmation": {
+      "InvalidOrExpired": "Ce lien n'est pas valide, a déjà été utilisé ou a expiré.",
+      "ResendTooSoon": "Vous avez demandé un lien il y a très peu de temps. Patientez deux minutes avant de réessayer.",
+      "DeliveryFailed": "Nous n'avons pas pu envoyer l'e-mail. Réessayez dans un instant."
+    },
+    "Profile": {
+      "DisplayNameEmpty": "Saisissez un nom affiché.",
+      "DisplayNameTooLong": "Le nom affiché ne peut pas dépasser 60 caractères.",
+      "BioTooLong": "La biographie ne peut pas dépasser 500 caractères.",
+      "CountryCodeInvalid": "Ce pays n'est pas valide.",
+      "SlugInvalid": "Utilisez des minuscules, des chiffres et des tirets, jusqu'à 80 caractères.",
+      "SlugAlreadyTaken": "Cette adresse est déjà prise.",
+      "AvatarTooLarge": "L'image ne peut pas dépasser 5 Mo.",
+      "AvatarFormatNotSupported": "Seules les images JPEG, PNG et WebP sont acceptées.",
+      "AvatarUploadFailed": "Nous n'avons pas pu enregistrer l'image. Réessayez plus tard.",
+      "NotFound": "Nous n'avons pas trouvé ce profil.",
+      "AlreadyExists": "Ce profil existe déjà."
+    },
+    "Peak": {
+      "NotFound": "Nous n'avons pas trouvé ce sommet.",
+      "LatitudeOutOfRange": "La latitude doit être comprise entre -90 et 90.",
+      "LongitudeOutOfRange": "La longitude doit être comprise entre -180 et 180.",
+      "RadiusOutOfRange": "Le rayon doit être compris entre 1 et 200 km.",
+      "AltitudeRangeInvalid": "L'altitude minimale ne peut pas dépasser l'altitude maximale.",
+      "CountryCodeInvalid": "Ce pays n'est pas valide.",
+      "RegionTooLong": "Ce nom de région est trop long."
+    },
+    "Ascent": {
+      "DateInFuture": "La date d'ascension ne peut pas être dans le futur.",
+      "DateTooOld": "La date d'ascension ne peut pas être antérieure au 1er janvier 1900.",
+      "CompanionsTooLong": "Les compagnons ne peuvent pas dépasser 500 caractères.",
+      "RouteNotesTooLong": "Les notes d'itinéraire ne peuvent pas dépasser 2000 caractères.",
+      "UnsupportedPhotoFormat": "Seules les images JPEG, PNG et WebP sont acceptées.",
+      "PhotoTooLarge": "Chaque photo ne peut pas dépasser 10 Mo.",
+      "PhotoLimitReached": "Une ascension accepte au maximum 3 photos.",
+      "EmailNotConfirmed": "Confirmez votre adresse e-mail avant d'enregistrer une ascension.",
+      "NotOwned": "Cette ascension ne vous appartient pas.",
+      "NotFound": "Nous n'avons pas trouvé cette ascension.",
+      "PhotoNotFound": "Nous n'avons pas trouvé cette photo.",
+      "PeakNotFound": "Ce sommet ne figure plus au catalogue.",
+      "ProfileNotVisible": "Nous n'avons pas trouvé cette ascension.",
+      "PhotoUploadFailed": "Nous n'avons pas pu enregistrer l'image. Réessayez.",
+      "PeakCatalogUnavailable": "Le catalogue des sommets ne répond pas. Réessayez dans un instant.",
+      "ProfileDirectoryUnavailable": "Le service des profils ne répond pas. Réessayez dans un instant."
+    },
+    "Pagination": {
+      "PageOutOfRange": "Cette page n'existe pas.",
+      "SizeOutOfRange": "La taille de page doit être comprise entre 1 et 100."
+    }
+  }
+}

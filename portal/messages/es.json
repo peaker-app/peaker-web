@@ -1,0 +1,204 @@
+{
+  "common": {
+    "skipToContent": "Saltar al contenido",
+    "brand": "Peaker",
+    "locale": {
+      "label": "Idioma",
+      "en": "English",
+      "es": "Español",
+      "zh": "中文",
+      "fr": "Français",
+      "ar": "العربية"
+    },
+    "states": {
+      "loading": "Cargando…",
+      "emptyTitle": "Aquí todavía no hay nada",
+      "emptyDescription": "Por ahora no hay datos que mostrar.",
+      "errorTitle": "Algo ha ido mal",
+      "retry": "Reintentar"
+    },
+    "pagination": {
+      "label": "Paginación",
+      "previous": "Página anterior",
+      "next": "Página siguiente",
+      "page": "Página {page}",
+      "summary": "Página {page} de {totalPages}"
+    },
+    "confirm": {
+      "cancel": "Cancelar",
+      "confirm": "Confirmar"
+    },
+    "breadcrumb": {
+      "label": "Ruta de navegación",
+      "home": "Inicio"
+    },
+    "actions": {
+      "save": "Guardar",
+      "saved": "Guardado",
+      "cancel": "Cancelar",
+      "delete": "Borrar",
+      "edit": "Editar",
+      "back": "Volver"
+    }
+  },
+  "nav": {
+    "label": "Navegación principal",
+    "openMenu": "Abrir menú",
+    "closeMenu": "Cerrar menú",
+    "home": "Inicio",
+    "peaks": "Picos",
+    "nearby": "Cercanos",
+    "dashboard": "Panel",
+    "myAscents": "Mis ascensiones",
+    "collections": "Colecciones",
+    "profile": "Perfil",
+    "account": "Cuenta",
+    "signIn": "Entrar",
+    "signUp": "Crear cuenta",
+    "signOut": "Cerrar sesión",
+    "accountMenu": "Menú de cuenta"
+  },
+  "footer": {
+    "tagline": "Busca las montañas del mundo y registra tus ascensiones.",
+    "rights": "Todos los derechos reservados."
+  },
+  "units": {
+    "meters": "{value} m",
+    "kilometers": "{value} km"
+  },
+  "visibility": {
+    "label": "Visibilidad",
+    "Public": "Pública",
+    "Private": "Privada",
+    "publicHint": "Cualquiera puede verla en tu perfil público.",
+    "privateHint": "Solo tú puedes verla."
+  },
+  "conditions": {
+    "label": "Condiciones",
+    "unspecified": "Sin especificar",
+    "snow": {
+      "label": "Nieve",
+      "None": "Sin nieve",
+      "Patchy": "Neveros aislados",
+      "Continuous": "Continua",
+      "Deep": "Profunda"
+    },
+    "wind": {
+      "label": "Viento",
+      "Calm": "En calma",
+      "Moderate": "Moderado",
+      "Strong": "Fuerte",
+      "Storm": "Temporal"
+    },
+    "trail": {
+      "label": "Sendero",
+      "Good": "En buen estado",
+      "Muddy": "Embarrado",
+      "Icy": "Helado",
+      "Blocked": "Cortado"
+    }
+  },
+  "stats": {
+    "totalAscents": "Ascensiones totales",
+    "distinctPeaks": "Picos distintos",
+    "highestAltitude": "Mayor altitud",
+    "lastAscent": "Última ascensión",
+    "none": "Todavía ninguna",
+    "publicOnly": "Solo ascensiones públicas",
+    "eventualConsistency": "Se actualizan en unos segundos."
+  },
+  "errors": {
+    "unknown": "Algo ha ido mal. Inténtalo de nuevo.",
+    "status": {
+      "400": "La petición no es válida.",
+      "401": "Vuelve a iniciar sesión.",
+      "403": "No tienes acceso a esto.",
+      "404": "No encontrado.",
+      "409": "Esto entra en conflicto con datos existentes.",
+      "429": "Demasiados intentos. Espera un momento.",
+      "500": "Error del servidor. Inténtalo de nuevo.",
+      "503": "El servicio no está disponible temporalmente."
+    },
+    "notFound": {
+      "code": "404",
+      "title": "Esta página no existe",
+      "description": "Puede que el enlace esté roto o que el contenido se haya eliminado.",
+      "goHome": "Volver al inicio",
+      "searchPeaks": "Buscar picos"
+    },
+    "generic": {
+      "title": "Algo ha ido mal",
+      "description": "No hemos podido cargar esta página. Puedes reintentarlo o volver al inicio.",
+      "retry": "Reintentar",
+      "goHome": "Volver al inicio",
+      "reference": "Referencia técnica"
+    },
+    "User": {
+      "EmailEmpty": "Escribe tu correo electrónico.",
+      "EmailInvalid": "Ese correo electrónico no es válido.",
+      "EmailTooLong": "Ese correo electrónico es demasiado largo.",
+      "UsernameEmpty": "Escribe un nombre de usuario.",
+      "UsernameInvalid": "Usa de 3 a 30 caracteres: letras, dígitos, puntos, guiones o guiones bajos. Debe empezar y acabar en letra o dígito, y no puede llevar dos separadores seguidos.",
+      "PasswordHashMissing": "Esta cuenta no tiene contraseña definida.",
+      "PasswordBreached": "Esta contraseña aparece en filtraciones conocidas. Elige otra.",
+      "EmailAlreadyRegistered": "Ese correo electrónico ya está registrado.",
+      "UsernameAlreadyRegistered": "Ese nombre de usuario ya está en uso.",
+      "InvalidCredentials": "Esas credenciales no son válidas.",
+      "EmailAlreadyConfirmed": "Tu correo ya está confirmado.",
+      "AlreadyDeleted": "Esta cuenta ya está dada de baja.",
+      "NotFound": "No hemos encontrado esta cuenta."
+    },
+    "RefreshToken": {
+      "InvalidOrExpired": "Tu sesión ha caducado. Vuelve a iniciar sesión."
+    },
+    "EmailConfirmation": {
+      "InvalidOrExpired": "Este enlace no es válido, ya se ha usado o ha caducado.",
+      "ResendTooSoon": "Has pedido un enlace hace muy poco. Espera un par de minutos antes de volver a intentarlo.",
+      "DeliveryFailed": "No hemos podido enviar el correo. Inténtalo en unos instantes."
+    },
+    "Profile": {
+      "DisplayNameEmpty": "Escribe un nombre visible.",
+      "DisplayNameTooLong": "El nombre visible no puede superar los 60 caracteres.",
+      "BioTooLong": "La biografía no puede superar los 500 caracteres.",
+      "CountryCodeInvalid": "Ese país no es válido.",
+      "SlugInvalid": "Usa minúsculas, dígitos y guiones, hasta 80 caracteres.",
+      "SlugAlreadyTaken": "Esa dirección ya está en uso.",
+      "AvatarTooLarge": "La imagen no puede superar los 5 MB.",
+      "AvatarFormatNotSupported": "Solo se admiten imágenes JPEG, PNG y WebP.",
+      "AvatarUploadFailed": "No hemos podido guardar la imagen. Inténtalo más tarde.",
+      "NotFound": "No hemos encontrado este perfil.",
+      "AlreadyExists": "Este perfil ya existe."
+    },
+    "Peak": {
+      "NotFound": "No hemos encontrado este pico.",
+      "LatitudeOutOfRange": "La latitud debe estar entre -90 y 90.",
+      "LongitudeOutOfRange": "La longitud debe estar entre -180 y 180.",
+      "RadiusOutOfRange": "El radio debe estar entre 1 y 200 km.",
+      "AltitudeRangeInvalid": "La altitud mínima no puede ser mayor que la máxima.",
+      "CountryCodeInvalid": "Ese país no es válido.",
+      "RegionTooLong": "Ese nombre de región es demasiado largo."
+    },
+    "Ascent": {
+      "DateInFuture": "La fecha de ascensión no puede ser futura.",
+      "DateTooOld": "La fecha de ascensión no puede ser anterior al 1 de enero de 1900.",
+      "CompanionsTooLong": "Los compañeros no pueden superar los 500 caracteres.",
+      "RouteNotesTooLong": "Las notas de vía no pueden superar los 2000 caracteres.",
+      "UnsupportedPhotoFormat": "Solo se admiten imágenes JPEG, PNG y WebP.",
+      "PhotoTooLarge": "Cada foto no puede superar los 10 MB.",
+      "PhotoLimitReached": "Una ascensión admite como máximo 3 fotos.",
+      "EmailNotConfirmed": "Confirma tu correo electrónico antes de registrar una ascensión.",
+      "NotOwned": "Esta ascensión no te pertenece.",
+      "NotFound": "No hemos encontrado esta ascensión.",
+      "PhotoNotFound": "No hemos encontrado esta foto.",
+      "PeakNotFound": "Ese pico ya no está en el catálogo.",
+      "ProfileNotVisible": "No hemos encontrado esta ascensión.",
+      "PhotoUploadFailed": "No hemos podido guardar la imagen. Inténtalo de nuevo.",
+      "PeakCatalogUnavailable": "El catálogo de picos no responde. Inténtalo en unos instantes.",
+      "ProfileDirectoryUnavailable": "El servicio de perfiles no responde. Inténtalo en unos instantes."
+    },
+    "Pagination": {
+      "PageOutOfRange": "Esa página no existe.",
+      "SizeOutOfRange": "El tamaño de página debe estar entre 1 y 100."
+    }
+  }
+}

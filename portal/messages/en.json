@@ -1,0 +1,204 @@
+{
+  "common": {
+    "skipToContent": "Skip to content",
+    "brand": "Peaker",
+    "locale": {
+      "label": "Language",
+      "en": "English",
+      "es": "Español",
+      "zh": "中文",
+      "fr": "Français",
+      "ar": "العربية"
+    },
+    "states": {
+      "loading": "Loading…",
+      "emptyTitle": "Nothing here yet",
+      "emptyDescription": "There is no data to show for now.",
+      "errorTitle": "Something went wrong",
+      "retry": "Try again"
+    },
+    "pagination": {
+      "label": "Pagination",
+      "previous": "Previous page",
+      "next": "Next page",
+      "page": "Page {page}",
+      "summary": "Page {page} of {totalPages}"
+    },
+    "confirm": {
+      "cancel": "Cancel",
+      "confirm": "Confirm"
+    },
+    "breadcrumb": {
+      "label": "Breadcrumb",
+      "home": "Home"
+    },
+    "actions": {
+      "save": "Save",
+      "saved": "Saved",
+      "cancel": "Cancel",
+      "delete": "Delete",
+      "edit": "Edit",
+      "back": "Back"
+    }
+  },
+  "nav": {
+    "label": "Main navigation",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu",
+    "home": "Home",
+    "peaks": "Peaks",
+    "nearby": "Nearby",
+    "dashboard": "Dashboard",
+    "myAscents": "My ascents",
+    "collections": "Collections",
+    "profile": "Profile",
+    "account": "Account",
+    "signIn": "Sign in",
+    "signUp": "Create account",
+    "signOut": "Sign out",
+    "accountMenu": "Account menu"
+  },
+  "footer": {
+    "tagline": "Search the world's mountains and log your ascents.",
+    "rights": "All rights reserved."
+  },
+  "units": {
+    "meters": "{value} m",
+    "kilometers": "{value} km"
+  },
+  "visibility": {
+    "label": "Visibility",
+    "Public": "Public",
+    "Private": "Private",
+    "publicHint": "Anyone can see it on your public profile.",
+    "privateHint": "Only you can see it."
+  },
+  "conditions": {
+    "label": "Conditions",
+    "unspecified": "Not specified",
+    "snow": {
+      "label": "Snow",
+      "None": "None",
+      "Patchy": "Patchy",
+      "Continuous": "Continuous",
+      "Deep": "Deep"
+    },
+    "wind": {
+      "label": "Wind",
+      "Calm": "Calm",
+      "Moderate": "Moderate",
+      "Strong": "Strong",
+      "Storm": "Storm"
+    },
+    "trail": {
+      "label": "Trail",
+      "Good": "Good",
+      "Muddy": "Muddy",
+      "Icy": "Icy",
+      "Blocked": "Blocked"
+    }
+  },
+  "stats": {
+    "totalAscents": "Total ascents",
+    "distinctPeaks": "Distinct peaks",
+    "highestAltitude": "Highest altitude",
+    "lastAscent": "Last ascent",
+    "none": "None yet",
+    "publicOnly": "Public ascents only",
+    "eventualConsistency": "Updated in a few seconds."
+  },
+  "errors": {
+    "unknown": "Something went wrong. Please try again.",
+    "status": {
+      "400": "Invalid request.",
+      "401": "Please sign in again.",
+      "403": "You don't have access to this.",
+      "404": "Not found.",
+      "409": "This conflicts with existing data.",
+      "429": "Too many attempts. Wait a moment.",
+      "500": "Server error. Please try again.",
+      "503": "Service temporarily unavailable."
+    },
+    "notFound": {
+      "code": "404",
+      "title": "This page doesn't exist",
+      "description": "The link may be broken or the content may have been removed.",
+      "goHome": "Back to home",
+      "searchPeaks": "Search peaks"
+    },
+    "generic": {
+      "title": "Something went wrong",
+      "description": "We couldn't load this page. You can retry or go back to the start.",
+      "retry": "Try again",
+      "goHome": "Back to home",
+      "reference": "Technical reference"
+    },
+    "User": {
+      "EmailEmpty": "Enter your email address.",
+      "EmailInvalid": "That email address isn't valid.",
+      "EmailTooLong": "That email address is too long.",
+      "UsernameEmpty": "Enter a username.",
+      "UsernameInvalid": "Use 3 to 30 characters: letters, digits, dots, hyphens or underscores. It must start and end with a letter or digit, and can't have two separators in a row.",
+      "PasswordHashMissing": "This account has no password set.",
+      "PasswordBreached": "This password appears in known data breaches. Choose a different one.",
+      "EmailAlreadyRegistered": "That email address is already registered.",
+      "UsernameAlreadyRegistered": "That username is already taken.",
+      "InvalidCredentials": "Those credentials aren't valid.",
+      "EmailAlreadyConfirmed": "Your email is already confirmed.",
+      "AlreadyDeleted": "This account has already been closed.",
+      "NotFound": "We couldn't find this account."
+    },
+    "RefreshToken": {
+      "InvalidOrExpired": "Your session has expired. Please sign in again."
+    },
+    "EmailConfirmation": {
+      "InvalidOrExpired": "This link isn't valid, has already been used, or has expired.",
+      "ResendTooSoon": "You asked for a link very recently. Wait a couple of minutes before trying again.",
+      "DeliveryFailed": "We couldn't send the email. Try again in a moment."
+    },
+    "Profile": {
+      "DisplayNameEmpty": "Enter a display name.",
+      "DisplayNameTooLong": "Your display name can't be longer than 60 characters.",
+      "BioTooLong": "Your bio can't be longer than 500 characters.",
+      "CountryCodeInvalid": "That country isn't valid.",
+      "SlugInvalid": "Use lowercase letters, digits and hyphens, up to 80 characters.",
+      "SlugAlreadyTaken": "That address is already taken.",
+      "AvatarTooLarge": "The image can't be larger than 5 MB.",
+      "AvatarFormatNotSupported": "Only JPEG, PNG and WebP images are supported.",
+      "AvatarUploadFailed": "We couldn't save the image. Try again later.",
+      "NotFound": "We couldn't find this profile.",
+      "AlreadyExists": "This profile already exists."
+    },
+    "Peak": {
+      "NotFound": "We couldn't find this peak.",
+      "LatitudeOutOfRange": "Latitude must be between -90 and 90.",
+      "LongitudeOutOfRange": "Longitude must be between -180 and 180.",
+      "RadiusOutOfRange": "The radius must be between 1 and 200 km.",
+      "AltitudeRangeInvalid": "The minimum altitude can't be higher than the maximum.",
+      "CountryCodeInvalid": "That country isn't valid.",
+      "RegionTooLong": "That region name is too long."
+    },
+    "Ascent": {
+      "DateInFuture": "The ascent date can't be in the future.",
+      "DateTooOld": "The ascent date can't be earlier than 1 January 1900.",
+      "CompanionsTooLong": "Companions can't be longer than 500 characters.",
+      "RouteNotesTooLong": "Route notes can't be longer than 2000 characters.",
+      "UnsupportedPhotoFormat": "Only JPEG, PNG and WebP images are supported.",
+      "PhotoTooLarge": "Each photo can't be larger than 10 MB.",
+      "PhotoLimitReached": "An ascent can have at most 3 photos.",
+      "EmailNotConfirmed": "Confirm your email address before logging an ascent.",
+      "NotOwned": "This ascent doesn't belong to you.",
+      "NotFound": "We couldn't find this ascent.",
+      "PhotoNotFound": "We couldn't find this photo.",
+      "PeakNotFound": "That peak is no longer in the catalogue.",
+      "ProfileNotVisible": "We couldn't find this ascent.",
+      "PhotoUploadFailed": "We couldn't save the image. Try again.",
+      "PeakCatalogUnavailable": "The peak catalogue isn't responding. Try again in a moment.",
+      "ProfileDirectoryUnavailable": "The profile service isn't responding. Try again in a moment."
+    },
+    "Pagination": {
+      "PageOutOfRange": "That page doesn't exist.",
+      "SizeOutOfRange": "The page size must be between 1 and 100."
+    }
+  }
+}

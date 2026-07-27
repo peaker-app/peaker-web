@@ -1,0 +1,204 @@
+{
+  "common": {
+    "skipToContent": "الانتقال إلى المحتوى",
+    "brand": "Peaker",
+    "locale": {
+      "label": "اللغة",
+      "en": "English",
+      "es": "Español",
+      "zh": "中文",
+      "fr": "Français",
+      "ar": "العربية"
+    },
+    "states": {
+      "loading": "جارٍ التحميل…",
+      "emptyTitle": "لا يوجد شيء هنا بعد",
+      "emptyDescription": "لا توجد بيانات لعرضها في الوقت الحالي.",
+      "errorTitle": "حدث خطأ ما",
+      "retry": "إعادة المحاولة"
+    },
+    "pagination": {
+      "label": "ترقيم الصفحات",
+      "previous": "الصفحة السابقة",
+      "next": "الصفحة التالية",
+      "page": "الصفحة {page}",
+      "summary": "الصفحة {page} من {totalPages}"
+    },
+    "confirm": {
+      "cancel": "إلغاء",
+      "confirm": "تأكيد"
+    },
+    "breadcrumb": {
+      "label": "مسار التنقل",
+      "home": "الرئيسية"
+    },
+    "actions": {
+      "save": "حفظ",
+      "saved": "تم الحفظ",
+      "cancel": "إلغاء",
+      "delete": "حذف",
+      "edit": "تعديل",
+      "back": "رجوع"
+    }
+  },
+  "nav": {
+    "label": "التنقل الرئيسي",
+    "openMenu": "فتح القائمة",
+    "closeMenu": "إغلاق القائمة",
+    "home": "الرئيسية",
+    "peaks": "القمم",
+    "nearby": "القريبة",
+    "dashboard": "لوحة التحكم",
+    "myAscents": "صعوداتي",
+    "collections": "المجموعات",
+    "profile": "الملف الشخصي",
+    "account": "الحساب",
+    "signIn": "تسجيل الدخول",
+    "signUp": "إنشاء حساب",
+    "signOut": "تسجيل الخروج",
+    "accountMenu": "قائمة الحساب"
+  },
+  "footer": {
+    "tagline": "ابحث عن جبال العالم وسجّل صعوداتك.",
+    "rights": "جميع الحقوق محفوظة."
+  },
+  "units": {
+    "meters": "{value} م",
+    "kilometers": "{value} كم"
+  },
+  "visibility": {
+    "label": "الظهور",
+    "Public": "عام",
+    "Private": "خاص",
+    "publicHint": "يمكن لأي شخص رؤيته في ملفك الشخصي العام.",
+    "privateHint": "أنت وحدك من يمكنه رؤيته."
+  },
+  "conditions": {
+    "label": "الأحوال",
+    "unspecified": "غير محدد",
+    "snow": {
+      "label": "الثلج",
+      "None": "بلا ثلج",
+      "Patchy": "بقع متفرقة",
+      "Continuous": "متصل",
+      "Deep": "كثيف"
+    },
+    "wind": {
+      "label": "الرياح",
+      "Calm": "هادئة",
+      "Moderate": "معتدلة",
+      "Strong": "قوية",
+      "Storm": "عاصفة"
+    },
+    "trail": {
+      "label": "حالة المسار",
+      "Good": "جيدة",
+      "Muddy": "موحلة",
+      "Icy": "جليدية",
+      "Blocked": "مغلقة"
+    }
+  },
+  "stats": {
+    "totalAscents": "إجمالي الصعودات",
+    "distinctPeaks": "القمم المختلفة",
+    "highestAltitude": "أعلى ارتفاع",
+    "lastAscent": "آخر صعود",
+    "none": "لا شيء بعد",
+    "publicOnly": "الصعودات العامة فقط",
+    "eventualConsistency": "سيتم التحديث خلال ثوانٍ."
+  },
+  "errors": {
+    "unknown": "حدث خطأ ما. يُرجى إعادة المحاولة.",
+    "status": {
+      "400": "الطلب غير صالح.",
+      "401": "يُرجى تسجيل الدخول من جديد.",
+      "403": "ليس لديك صلاحية الوصول إلى هذا.",
+      "404": "غير موجود.",
+      "409": "يتعارض هذا مع بيانات موجودة.",
+      "429": "محاولات كثيرة. انتظر لحظة.",
+      "500": "خطأ في الخادم. يُرجى إعادة المحاولة.",
+      "503": "الخدمة غير متاحة مؤقتًا."
+    },
+    "notFound": {
+      "code": "404",
+      "title": "هذه الصفحة غير موجودة",
+      "description": "قد يكون الرابط معطوبًا أو تم حذف المحتوى.",
+      "goHome": "العودة إلى الرئيسية",
+      "searchPeaks": "البحث عن القمم"
+    },
+    "generic": {
+      "title": "حدث خطأ ما",
+      "description": "تعذّر تحميل هذه الصفحة. يمكنك إعادة المحاولة أو العودة إلى الرئيسية.",
+      "retry": "إعادة المحاولة",
+      "goHome": "العودة إلى الرئيسية",
+      "reference": "المرجع التقني"
+    },
+    "User": {
+      "EmailEmpty": "أدخل بريدك الإلكتروني.",
+      "EmailInvalid": "هذا البريد الإلكتروني غير صالح.",
+      "EmailTooLong": "هذا البريد الإلكتروني طويل جدًا.",
+      "UsernameEmpty": "أدخل اسم مستخدم.",
+      "UsernameInvalid": "استخدم من 3 إلى 30 حرفًا: حروفًا وأرقامًا ونقاطًا وشرطات أو شرطات سفلية. يجب أن يبدأ وينتهي بحرف أو رقم، ولا يمكن أن يحتوي على فاصلين متتاليين.",
+      "PasswordHashMissing": "لا توجد كلمة مرور محددة لهذا الحساب.",
+      "PasswordBreached": "تظهر كلمة المرور هذه في تسريبات بيانات معروفة. اختر غيرها.",
+      "EmailAlreadyRegistered": "هذا البريد الإلكتروني مسجّل بالفعل.",
+      "UsernameAlreadyRegistered": "اسم المستخدم هذا مستخدم بالفعل.",
+      "InvalidCredentials": "بيانات الدخول هذه غير صالحة.",
+      "EmailAlreadyConfirmed": "تم تأكيد بريدك الإلكتروني بالفعل.",
+      "AlreadyDeleted": "تم إغلاق هذا الحساب بالفعل.",
+      "NotFound": "لم نعثر على هذا الحساب."
+    },
+    "RefreshToken": {
+      "InvalidOrExpired": "انتهت صلاحية جلستك. يُرجى تسجيل الدخول من جديد."
+    },
+    "EmailConfirmation": {
+      "InvalidOrExpired": "هذا الرابط غير صالح أو سبق استخدامه أو انتهت صلاحيته.",
+      "ResendTooSoon": "لقد طلبت رابطًا قبل قليل. انتظر دقيقتين قبل المحاولة مجددًا.",
+      "DeliveryFailed": "تعذّر إرسال البريد الإلكتروني. أعد المحاولة بعد لحظات."
+    },
+    "Profile": {
+      "DisplayNameEmpty": "أدخل اسم العرض.",
+      "DisplayNameTooLong": "لا يمكن أن يتجاوز اسم العرض 60 حرفًا.",
+      "BioTooLong": "لا يمكن أن تتجاوز النبذة 500 حرف.",
+      "CountryCodeInvalid": "هذا البلد غير صالح.",
+      "SlugInvalid": "استخدم حروفًا صغيرة وأرقامًا وشرطات، بحد أقصى 80 حرفًا.",
+      "SlugAlreadyTaken": "هذا العنوان مستخدم بالفعل.",
+      "AvatarTooLarge": "لا يمكن أن تتجاوز الصورة 5 ميغابايت.",
+      "AvatarFormatNotSupported": "الصور المدعومة هي JPEG وPNG وWebP فقط.",
+      "AvatarUploadFailed": "تعذّر حفظ الصورة. أعد المحاولة لاحقًا.",
+      "NotFound": "لم نعثر على هذا الملف الشخصي.",
+      "AlreadyExists": "هذا الملف الشخصي موجود بالفعل."
+    },
+    "Peak": {
+      "NotFound": "لم نعثر على هذه القمة.",
+      "LatitudeOutOfRange": "يجب أن يتراوح خط العرض بين -90 و90.",
+      "LongitudeOutOfRange": "يجب أن يتراوح خط الطول بين -180 و180.",
+      "RadiusOutOfRange": "يجب أن يتراوح نطاق البحث بين 1 و200 كم.",
+      "AltitudeRangeInvalid": "لا يمكن أن يكون الارتفاع الأدنى أعلى من الأقصى.",
+      "CountryCodeInvalid": "هذا البلد غير صالح.",
+      "RegionTooLong": "اسم المنطقة هذا طويل جدًا."
+    },
+    "Ascent": {
+      "DateInFuture": "لا يمكن أن يكون تاريخ الصعود في المستقبل.",
+      "DateTooOld": "لا يمكن أن يسبق تاريخ الصعود 1 يناير 1900.",
+      "CompanionsTooLong": "لا يمكن أن يتجاوز اسم المرافقين 500 حرف.",
+      "RouteNotesTooLong": "لا يمكن أن تتجاوز ملاحظات المسار 2000 حرف.",
+      "UnsupportedPhotoFormat": "الصور المدعومة هي JPEG وPNG وWebP فقط.",
+      "PhotoTooLarge": "لا يمكن أن تتجاوز كل صورة 10 ميغابايت.",
+      "PhotoLimitReached": "يقبل الصعود الواحد 3 صور كحد أقصى.",
+      "EmailNotConfirmed": "أكّد بريدك الإلكتروني قبل تسجيل صعود.",
+      "NotOwned": "هذا الصعود لا يخصك.",
+      "NotFound": "لم نعثر على هذا الصعود.",
+      "PhotoNotFound": "لم نعثر على هذه الصورة.",
+      "PeakNotFound": "لم تعد هذه القمة ضمن الدليل.",
+      "ProfileNotVisible": "لم نعثر على هذا الصعود.",
+      "PhotoUploadFailed": "تعذّر حفظ الصورة. أعد المحاولة.",
+      "PeakCatalogUnavailable": "دليل القمم لا يستجيب. أعد المحاولة بعد لحظات.",
+      "ProfileDirectoryUnavailable": "خدمة الملفات الشخصية لا تستجيب. أعد المحاولة بعد لحظات."
+    },
+    "Pagination": {
+      "PageOutOfRange": "هذه الصفحة غير موجودة.",
+      "SizeOutOfRange": "يجب أن يتراوح حجم الصفحة بين 1 و100."
+    }
+  }
+}
