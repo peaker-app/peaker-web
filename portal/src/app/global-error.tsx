@@ -1,9 +1,5 @@
 "use client";
 
-// Motivo: si falla el layout raíz, NextIntlClientProvider no se ha montado y no hay
-// diccionario. Es la única pantalla exenta de la regla «cero texto literal»
-// (FRONTEND.md §SC-21.2).
-
 interface GlobalErrorProps {
   error: Error & { digest?: string };
   reset: () => void;

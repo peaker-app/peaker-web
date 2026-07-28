@@ -1,6 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { readProblem } from "@/lib/api/client";
 import { endpoints } from "@/lib/api/endpoints";
+import { withForwardedFor } from "@/lib/api/forwarded";
 import { correlationHeader, gatewayUrl } from "@/lib/api/gateway";
 import { writeSessionCookies } from "@/lib/auth/cookies";
 import type { AuthTokensResponse, LoginRequest } from "@/types/api";
@@ -12,11 +13,14 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     `${gatewayUrl()}/api/${endpoints.auth.login}`,
     {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        [correlationHeader]:
-          request.headers.get(correlationHeader) ?? crypto.randomUUID(),
-      },
+      headers: withForwardedFor(
+        {
+          "Content-Type": "application/json",
+          [correlationHeader]:
+            request.headers.get(correlationHeader) ?? crypto.randomUUID(),
+        },
+        request.headers,
+      ),
       body: JSON.stringify(credentials),
       cache: "no-store",
     },

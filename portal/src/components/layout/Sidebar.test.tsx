@@ -27,11 +27,30 @@ afterEach(() => {
 });
 
 describe("Sidebar", () => {
-  it("sidebar_anyRoute_listsTheFourSections", () => {
+  it("sidebar_anyRoute_listsTheFiveSections", () => {
     pathname.mockReturnValue("/dashboard");
     render(<Sidebar />, { wrapper: IntlWrapper });
 
-    expect(screen.getAllByRole("link")).toHaveLength(4);
+    expect(screen.getAllByRole("link").map((link) => link.textContent)).toEqual([
+      "Dashboard",
+      "My ascents",
+      "Collections",
+      "Profile",
+      "Account",
+    ]);
+  });
+
+  it("sidebar_collectionsRoute_marksCollectionsAsCurrent", () => {
+    pathname.mockReturnValue("/dashboard/collections/abc");
+    render(<Sidebar />, { wrapper: IntlWrapper });
+
+    expect(screen.getByRole("link", { name: "Collections" })).toHaveAttribute(
+      "aria-current",
+      "page",
+    );
+    expect(screen.getByRole("link", { name: "Dashboard" })).not.toHaveAttribute(
+      "aria-current",
+    );
   });
 
   it("sidebar_dashboardRoot_marksOnlyTheDashboardAsCurrent", () => {

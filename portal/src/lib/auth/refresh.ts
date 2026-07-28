@@ -8,8 +8,6 @@ import {
   writeSessionCookies,
 } from "./cookies";
 
-// Motivo: el refresh rota y revoca el token usado (RF-AUT-04). Dos rotaciones
-// simultáneas revocarían la cadena entera, así que solo puede haber una en vuelo.
 let inFlight: Promise<AuthTokensResponse | undefined> | undefined;
 
 const requestNewTokens = async (

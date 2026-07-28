@@ -3,8 +3,6 @@ import type { Locale } from "@/i18n/config";
 const metersInKilometer = 1000;
 const coordinateFractionDigits = 5;
 
-// Motivo: un dato geográfico se compara entre idiomas, así que altitudes y
-// coordenadas fuerzan dígitos latinos incluso en árabe (FRONTEND.md §1.2.6).
 const latinDigitsLocale = (locale: Locale): string =>
   locale === "ar" ? "ar-u-nu-latn" : locale;
 
@@ -40,8 +38,6 @@ export const formatDistance = (
         }).format(meters / metersInKilometer),
       };
 
-// Motivo: AscentDate es un DateOnly ("YYYY-MM-DD"). new Date(s) lo interpreta UTC
-// y en husos negativos lo desplaza un día. Se construye siempre como fecha local.
 export const parseDateOnly = (value: string): Date | undefined => {
   const parts = value.split("-").map(Number);
   const [year, month, day] = parts;

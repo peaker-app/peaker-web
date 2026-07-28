@@ -10,8 +10,6 @@ interface RawClaims {
   exp?: number;
 }
 
-// Motivo: el gateway es quien valida la firma. Aquí solo se leen sub, email y exp
-// para decidir navegación y pintar la interfaz, nunca para autorizar.
 const parsePayload = (token: string): RawClaims | undefined => {
   const payload = token.split(".")[1];
 

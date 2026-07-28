@@ -7,7 +7,6 @@ import {
   readRefreshToken,
 } from "@/lib/auth/cookies";
 
-// Motivo: el navegador no tiene el refresh token; lo aporta este handler desde la cookie.
 const revokeRefreshToken = async (
   correlationId: string,
 ): Promise<void> => {

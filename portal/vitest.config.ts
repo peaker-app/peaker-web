@@ -32,6 +32,9 @@ export default defineConfig({
         // Motivo: primitivos de shadcn/ui copiados sin lógica propia. Se auditan
         // por revisión, no por test unitario (FRONTEND.md §1.1).
         "src/components/ui/**",
+        // Motivo: jsdom no renderiza Leaflet, que necesita medidas reales de layout.
+        // La integración del mapa se cubre en los e2e de Playwright.
+        "src/components/features/peaks/PeakMapView.tsx",
       ],
       thresholds: { lines: 80, functions: 80, branches: 80, statements: 80 },
     },

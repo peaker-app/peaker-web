@@ -1,0 +1,163 @@
+"use client";
+
+import { useLocale, useTranslations } from "next-intl";
+import { useState } from "react";
+import { EmptyState } from "@/components/feedback/EmptyState";
+import { ErrorState } from "@/components/feedback/ErrorState";
+import { Pagination } from "@/components/feedback/Pagination";
+import { PeakCard } from "@/components/features/peaks/PeakCard";
+import { Button } from "@/components/ui/Button";
+import { Label } from "@/components/ui/Label";
+import { Skeleton } from "@/components/ui/Skeleton";
+import { Slider } from "@/components/ui/Slider";
+import { useDebouncedValue } from "@/hooks/useDebouncedValue";
+import { usePagedQuery } from "@/hooks/usePagedQuery";
+import { useProblemMessage } from "@/hooks/useProblemToast";
+import type { Locale } from "@/i18n/config";
+import { endpoints } from "@/lib/api/endpoints";
+import { formatDistance } from "@/lib/format";
+import {
+  defaultRadiusMeters,
+  maxRadiusMeters,
+  minRadiusMeters,
+  radiusStepMeters,
+} from "@/lib/map";
+import type { NearbyPeakResponse } from "@/types/api";
+import { LocationPicker, type Origin } from "./LocationPicker";
+import { PeakMap } from "./PeakMap";
+
+const pageSize = 20;
+const radiusDebounceMs = 400;
+
+export const NearbyPeaksView = () => {
+  const t = useTranslations("peaks.nearby");
+  const locale = useLocale() as Locale;
+  const toMessage = useProblemMessage();
+
+  const [origin, setOrigin] = useState<Origin | undefined>(undefined);
+  const [radius, setRadius] = useState(defaultRadiusMeters);
+  const [page, setPage] = useState(1);
+  const debouncedRadius = useDebouncedValue(radius, radiusDebounceMs);
+
+  const query = usePagedQuery<NearbyPeakResponse>(
+    ["peaks", "nearby", origin?.latitude, origin?.longitude],
+    endpoints.peaks.nearby,
+    {
+      page,
+      size: pageSize,
+      filters: {
+        lat: origin?.latitude,
+        lon: origin?.longitude,
+        radius: debouncedRadius,
+      },
+      enabled: origin !== undefined,
+    },
+  );
+
+  const changeOrigin = (next: Origin) => {
+    setOrigin(next);
+    setPage(1);
+  };
+
+  const readableRadius = formatDistance(locale, debouncedRadius);
+  const radiusLabel = t("radiusValue", {
+    value: (debouncedRadius / 1000).toString(),
+  });
+
+  return (
+    <div className="flex flex-col gap-6">
+      <LocationPicker origin={origin} onChange={changeOrigin} />
+
+      <div className="flex flex-col gap-2">
+        <Label htmlFor="radius">{t("radius")}</Label>
+        <Slider
+          id="radius"
+          min={minRadiusMeters}
+          max={maxRadiusMeters}
+          step={radiusStepMeters}
+          value={[radius]}
+          onValueChange={(value) => {
+            setRadius(value[0] ?? defaultRadiusMeters);
+            setPage(1);
+          }}
+          thumbLabel={t("radius")}
+          valueText={radiusLabel}
+        />
+        <p className="text-sm leading-relaxed text-muted-foreground">
+          {radiusLabel}
+        </p>
+      </div>
+
+      <div className="grid gap-6 lg:grid-cols-2">
+        <div className="order-first flex flex-col gap-2 lg:order-0">
+          <PeakMap
+            points={query.data?.items ?? []}
+            origin={origin}
+            radiusMeters={origin ? debouncedRadius : undefined}
+            onPick={(latitude, longitude) =>
+              changeOrigin({ latitude, longitude })
+            }
+            className="h-[45svh] lg:h-[60svh]"
+          />
+          <p className="text-sm leading-relaxed text-muted-foreground">
+            {t("mapHint")}
+          </p>
+        </div>
+
+        <section className="flex min-w-0 flex-col gap-4">
+          <h2 className="text-lg leading-relaxed font-semibold text-start">
+            {t("listHeading")}
+          </h2>
+
+          {origin === undefined ? (
+            <EmptyState title={t("noOrigin")} />
+          ) : query.isPending ? (
+            <ul className="flex flex-col gap-3">
+              {Array.from({ length: 6 }, (_, index) => (
+                <li key={index}>
+                  <Skeleton className="h-24 w-full" />
+                </li>
+              ))}
+            </ul>
+          ) : query.isError ? (
+            <ErrorState
+              message={toMessage(query.error)}
+              onRetry={() => void query.refetch()}
+            />
+          ) : query.data.items.length === 0 ? (
+            <EmptyState
+              title={t("empty", {
+                radius: `${readableRadius.value} ${readableRadius.unit === "meters" ? "m" : "km"}`,
+              })}
+              action={
+                <Button
+                  variant="outline"
+                  onClick={() =>
+                    setRadius((current) =>
+                      Math.min(current * 2, maxRadiusMeters),
+                    )
+                  }
+                >
+                  {t("emptyAction")}
+                </Button>
+              }
+            />
+          ) : (
+            <>
+              <ul className="flex flex-col gap-3">
+                {query.data.items.map((peak) => (
+                  <PeakCard key={peak.id} peak={peak} />
+                ))}
+              </ul>
+              <Pagination
+                page={page}
+                totalPages={query.data.totalPages}
+                onPageChange={setPage}
+              />
+            </>
+          )}
+        </section>
+      </div>
+    </div>
+  );
+};

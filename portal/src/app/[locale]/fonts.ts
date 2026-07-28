@@ -30,7 +30,5 @@ export const fontClassName = (locale: Locale): string => {
   return locale === "zh" ? simplifiedChinese.variable : latin.variable;
 };
 
-// Motivo: ar y zh tienen glifos más altos; el interlineado holgado evita
-// solapamientos sin tocar cada componente (FRONTEND.md §1.2.7).
 export const leadingClassName = (locale: Locale): string =>
   locale === "ar" || locale === "zh" ? "leading-relaxed" : "";

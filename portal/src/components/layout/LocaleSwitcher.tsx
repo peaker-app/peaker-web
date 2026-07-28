@@ -13,8 +13,6 @@ import {
 import { locales, type Locale } from "@/i18n/config";
 import { usePathname, useRouter } from "@/i18n/navigation";
 
-// Motivo: se lee en el handler y no con useSearchParams para no forzar el bailout
-// a renderizado en cliente de las páginas estáticas que montan la cabecera.
 const currentQuery = (): Record<string, string> =>
   typeof window === "undefined"
     ? {}

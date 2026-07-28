@@ -49,7 +49,9 @@ const eslintConfig = defineConfig([
       "no-restricted-syntax": [
         "error",
         {
-          selector: `JSXAttribute[name.name=/^(${humanFacingAttributes})$/] > Literal`,
+          // Motivo: alt="" es la forma estándar de marcar una imagen decorativa;
+          // no es texto traducible, así que la cadena vacía se permite.
+          selector: `JSXAttribute[name.name=/^(${humanFacingAttributes})$/] > Literal[value!=""]`,
           message:
             "Texto literal en atributo visible: usa useTranslations o getTranslations (FRONTEND.md §4.1.2).",
         },

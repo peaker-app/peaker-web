@@ -2,6 +2,7 @@
 
 import {
   LayoutDashboardIcon,
+  ListChecksIcon,
   MountainIcon,
   SettingsIcon,
   UserIcon,
@@ -13,13 +14,18 @@ import { cn } from "@/lib/cn";
 
 interface SidebarItem {
   href: string;
-  labelKey: "dashboard" | "myAscents" | "profile" | "account";
+  labelKey: "dashboard" | "myAscents" | "collections" | "profile" | "account";
   Icon: ComponentType<{ className?: string }>;
 }
 
 const items: readonly SidebarItem[] = [
   { href: "/dashboard", labelKey: "dashboard", Icon: LayoutDashboardIcon },
   { href: "/dashboard/ascents", labelKey: "myAscents", Icon: MountainIcon },
+  {
+    href: "/dashboard/collections",
+    labelKey: "collections",
+    Icon: ListChecksIcon,
+  },
   {
     href: "/dashboard/settings/profile",
     labelKey: "profile",

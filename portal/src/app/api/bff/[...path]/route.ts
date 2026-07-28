@@ -8,7 +8,6 @@ interface RouteContext {
   params: Promise<{ path: string[] }>;
 }
 
-// Motivo: enviar un cuerpo en streaming exige duplex, que aún no está en los tipos de fetch.
 type StreamingRequestInit = RequestInit & { duplex?: "half" };
 
 const strippedHeaders = new Set([

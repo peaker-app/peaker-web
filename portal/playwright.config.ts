@@ -15,10 +15,18 @@ export default defineConfig({
   ],
   webServer: process.env.E2E_BASE_URL
     ? undefined
-    : {
-        command: "npm run start",
-        url: baseURL,
-        reuseExistingServer: !process.env.CI,
-        timeout: 120_000,
-      },
+    : [
+        {
+          command: "node e2e/stub-gateway.mjs",
+          url: "http://localhost:8080/api/peaks",
+          reuseExistingServer: false,
+          timeout: 30_000,
+        },
+        {
+          command: "npm run start",
+          url: baseURL,
+          reuseExistingServer: !process.env.CI,
+          timeout: 120_000,
+        },
+      ],
 });

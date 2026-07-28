@@ -199,3 +199,34 @@ export interface RegisterAscentRequest {
 }
 
 export type UpdateAscentRequest = Omit<RegisterAscentRequest, "peakId">;
+
+export type CollectionKind = "WantToClimb" | "Custom";
+
+export interface CollectionSummaryResponse {
+  id: string;
+  name: string;
+  description: string | null;
+  kind: CollectionKind;
+  peakCount: number;
+}
+
+export interface CollectionPeakResponse {
+  id: string;
+  peakId: string;
+  peakName: string;
+  peakAltitudeMeters: number;
+  addedAtUtc: string;
+}
+
+export interface CollectionDetailResponse extends CollectionSummaryResponse {
+  peaks: PagedResponse<CollectionPeakResponse>;
+}
+
+export interface SaveCollectionRequest {
+  name: string;
+  description: string | null;
+}
+
+export interface AddCollectionPeakRequest {
+  peakId: string;
+}

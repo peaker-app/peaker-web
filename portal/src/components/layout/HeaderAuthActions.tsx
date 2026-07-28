@@ -7,8 +7,6 @@ import { Skeleton } from "@/components/ui/Skeleton";
 import { Link } from "@/i18n/navigation";
 import type { SessionStateResponse } from "@/app/api/auth/session/route";
 
-// Motivo: la sesión se consulta desde el cliente para que las páginas públicas
-// sigan siendo estáticas con revalidación (FRONTEND.md §1.4.9 y SC-01).
 const fetchSession = async (): Promise<SessionStateResponse> => {
   const response = await fetch("/api/auth/session");
 

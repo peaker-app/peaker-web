@@ -1,9 +1,39 @@
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { locales } from "@/i18n/config";
-import robots from "./robots";
-import sitemap from "./sitemap";
+import type { PagedResponse, PeakListItemResponse } from "@/types/api";
+
+const serverFetch = vi.fn();
+
+vi.mock("@/lib/api/server", () => ({
+  serverFetch: (path: string) => serverFetch(path),
+}));
+
+const robots = (await import("./robots")).default;
+const sitemapModule = await import("./sitemap");
+const sitemap = sitemapModule.default;
+const { generateSitemaps } = sitemapModule;
 
 const original = process.env.NEXT_PUBLIC_SITE_URL;
+
+const peakPage = (
+  ids: string[],
+  totalCount: number,
+): PagedResponse<PeakListItemResponse> => ({
+  items: ids.map((id) => ({
+    id,
+    name: id,
+    altitudeMeters: 3000,
+    prominenceMeters: null,
+    latitude: 42,
+    longitude: 0,
+    countryCode: "ES",
+    region: null,
+  })),
+  page: 1,
+  size: 100,
+  totalCount,
+  totalPages: Math.ceil(totalCount / 100),
+});
 
 beforeEach(() => {
   process.env.NEXT_PUBLIC_SITE_URL = "https://peaker.app";
@@ -11,6 +41,7 @@ beforeEach(() => {
 
 afterEach(() => {
   process.env.NEXT_PUBLIC_SITE_URL = original;
+  vi.clearAllMocks();
 });
 
 describe("robots", () => {
@@ -31,30 +62,70 @@ describe("robots", () => {
   });
 });
 
-describe("sitemap", () => {
-  it("sitemap_publicPaths_haveOneEntryPerLocale", () => {
-    expect(sitemap()).toHaveLength(2 * locales.length);
+describe("generateSitemaps", () => {
+  it("generateSitemaps_smallCatalogue_producesASingleSitemap", async () => {
+    serverFetch.mockResolvedValue(peakPage(["p1"], 1));
+
+    await expect(generateSitemaps()).resolves.toEqual([{ id: 0 }]);
   });
 
-  it("sitemap_everyEntry_carriesItsHreflangAlternates", () => {
-    for (const entry of sitemap()) {
+  it("generateSitemaps_unreachableGateway_stillProducesTheStaticSitemap", async () => {
+    serverFetch.mockRejectedValue(new Error("gateway down"));
+
+    await expect(generateSitemaps()).resolves.toEqual([{ id: 0 }]);
+  });
+});
+
+describe("sitemap", () => {
+  it("sitemap_firstChunk_includesTheStaticPathsInEveryLocale", async () => {
+    serverFetch.mockResolvedValue(peakPage([], 0));
+
+    const urls = (await sitemap({ id: Promise.resolve("0") })).map(
+      (entry) => entry.url,
+    );
+
+    for (const locale of locales) {
+      expect(urls).toContain(`https://peaker.app/${locale}`);
+      expect(urls).toContain(`https://peaker.app/${locale}/peaks`);
+    }
+  });
+
+  it("sitemap_peaks_areEmittedInEveryLocale", async () => {
+    serverFetch.mockResolvedValue(peakPage(["abc"], 1));
+
+    const urls = (await sitemap({ id: Promise.resolve("0") })).map(
+      (entry) => entry.url,
+    );
+
+    for (const locale of locales) {
+      expect(urls).toContain(`https://peaker.app/${locale}/peaks/abc`);
+    }
+  });
+
+  it("sitemap_everyEntry_carriesItsHreflangAlternates", async () => {
+    serverFetch.mockResolvedValue(peakPage(["abc"], 1));
+
+    for (const entry of await sitemap({ id: Promise.resolve("0") })) {
       expect(Object.keys(entry.alternates?.languages ?? {})).toHaveLength(
         locales.length + 1,
       );
     }
   });
 
-  it("sitemap_landing_usesTheLocalePrefixWithoutTrailingSlash", () => {
-    expect(sitemap().map((entry) => entry.url)).toContain(
-      "https://peaker.app/en",
-    );
+  it("sitemap_laterChunk_omitsTheStaticPaths", async () => {
+    serverFetch.mockResolvedValue(peakPage([], 0));
+
+    await expect(sitemap({ id: Promise.resolve("1") })).resolves.toEqual([]);
   });
 
-  it("sitemap_catalogue_isIncludedForEveryLocale", () => {
-    const urls = sitemap().map((entry) => entry.url);
+  it("sitemap_unreachableGateway_stillReturnsTheStaticPaths", async () => {
+    serverFetch.mockRejectedValue(new Error("gateway down"));
 
-    for (const locale of locales) {
-      expect(urls).toContain(`https://peaker.app/${locale}/peaks`);
-    }
+    const urls = (await sitemap({ id: Promise.resolve("0") })).map(
+      (entry) => entry.url,
+    );
+
+    expect(urls).toContain("https://peaker.app/en/peaks");
+    expect(urls).toHaveLength(locales.length * 2);
   });
 });
