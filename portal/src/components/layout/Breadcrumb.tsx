@@ -32,7 +32,7 @@ export const Breadcrumb = ({ steps }: { steps: readonly BreadcrumbStep[] }) => {
               ) : (
                 <span
                   aria-current={index === steps.length - 1 ? "page" : undefined}
-                  className="truncate text-foreground"
+                  className="wrap-break-word text-foreground"
                 >
                   {step.label}
                 </span>

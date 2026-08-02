@@ -34,6 +34,7 @@ const item = (id: string, name: string): PeakListItemResponse => ({
   longitude: 0,
   countryCode: "ES",
   region: null,
+  imageUrl: null,
 });
 
 const respondWith = (items: PeakListItemResponse[]) => {

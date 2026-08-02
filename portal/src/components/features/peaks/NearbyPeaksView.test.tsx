@@ -47,6 +47,7 @@ const aneto: NearbyPeakResponse = {
   longitude: 0.65,
   countryCode: "ES",
   region: null,
+  imageUrl: null,
   distanceMeters: 4200,
 };
 
@@ -129,6 +130,54 @@ describe("NearbyPeaksView", () => {
     expect(slider).toHaveAttribute("aria-label", "Search radius");
     expect(slider).toHaveAttribute("aria-valuetext", "25 km");
     expect(slider).toHaveAttribute("aria-valuenow", "25000");
+  });
+
+  it("nearbyPeaksView_radiusTypedInKilometres_movesTheSlider", async () => {
+    respondWith(nearby([]));
+    const { container } = render(<NearbyPeaksView />, { wrapper: Wrapper });
+
+    const input = screen.getByLabelText("Radius in kilometres");
+    await userEvent.clear(input);
+    await userEvent.type(input, "40");
+    await userEvent.tab();
+
+    expect(container.querySelector('[role="slider"]')).toHaveAttribute(
+      "aria-valuenow",
+      "40000",
+    );
+  });
+
+  it("nearbyPeaksView_radiusTypedOverTheMaximum_isClampedInBothControls", async () => {
+    respondWith(nearby([]));
+    const { container } = render(<NearbyPeaksView />, { wrapper: Wrapper });
+
+    const input = screen.getByLabelText("Radius in kilometres");
+    await userEvent.clear(input);
+    await userEvent.type(input, "9999");
+    await userEvent.tab();
+
+    expect(input).toHaveValue(200);
+    expect(container.querySelector('[role="slider"]')).toHaveAttribute(
+      "aria-valuenow",
+      "200000",
+    );
+  });
+
+  it("nearbyPeaksView_wideningTheRadius_keepsTheNumericInputInSync", async () => {
+    respondWith(nearby([]));
+    render(<NearbyPeaksView />, { wrapper: Wrapper });
+
+    await setOrigin();
+    await waitFor(() =>
+      expect(
+        screen.getByRole("button", { name: "Widen the radius" }),
+      ).toBeInTheDocument(),
+    );
+    await userEvent.click(
+      screen.getByRole("button", { name: "Widen the radius" }),
+    );
+
+    expect(screen.getByLabelText("Radius in kilometres")).toHaveValue(50);
   });
 
   it("nearbyPeaksView_map_receivesTheSameResultsAsTheList", async () => {

@@ -32,7 +32,7 @@ describe("Sidebar", () => {
     render(<Sidebar />, { wrapper: IntlWrapper });
 
     expect(screen.getAllByRole("link").map((link) => link.textContent)).toEqual([
-      "Dashboard",
+      "My activity",
       "My ascents",
       "Collections",
       "Profile",
@@ -48,7 +48,7 @@ describe("Sidebar", () => {
       "aria-current",
       "page",
     );
-    expect(screen.getByRole("link", { name: "Dashboard" })).not.toHaveAttribute(
+    expect(screen.getByRole("link", { name: "My activity" })).not.toHaveAttribute(
       "aria-current",
     );
   });
@@ -57,7 +57,7 @@ describe("Sidebar", () => {
     pathname.mockReturnValue("/dashboard");
     render(<Sidebar />, { wrapper: IntlWrapper });
 
-    expect(screen.getByRole("link", { name: "Dashboard" })).toHaveAttribute(
+    expect(screen.getByRole("link", { name: "My activity" })).toHaveAttribute(
       "aria-current",
       "page",
     );
@@ -74,7 +74,7 @@ describe("Sidebar", () => {
       "aria-current",
       "page",
     );
-    expect(screen.getByRole("link", { name: "Dashboard" })).not.toHaveAttribute(
+    expect(screen.getByRole("link", { name: "My activity" })).not.toHaveAttribute(
       "aria-current",
     );
   });

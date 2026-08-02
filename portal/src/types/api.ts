@@ -81,6 +81,7 @@ export interface PeakListItemResponse {
   longitude: number;
   countryCode: string | null;
   region: string | null;
+  imageUrl: string | null;
 }
 
 export interface NearbyPeakResponse {
@@ -91,6 +92,7 @@ export interface NearbyPeakResponse {
   longitude: number;
   countryCode: string | null;
   region: string | null;
+  imageUrl: string | null;
   distanceMeters: number;
 }
 
@@ -109,6 +111,7 @@ export interface PeakDetailResponse {
   longitude: number;
   countryCode: string | null;
   region: string | null;
+  imageUrl: string | null;
   rangeId: string | null;
   rangeName: string | null;
   alternativeNames: PeakNameResponse[];

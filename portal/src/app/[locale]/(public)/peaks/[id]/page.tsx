@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import Image from "next/image";
 import { notFound } from "next/navigation";
 import { Breadcrumb } from "@/components/layout/Breadcrumb";
 import { PeakActions } from "@/components/features/peaks/PeakActions";
@@ -13,12 +14,16 @@ import { serverFetch } from "@/lib/api/server";
 import { countryName } from "@/lib/countries";
 import { formatAltitude } from "@/lib/format";
 import { detailZoom } from "@/lib/map";
-import { localizedPeakName } from "@/lib/peakName";
+import { peakThumbnail } from "@/lib/peakImage";
+import { isWikidataId, localizedPeakName, peakDisplayName } from "@/lib/peakName";
 import { alternatesFor } from "@/lib/seo";
 import type { PeakDetailResponse } from "@/types/api";
 
 export const revalidate = 86400;
 export const generateStaticParams = () => [];
+
+const photoWidth = 800;
+const photoHeight = 500;
 
 interface PeakPageProps {
   params: Promise<{ locale: string; id: string }>;
@@ -49,7 +54,10 @@ export async function generateMetadata({
   }
 
   const t = await getTranslations({ locale, namespace: "peakDetail" });
-  const name = localizedPeakName(peak, locale as Locale);
+  const peaks = await getTranslations({ locale, namespace: "peaks" });
+  const name = peakDisplayName(localizedPeakName(peak, locale as Locale), (id) =>
+    peaks("unnamed", { id }),
+  );
   const country = peak.countryCode
     ? countryName(locale as Locale, peak.countryCode)
     : "";
@@ -104,8 +112,11 @@ export default async function PeakDetailPage({ params }: PeakPageProps) {
   }
 
   const t = await getTranslations("peakDetail");
+  const peaks = await getTranslations("peaks");
   const nav = await getTranslations("nav");
-  const name = localizedPeakName(peak, locale as Locale);
+  const name = peakDisplayName(localizedPeakName(peak, locale as Locale), (id) =>
+    peaks("unnamed", { id }),
+  );
 
   return (
     <div className="mx-auto flex w-full max-w-7xl flex-col gap-6 px-4 py-8">
@@ -127,7 +138,7 @@ export default async function PeakDetailPage({ params }: PeakPageProps) {
         <h1 className="text-3xl leading-relaxed font-semibold text-start">
           {name}
         </h1>
-        {name === peak.name ? null : (
+        {name === peak.name || isWikidataId(peak.name) ? null : (
           <p className="leading-relaxed text-muted-foreground text-start">
             {t("canonicalName", { name: peak.name })}
           </p>
@@ -135,7 +146,18 @@ export default async function PeakDetailPage({ params }: PeakPageProps) {
       </header>
 
       <div className="grid gap-6 lg:grid-cols-2">
-        <PeakFactsList peak={peak} />
+        <div className="flex flex-col gap-6">
+          {peak.imageUrl ? (
+            <Image
+              src={peakThumbnail(peak.imageUrl, photoWidth)}
+              alt={name}
+              width={photoWidth}
+              height={photoHeight}
+              className="h-auto w-full rounded-md object-cover"
+            />
+          ) : null}
+          <PeakFactsList peak={peak} />
+        </div>
         <div className="flex flex-col gap-6">
           <PeakMap
             points={[

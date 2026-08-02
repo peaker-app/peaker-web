@@ -47,11 +47,12 @@ export const AscentCard = ({
       <div className="min-w-0 flex-1">
         <Link
           href={href}
+          dir="auto"
           aria-label={t("accessibleName", {
             peak: ascent.peakName,
             date: readableDate,
           })}
-          className="block truncate text-start font-medium hover:underline"
+          className="block wrap-break-word text-start font-medium hover:underline"
         >
           {ascent.peakName}
         </Link>

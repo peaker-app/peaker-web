@@ -16,6 +16,19 @@ const peak = {
   longitude: 0.6577,
   countryCode: "ES",
   region: "Pyrenees",
+  imageUrl: null,
+};
+
+const longNamePeak = {
+  ...peak,
+  id: fixtures.longNamePeakId,
+  name: fixtures.longNamePeakName,
+};
+
+const unnamedPeak = {
+  ...peak,
+  id: fixtures.unnamedPeakId,
+  name: fixtures.unnamedPeakWikidataId,
 };
 
 const paged = (items, size = 24) => ({
@@ -42,6 +55,14 @@ const bareDetail = {
   prominenceMeters: null,
   region: null,
   countryCode: null,
+  imageUrl: null,
+  rangeId: null,
+  rangeName: null,
+  alternativeNames: [],
+};
+
+const unnamedDetail = {
+  ...unnamedPeak,
   rangeId: null,
   rangeName: null,
   alternativeNames: [],
@@ -237,6 +258,14 @@ const methodRoutes = [
   ["DELETE", /^\/api\/ascents\/[0-9a-f-]{36}$/, () => ({ status: 204, body: null })],
 ];
 
+const searchResults = (query) => {
+  if (query === fixtures.emptyQuery) {
+    return [];
+  }
+
+  return query === fixtures.longNameQuery ? [longNamePeak] : [peak];
+};
+
 const routes = [
   [
     new RegExp(`^/api/collections/${fixtures.defaultCollectionId}`),
@@ -264,11 +293,22 @@ const routes = [
   [/^\/api\/auth\/logout/, () => ({ status: 204, body: null })],
   [
     /^\/api\/peaks\/search/,
-    (url) => paged(url.searchParams.get("q") === fixtures.emptyQuery ? [] : [peak]),
+    (url) => paged(searchResults(url.searchParams.get("q"))),
   ],
-  [/^\/api\/peaks\/nearby/, () => paged([{ ...peak, distanceMeters: 4200 }], 20)],
+  [
+    /^\/api\/peaks\/nearby/,
+    () =>
+      paged(
+        [
+          { ...peak, distanceMeters: 4200 },
+          { ...unnamedPeak, distanceMeters: 9100 },
+        ],
+        20,
+      ),
+  ],
   [new RegExp(`^/api/peaks/${fixtures.missingPeakId}`), () => notFound("Peak.NotFound")],
   [new RegExp(`^/api/peaks/${fixtures.barePeakId}`), () => bareDetail],
+  [new RegExp(`^/api/peaks/${fixtures.unnamedPeakId}`), () => unnamedDetail],
   [/^\/api\/peaks\/[0-9a-f-]{36}/, () => detail],
   [/^\/api\/peaks/, () => paged([peak])],
   [/^\/api\/profiles\/by-slug\/missing/, () => notFound("Profile.NotFound")],

@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test";
+import { expect, test, type Page } from "@playwright/test";
 import fixtures from "./fixtures.json";
 
 test.describe("SC-01 · landing", () => {
@@ -25,7 +25,7 @@ test.describe("SC-02 · buscador y catálogo", () => {
     await page.goto("/en/peaks");
 
     await page.getByRole("searchbox").fill("aneto");
-    await page.getByRole("button", { name: "Search" }).click();
+    await page.getByRole("search").getByRole("button", { name: "Search" }).click();
     await expect(page).toHaveURL(/\/en\/peaks\?q=aneto$/);
 
     await page.getByRole("link", { name: /Aneto/ }).first().click();
@@ -64,6 +64,46 @@ test.describe("SC-02 · buscador y catálogo", () => {
     await page.getByRole("button", { name: "Remove filter Spain" }).click();
 
     await expect(page).toHaveURL(/\/en\/peaks$/);
+  });
+
+  test("el boton Buscar aplica region y altitud en una sola navegacion", async ({
+    page,
+  }) => {
+    await page.goto("/en/peaks");
+
+    await page.getByLabel("Region").fill("Pyrenees");
+    await page.getByLabel("Minimum altitude").fill("2500");
+    await page
+      .getByRole("button", { name: "Search with these filters" })
+      .click();
+
+    await expect(page).toHaveURL(
+      /\/en\/peaks\?region=Pyrenees&minAltitude=2500$/,
+    );
+  });
+
+  test("escribir en los filtros no lanza la busqueda por si solo", async ({
+    page,
+  }) => {
+    await page.goto("/en/peaks");
+
+    await page.getByLabel("Region").fill("Pyrenees");
+    await page.getByLabel("Maximum altitude").fill("4000");
+
+    await expect(page).toHaveURL(/\/en\/peaks$/);
+  });
+
+  test("limpiar todo vacia tambien la region y la altitud tecleadas", async ({
+    page,
+  }) => {
+    await page.goto("/en/peaks?region=Pyrenees&minAltitude=2500&maxAltitude=4000");
+
+    await page.getByRole("button", { name: "Clear all" }).click();
+
+    await expect(page).toHaveURL(/\/en\/peaks$/);
+    await expect(page.getByLabel("Region")).toHaveValue("");
+    await expect(page.getByLabel("Minimum altitude")).toHaveValue("0");
+    await expect(page.getByLabel("Maximum altitude")).toHaveValue("9000");
   });
 
   test("la vista limpia es indexable y la busqueda no", async ({ page }) => {
@@ -109,6 +149,17 @@ test.describe("SC-04 · ficha de montaña", () => {
     await page.goto(`/zh/peaks/${fixtures.peakId}`);
 
     await expect(page.getByRole("heading", { level: 1 })).toHaveText("Aneto");
+  });
+
+  test("un pico sin nombre no ensena el identificador de wikidata en crudo", async ({
+    page,
+  }) => {
+    await page.goto(`/es/peaks/${fixtures.unnamedPeakId}`);
+
+    await expect(page.getByRole("heading", { level: 1 })).toHaveText(
+      `Pico sin nombre (${fixtures.unnamedPeakWikidataId})`,
+    );
+    await expect(page.getByText("También conocido como")).toHaveCount(0);
   });
 
   test("un pico inexistente devuelve la pantalla de 404", async ({ page }) => {
@@ -212,6 +263,81 @@ test.describe("SC-03 · picos cercanos", () => {
     await page.getByRole("button", { name: "Search here" }).click();
 
     await expect(page.getByRole("link", { name: /Aneto/ })).toBeVisible();
+  });
+
+  test("el radio se puede teclear en kilometros y mueve el slider", async ({
+    page,
+  }) => {
+    await page.goto("/en/peaks/nearby");
+
+    await page.getByLabel("Radius in kilometres").fill("40");
+    await page.getByLabel("Radius in kilometres").blur();
+
+    await expect(page.getByRole("slider")).toHaveAttribute(
+      "aria-valuenow",
+      "40000",
+    );
+  });
+
+  test("ninguna tarjeta ensena un identificador de wikidata en crudo", async ({
+    page,
+  }) => {
+    await page.goto("/en/peaks/nearby");
+
+    await page.getByLabel("Latitude").fill("42.6");
+    await page.getByLabel("Longitude").fill("0.6");
+    await page.getByRole("button", { name: "Search here" }).click();
+
+    await expect(
+      page.getByRole("link", {
+        name: new RegExp(`Unnamed peak \\(${fixtures.unnamedPeakWikidataId}\\)`),
+      }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole("link", { name: fixtures.unnamedPeakWikidataId, exact: true }),
+    ).toHaveCount(0);
+  });
+});
+
+test.describe("Nombres de pico sin recortar", () => {
+  test.use({ viewport: { width: 390, height: 844 } });
+
+  test("un nombre largo se pinta entero en la tarjeta de resultados", async ({
+    page,
+  }) => {
+    await page.goto(`/en/peaks?q=${fixtures.longNameQuery}`);
+
+    const name = page
+      .getByRole("link", { name: new RegExp(fixtures.longNamePeakName) })
+      .first();
+
+    await expect(name).toHaveText(fixtures.longNamePeakName);
+    expect(await name.evaluate((el) => el.scrollWidth > el.clientWidth)).toBe(
+      false,
+    );
+  });
+});
+
+test.describe("Apilamiento sobre el mapa", () => {
+  const mapWrapper = (page: Page) =>
+    page.locator(".leaflet-container").locator("xpath=..");
+
+  test("el mapa de la ficha encierra los z-index de Leaflet", async ({
+    page,
+  }) => {
+    await page.goto(`/en/peaks/${fixtures.peakId}`);
+    await expect(page.locator(".leaflet-container")).toBeVisible();
+
+    await expect(mapWrapper(page)).toHaveCSS("isolation", "isolate");
+  });
+
+  test("el mapa de picos cercanos encierra los z-index de Leaflet", async ({
+    page,
+  }) => {
+    await page.goto("/en/peaks/nearby");
+    await expect(page.locator(".leaflet-container")).toBeVisible();
+
+    await expect(mapWrapper(page)).toHaveCSS("isolation", "isolate");
   });
 });
 

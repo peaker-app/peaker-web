@@ -55,6 +55,7 @@ const peak: PeakListItemResponse = {
   longitude: 0.65,
   countryCode: "ES",
   region: null,
+  imageUrl: null,
 };
 
 const ascent: AscentSummaryResponse = {

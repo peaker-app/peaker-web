@@ -39,11 +39,37 @@ const peak = { id: "peak-1", name: "Aneto", altitudeMeters: 3404 };
 const save = () =>
   userEvent.click(screen.getByRole("button", { name: "Save ascent" }));
 
+const captureUncaughtErrors = () => {
+  const reported: string[] = [];
+
+  const listener = (event: ErrorEvent) => {
+    reported.push(String(event.error ?? event.message));
+    event.preventDefault();
+  };
+
+  window.addEventListener("error", listener);
+  cleanUpUncaughtErrors = () => window.removeEventListener("error", listener);
+
+  return { reported };
+};
+
+let cleanUpUncaughtErrors = () => undefined as void;
+
+const stubShowPicker = (implementation: () => void) => {
+  Object.defineProperty(HTMLInputElement.prototype, "showPicker", {
+    value: implementation,
+    configurable: true,
+    writable: true,
+  });
+};
+
 beforeEach(() => {
   useEmailConfirmation.setState({ unconfirmed: false });
 });
 
 afterEach(() => {
+  cleanUpUncaughtErrors();
+  delete (HTMLInputElement.prototype as { showPicker?: unknown }).showPicker;
   vi.clearAllMocks();
 });
 
@@ -121,6 +147,39 @@ describe("RegisterAscentForm", () => {
     const { request } = call[0];
 
     expect(request.ascentDate).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+  });
+
+  it("registerAscent_dateFieldFocused_opensTheNativePicker", async () => {
+    const showPicker = vi.fn();
+    stubShowPicker(showPicker);
+    render(<RegisterAscentForm preselectedPeak={peak} />, { wrapper: Wrapper });
+
+    await userEvent.click(screen.getByLabelText("Ascent date"));
+
+    expect(showPicker).toHaveBeenCalledTimes(1);
+  });
+
+  it("registerAscent_pickerBlockedByTheBrowser_raisesNothingAndKeepsTheFieldUsable", async () => {
+    stubShowPicker(() => {
+      throw new DOMException("blocked", "NotAllowedError");
+    });
+    submitAscent.mockResolvedValue({ ascentId: "ascent-1", failedPhotos: 0 });
+    const uncaught = captureUncaughtErrors();
+    render(<RegisterAscentForm preselectedPeak={peak} />, { wrapper: Wrapper });
+
+    const field = screen.getByLabelText("Ascent date");
+    await userEvent.click(field);
+    await userEvent.clear(field);
+    await userEvent.type(field, "2026-07-20");
+    await save();
+
+    await waitFor(() => expect(submitAscent).toHaveBeenCalled());
+    const [call] = submitAscent.mock.calls as [
+      [{ request: { ascentDate: string } }],
+    ];
+
+    expect(uncaught.reported).toEqual([]);
+    expect(call[0].request.ascentDate).toBe("2026-07-20");
   });
 
   it("registerAscent_emailNotConfirmed_keepsTheFormAndOffersResendAndRetry", async () => {

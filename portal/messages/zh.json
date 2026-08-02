@@ -50,7 +50,7 @@
     "home": "首页",
     "peaks": "山峰",
     "nearby": "附近",
-    "dashboard": "控制台",
+    "dashboard": "我的活动",
     "myAscents": "我的登顶记录",
     "collections": "收藏夹",
     "profile": "个人资料",
@@ -133,7 +133,7 @@
       "heading": "准备好迎接下一座山峰了吗？",
       "body": "免费注册账户，开始记录你的登顶。",
       "signUp": "创建账户",
-      "dashboard": "进入我的控制台"
+      "dashboard": "查看我的活动"
     },
     "farewell": {
       "title": "你的账户已注销",
@@ -142,6 +142,7 @@
   },
   "peaks": {
     "title": "山峰",
+    "unnamed": "无名山峰（{id}）",
     "card": {
       "altitude": "{value} 米",
       "prominence": "地形突起度：{value} 米",
@@ -171,7 +172,9 @@
       "maxAltitude": "最高海拔",
       "altitudeRange": "从 {min} 米到 {max} 米",
       "clearAll": "全部清除",
-      "remove": "移除筛选条件 {name}"
+      "remove": "移除筛选条件 {name}",
+      "search": "搜索",
+      "searchLabel": "使用这些筛选条件搜索"
     },
     "map": {
       "label": "山峰地图",
@@ -198,7 +201,8 @@
       "emptyAction": "扩大半径",
       "listHeading": "最近的山峰",
       "showMap": "地图",
-      "showList": "列表"
+      "showList": "列表",
+      "radiusInput": "半径（公里）"
     },
     "catalogueEmpty": "目录中还没有山峰。",
     "catalogueEmptyHint": "数据来自 Wikidata，请稍后再来。"
@@ -435,7 +439,7 @@
       "errorTitle": "无法验证你的邮箱",
       "errorBody": "该链接无效、已使用或已过期。",
       "missingToken": "该链接缺少令牌。请打开我们最近发送给你的邮件。",
-      "goToDashboard": "进入我的控制台",
+      "goToDashboard": "查看我的活动",
       "goToLogin": "登录",
       "requestNew": "获取新链接"
     },
@@ -449,12 +453,12 @@
       "cooldown": "<time>{value}</time> 后可再次获取链接。",
       "cooldownDisabled": "倒计时结束前按钮不可用。",
       "alreadyConfirmed": "你的邮箱已完成验证。",
-      "goToDashboard": "进入我的控制台"
+      "goToDashboard": "查看我的活动"
     }
   },
   "dashboard": {
     "greeting": {
-      "title": "你的控制台",
+      "title": "你的活动",
       "body": "记录你登顶的山峰，随时掌握进度。",
       "logAscent": "记录登顶",
       "titleNamed": "你好，{name}"

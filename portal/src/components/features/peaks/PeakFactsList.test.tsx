@@ -13,6 +13,7 @@ const montBlanc: PeakDetailResponse = {
   longitude: 6.8652,
   countryCode: "FR",
   region: "Haute-Savoie",
+  imageUrl: null,
   rangeId: "range-1",
   rangeName: "Alps",
   alternativeNames: [],

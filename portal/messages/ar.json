@@ -50,7 +50,7 @@
     "home": "الرئيسية",
     "peaks": "القمم",
     "nearby": "القريبة",
-    "dashboard": "لوحة التحكم",
+    "dashboard": "نشاطي",
     "myAscents": "صعوداتي",
     "collections": "المجموعات",
     "profile": "الملف الشخصي",
@@ -133,7 +133,7 @@
       "heading": "مستعد لقمتك التالية؟",
       "body": "أنشئ حسابًا مجانيًا وابدأ بتسجيل صعوداتك.",
       "signUp": "إنشاء حساب",
-      "dashboard": "الذهاب إلى لوحتي"
+      "dashboard": "الانتقال إلى نشاطي"
     },
     "farewell": {
       "title": "تم إغلاق حسابك",
@@ -142,6 +142,7 @@
   },
   "peaks": {
     "title": "القمم",
+    "unnamed": "قمة بلا اسم ({id})",
     "card": {
       "altitude": "{value} م",
       "prominence": "البروز التضاريسي: {value} م",
@@ -171,7 +172,9 @@
       "maxAltitude": "أقصى ارتفاع",
       "altitudeRange": "من {min} إلى {max} مترًا",
       "clearAll": "مسح الكل",
-      "remove": "إزالة عامل التصفية {name}"
+      "remove": "إزالة عامل التصفية {name}",
+      "search": "بحث",
+      "searchLabel": "البحث بهذه المرشحات"
     },
     "map": {
       "label": "خريطة القمم",
@@ -198,7 +201,8 @@
       "emptyAction": "توسيع النطاق",
       "listHeading": "أقرب القمم",
       "showMap": "الخريطة",
-      "showList": "القائمة"
+      "showList": "القائمة",
+      "radiusInput": "نصف القطر بالكيلومترات"
     },
     "catalogueEmpty": "لا يحتوي الدليل على قمم بعد.",
     "catalogueEmptyHint": "تُحمَّل البيانات من ويكي بيانات؛ عد بعد قليل."
@@ -435,7 +439,7 @@
       "errorTitle": "تعذّر تأكيد بريدك الإلكتروني",
       "errorBody": "هذا الرابط غير صالح أو سبق استخدامه أو انتهت صلاحيته.",
       "missingToken": "لا يحتوي هذا الرابط على رمز. افتح آخر رسالة أرسلناها إليك.",
-      "goToDashboard": "الذهاب إلى لوحتي",
+      "goToDashboard": "الانتقال إلى نشاطي",
       "goToLogin": "تسجيل الدخول",
       "requestNew": "طلب رابط جديد"
     },
@@ -449,12 +453,12 @@
       "cooldown": "يمكنك طلب رابط آخر خلال <time>{value}</time>.",
       "cooldownDisabled": "الزر معطّل حتى ينتهي العد التنازلي.",
       "alreadyConfirmed": "تم تأكيد بريدك الإلكتروني بالفعل.",
-      "goToDashboard": "الذهاب إلى لوحتي"
+      "goToDashboard": "الانتقال إلى نشاطي"
     }
   },
   "dashboard": {
     "greeting": {
-      "title": "لوحتك",
+      "title": "نشاطك",
       "body": "سجّل القمم التي تصل إليها وتابعها أولًا بأول.",
       "logAscent": "تسجيل قمة",
       "titleNamed": "مرحبًا، {name}"

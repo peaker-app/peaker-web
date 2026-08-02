@@ -93,4 +93,87 @@ describe("PeakFilters", () => {
 
     expect(screen.getByLabelText("Country")).toBeInTheDocument();
   });
+
+  it("peakFilters_typingWithoutSearching_leavesTheListUntouched", async () => {
+    render(<PeakFilters query={emptyQuery} />, { wrapper: IntlWrapper });
+
+    await userEvent.type(screen.getByLabelText("Region"), "Alps");
+    await userEvent.clear(screen.getByLabelText("Minimum altitude"));
+    await userEvent.type(screen.getByLabelText("Minimum altitude"), "2500");
+
+    expect(push).not.toHaveBeenCalled();
+  });
+
+  it("peakFilters_searchButton_appliesRegionAndAltitudeTogether", async () => {
+    render(<PeakFilters query={emptyQuery} />, { wrapper: IntlWrapper });
+
+    await userEvent.type(screen.getByLabelText("Region"), "Alps");
+    await userEvent.clear(screen.getByLabelText("Minimum altitude"));
+    await userEvent.type(screen.getByLabelText("Minimum altitude"), "2500");
+    await userEvent.click(screen.getByRole("button", { name: "Search with these filters" }));
+
+    expect(push).toHaveBeenCalledWith("/peaks?region=Alps&minAltitude=2500");
+  });
+
+  it("peakFilters_altitudeAboveTheBound_isClampedBeforeSearching", async () => {
+    render(<PeakFilters query={emptyQuery} />, { wrapper: IntlWrapper });
+
+    await userEvent.clear(screen.getByLabelText("Maximum altitude"));
+    await userEvent.type(screen.getByLabelText("Maximum altitude"), "50000");
+    await userEvent.click(screen.getByRole("button", { name: "Search with these filters" }));
+
+    expect(push).toHaveBeenCalledWith("/peaks");
+  });
+
+  it("peakFilters_invertedAltitudeBounds_areReorderedBeforeSearching", async () => {
+    render(<PeakFilters query={emptyQuery} />, { wrapper: IntlWrapper });
+
+    await userEvent.clear(screen.getByLabelText("Minimum altitude"));
+    await userEvent.type(screen.getByLabelText("Minimum altitude"), "4000");
+    await userEvent.clear(screen.getByLabelText("Maximum altitude"));
+    await userEvent.type(screen.getByLabelText("Maximum altitude"), "2000");
+    await userEvent.click(screen.getByRole("button", { name: "Search with these filters" }));
+
+    expect(push).toHaveBeenCalledWith(
+      "/peaks?minAltitude=2000&maxAltitude=4000",
+    );
+  });
+
+  it("peakFilters_clearAll_alsoEmptiesTheRegionAndAltitudeControls", async () => {
+    render(
+      <PeakFilters
+        query={{
+          ...emptyQuery,
+          region: "Pyrenees",
+          minAltitude: "2500",
+          maxAltitude: "4000",
+        }}
+      />,
+      { wrapper: IntlWrapper },
+    );
+
+    await userEvent.type(screen.getByLabelText("Region"), " north");
+    await userEvent.click(screen.getByRole("button", { name: "Clear all" }));
+
+    expect(screen.getByLabelText("Region")).toHaveValue("");
+    expect(screen.getByLabelText("Minimum altitude")).toHaveValue(0);
+    expect(screen.getByLabelText("Maximum altitude")).toHaveValue(9000);
+    expect(screen.getByText("From 0 to 9000 metres")).toBeInTheDocument();
+  });
+
+  it("peakFilters_removingTheAltitudeChip_restoresTheDefaultBounds", async () => {
+    render(
+      <PeakFilters
+        query={{ ...emptyQuery, minAltitude: "2500", maxAltitude: "4000" }}
+      />,
+      { wrapper: IntlWrapper },
+    );
+
+    await userEvent.click(
+      screen.getByRole("button", { name: "Remove filter From 2500 to 4000 metres" }),
+    );
+
+    expect(screen.getByLabelText("Minimum altitude")).toHaveValue(0);
+    expect(screen.getByLabelText("Maximum altitude")).toHaveValue(9000);
+  });
 });

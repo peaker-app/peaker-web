@@ -91,7 +91,7 @@ export const PeakMapView = ({
   const longitude = center?.longitude ?? worldView.longitude;
 
   return (
-    <div aria-hidden className={cn("overflow-hidden rounded-md", className)}>
+    <div aria-hidden className={cn("isolate overflow-hidden rounded-md", className)}>
       <MapContainer
         center={[latitude, longitude]}
         zoom={resolvedZoom}

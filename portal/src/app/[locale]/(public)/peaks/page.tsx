@@ -120,7 +120,7 @@ export default async function PeaksPage({
 
               {results && results.items.length > 0 ? (
                 <>
-                  <ul className="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
+                  <ul className="grid grid-cols-1 gap-3 md:grid-cols-2 2xl:grid-cols-3">
                     {results.items.map((peak) => (
                       <PeakCard key={peak.id} peak={peak} />
                     ))}

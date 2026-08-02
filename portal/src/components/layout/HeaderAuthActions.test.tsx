@@ -40,7 +40,7 @@ describe("HeaderAuthActions", () => {
     render(<HeaderAuthActions />, { wrapper: Wrapper });
 
     await waitFor(() =>
-      expect(screen.getByRole("link", { name: "Dashboard" })).toHaveAttribute(
+      expect(screen.getByRole("link", { name: "My activity" })).toHaveAttribute(
         "href",
         "/dashboard",
       ),

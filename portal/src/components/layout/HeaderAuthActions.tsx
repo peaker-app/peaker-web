@@ -1,6 +1,7 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
+import { ActivityIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/Button";
 import { Skeleton } from "@/components/ui/Skeleton";
@@ -32,7 +33,10 @@ export const HeaderAuthActions = () => {
   if (data?.authenticated) {
     return (
       <Button asChild variant="outline" size="sm">
-        <Link href="/dashboard">{t("dashboard")}</Link>
+        <Link href="/dashboard">
+          <ActivityIcon aria-hidden />
+          {t("dashboard")}
+        </Link>
       </Button>
     );
   }

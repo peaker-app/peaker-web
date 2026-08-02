@@ -50,7 +50,7 @@
     "home": "Accueil",
     "peaks": "Sommets",
     "nearby": "À proximité",
-    "dashboard": "Tableau de bord",
+    "dashboard": "Mon activité",
     "myAscents": "Mes ascensions",
     "collections": "Collections",
     "profile": "Profil",
@@ -133,7 +133,7 @@
       "heading": "Prêt pour votre prochain sommet ?",
       "body": "Créez un compte gratuit et commencez à consigner vos ascensions.",
       "signUp": "Créer un compte",
-      "dashboard": "Aller à mon tableau de bord"
+      "dashboard": "Voir mon activité"
     },
     "farewell": {
       "title": "Votre compte a été clôturé",
@@ -142,6 +142,7 @@
   },
   "peaks": {
     "title": "Sommets",
+    "unnamed": "Sommet sans nom ({id})",
     "card": {
       "altitude": "{value} m",
       "prominence": "Proéminence : {value} m",
@@ -171,7 +172,9 @@
       "maxAltitude": "Altitude maximale",
       "altitudeRange": "De {min} à {max} mètres",
       "clearAll": "Tout effacer",
-      "remove": "Retirer le filtre {name}"
+      "remove": "Retirer le filtre {name}",
+      "search": "Rechercher",
+      "searchLabel": "Rechercher avec ces filtres"
     },
     "map": {
       "label": "Carte des sommets",
@@ -198,7 +201,8 @@
       "emptyAction": "Élargir le rayon",
       "listHeading": "Sommets les plus proches",
       "showMap": "Carte",
-      "showList": "Liste"
+      "showList": "Liste",
+      "radiusInput": "Rayon en kilomètres"
     },
     "catalogueEmpty": "Le catalogue ne contient encore aucun sommet.",
     "catalogueEmptyHint": "Les données proviennent de Wikidata ; revenez dans un instant."
@@ -435,7 +439,7 @@
       "errorTitle": "Nous n'avons pas pu confirmer votre e-mail",
       "errorBody": "Ce lien n'est pas valide, a déjà été utilisé ou a expiré.",
       "missingToken": "Ce lien ne contient aucun jeton. Ouvrez le dernier e-mail que nous vous avons envoyé.",
-      "goToDashboard": "Aller à mon tableau de bord",
+      "goToDashboard": "Voir mon activité",
       "goToLogin": "Se connecter",
       "requestNew": "Demander un nouveau lien"
     },
@@ -449,12 +453,12 @@
       "cooldown": "Vous pourrez demander un autre lien dans <time>{value}</time>.",
       "cooldownDisabled": "Le bouton est désactivé jusqu'à la fin du compte à rebours.",
       "alreadyConfirmed": "Votre e-mail est déjà confirmé.",
-      "goToDashboard": "Aller à mon tableau de bord"
+      "goToDashboard": "Voir mon activité"
     }
   },
   "dashboard": {
     "greeting": {
-      "title": "Votre tableau de bord",
+      "title": "Votre activité",
       "body": "Consignez les sommets que vous atteignez et gardez-les à jour.",
       "logAscent": "Enregistrer un sommet",
       "titleNamed": "Bonjour, {name}"

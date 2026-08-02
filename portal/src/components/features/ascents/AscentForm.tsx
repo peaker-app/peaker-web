@@ -22,6 +22,14 @@ export const maxCompanionsLength = 500;
 export const maxRouteNotesLength = 2000;
 export const minimumAscentDate = "1900-01-01";
 
+const showPickerWhenBrowserAllows = (input: HTMLInputElement) => {
+  try {
+    input.showPicker();
+  } catch {
+    return;
+  }
+};
+
 export interface AscentFormValues {
   peak?: SelectedPeak;
   ascentDate: string;
@@ -154,6 +162,7 @@ export const AscentForm = ({
             value={values.ascentDate}
             aria-invalid={invalid}
             aria-describedby={describedBy}
+            onFocus={(event) => showPickerWhenBrowserAllows(event.currentTarget)}
             onChange={(event) => update("ascentDate", event.target.value)}
           />
         )}

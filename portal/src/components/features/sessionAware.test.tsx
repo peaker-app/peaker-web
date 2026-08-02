@@ -56,7 +56,7 @@ describe("RegisterCta", () => {
 
     await waitFor(() =>
       expect(
-        screen.getByRole("link", { name: "Go to my dashboard" }),
+        screen.getByRole("link", { name: "Go to my activity" }),
       ).toHaveAttribute("href", "/dashboard"),
     );
   });

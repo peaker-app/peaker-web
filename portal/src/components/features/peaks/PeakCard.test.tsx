@@ -3,6 +3,13 @@ import type { ReactNode } from "react";
 import { describe, expect, it, vi } from "vitest";
 import { IntlWrapper } from "@/test/IntlWrapper";
 
+vi.mock("next/image", () => ({
+  default: ({ src, alt }: { src: string; alt: string }) => (
+    // eslint-disable-next-line @next/next/no-img-element
+    <img src={src} alt={alt} />
+  ),
+}));
+
 vi.mock("@/i18n/navigation", () => ({
   Link: ({
     href,
@@ -63,6 +70,54 @@ describe("PeakCard", () => {
     });
 
     expect(screen.getByText("12.3 km away")).toBeInTheDocument();
+  });
+
+  it("peakCard_withoutPhoto_keepsTheDefaultIcon", () => {
+    const { container } = render(<PeakCard peak={aneto} />, {
+      wrapper: IntlWrapper,
+    });
+
+    expect(screen.queryByRole("img")).toBeNull();
+    expect(container.querySelector("svg")).toBeInTheDocument();
+  });
+
+  it("peakCard_withPhoto_showsADecorativeThumbnail", () => {
+    render(
+      <PeakCard
+        peak={{
+          ...aneto,
+          imageUrl:
+            "https://commons.wikimedia.org/wiki/Special:FilePath/Aneto.jpg",
+        }}
+      />,
+      { wrapper: IntlWrapper },
+    );
+
+    const photo = screen.getByAltText("");
+
+    expect(photo).toHaveAttribute(
+      "src",
+      "https://commons.wikimedia.org/wiki/Special:FilePath/Aneto.jpg?width=128",
+    );
+  });
+
+  it("peakCard_nameIsAWikidataIdentifier_showsThePlaceholderInstead", () => {
+    render(<PeakCard peak={{ ...aneto, name: "Q8538208" }} />, {
+      wrapper: IntlWrapper,
+    });
+
+    expect(screen.getByRole("link")).toHaveTextContent(
+      "Unnamed peak (Q8538208)",
+    );
+    expect(screen.queryByText("Q8538208")).toBeNull();
+  });
+
+  it("peakCard_oddButRealName_isShownUntouched", () => {
+    render(<PeakCard peak={{ ...aneto, name: "image1" }} />, {
+      wrapper: IntlWrapper,
+    });
+
+    expect(screen.getByRole("link")).toHaveTextContent("image1");
   });
 });
 

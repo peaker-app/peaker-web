@@ -1,8 +1,13 @@
 import { ChevronRightIcon, MountainIcon } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
+import Image from "next/image";
 import type { Locale } from "@/i18n/config";
 import { Link } from "@/i18n/navigation";
 import { formatAltitude, formatDistance } from "@/lib/format";
+import { peakThumbnail } from "@/lib/peakImage";
+import { peakDisplayName } from "@/lib/peakName";
+
+const thumbnailSize = 64;
 
 export interface PeakCardItem {
   id: string;
@@ -10,6 +15,7 @@ export interface PeakCardItem {
   altitudeMeters: number;
   countryCode: string | null;
   region: string | null;
+  imageUrl?: string | null;
   distanceMeters?: number;
 }
 
@@ -27,9 +33,11 @@ export const placeLabel = (
 
 export const PeakCard = ({ peak }: { peak: PeakCardItem }) => {
   const t = useTranslations("peaks.card");
+  const peaks = useTranslations("peaks");
   const units = useTranslations("units");
   const locale = useLocale() as Locale;
 
+  const name = peakDisplayName(peak.name, (id) => peaks("unnamed", { id }));
   const altitude = formatAltitude(locale, peak.altitudeMeters);
   const place = placeLabel(locale, peak.countryCode, peak.region);
   const distance =
@@ -39,16 +47,27 @@ export const PeakCard = ({ peak }: { peak: PeakCardItem }) => {
 
   return (
     <li className="flex min-w-0 items-center gap-3 rounded-md border border-border bg-card p-4">
-      <MountainIcon aria-hidden className="size-8 shrink-0 text-primary" />
+      {peak.imageUrl ? (
+        <Image
+          src={peakThumbnail(peak.imageUrl, thumbnailSize * 2)}
+          alt=""
+          width={thumbnailSize}
+          height={thumbnailSize}
+          className="size-16 shrink-0 rounded-md object-cover"
+        />
+      ) : (
+        <MountainIcon aria-hidden className="size-8 shrink-0 text-primary" />
+      )}
       <div className="min-w-0 flex-1">
         <Link
           href={`/peaks/${peak.id}`}
-          aria-label={t("accessibleName", { name: peak.name, altitude })}
-          className="block truncate text-start font-medium hover:underline"
+          dir="auto"
+          aria-label={t("accessibleName", { name, altitude })}
+          className="block wrap-break-word text-start font-medium hover:underline"
         >
-          {peak.name}
+          {name}
         </Link>
-        <p className="truncate text-sm leading-relaxed text-muted-foreground">
+        <p className="wrap-break-word text-sm leading-relaxed text-muted-foreground">
           {t("altitude", { value: altitude })}
           {place ? ` · ${place}` : ""}
         </p>

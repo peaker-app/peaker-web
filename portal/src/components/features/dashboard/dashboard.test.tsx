@@ -160,7 +160,7 @@ describe("DashboardGreeting", () => {
     await renderAsync(DashboardGreeting());
 
     expect(
-      screen.getByRole("heading", { level: 1, name: "Your dashboard" }),
+      screen.getByRole("heading", { level: 1, name: "Your activity" }),
     ).toBeInTheDocument();
   });
 });

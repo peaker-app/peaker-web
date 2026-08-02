@@ -1,7 +1,7 @@
 "use client";
 
 import {
-  LayoutDashboardIcon,
+  ActivityIcon,
   ListChecksIcon,
   MountainIcon,
   SettingsIcon,
@@ -19,7 +19,7 @@ interface SidebarItem {
 }
 
 const items: readonly SidebarItem[] = [
-  { href: "/dashboard", labelKey: "dashboard", Icon: LayoutDashboardIcon },
+  { href: "/dashboard", labelKey: "dashboard", Icon: ActivityIcon },
   { href: "/dashboard/ascents", labelKey: "myAscents", Icon: MountainIcon },
   {
     href: "/dashboard/collections",

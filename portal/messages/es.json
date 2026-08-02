@@ -50,7 +50,7 @@
     "home": "Inicio",
     "peaks": "Picos",
     "nearby": "Cercanos",
-    "dashboard": "Panel",
+    "dashboard": "Mi actividad",
     "myAscents": "Mis ascensiones",
     "collections": "Colecciones",
     "profile": "Perfil",
@@ -133,7 +133,7 @@
       "heading": "¿Listo para tu próxima cumbre?",
       "body": "Crea una cuenta gratuita y empieza a registrar tus ascensiones.",
       "signUp": "Crear cuenta",
-      "dashboard": "Ir a mi panel"
+      "dashboard": "Ir a mi actividad"
     },
     "farewell": {
       "title": "Tu cuenta se ha dado de baja",
@@ -142,6 +142,7 @@
   },
   "peaks": {
     "title": "Picos",
+    "unnamed": "Pico sin nombre ({id})",
     "card": {
       "altitude": "{value} m",
       "prominence": "Prominencia: {value} m",
@@ -171,7 +172,9 @@
       "maxAltitude": "Altitud máxima",
       "altitudeRange": "De {min} a {max} metros",
       "clearAll": "Limpiar todo",
-      "remove": "Quitar el filtro {name}"
+      "remove": "Quitar el filtro {name}",
+      "search": "Buscar",
+      "searchLabel": "Buscar con estos filtros"
     },
     "map": {
       "label": "Mapa de picos",
@@ -198,7 +201,8 @@
       "emptyAction": "Ampliar el radio",
       "listHeading": "Picos más cercanos",
       "showMap": "Mapa",
-      "showList": "Lista"
+      "showList": "Lista",
+      "radiusInput": "Radio en kilómetros"
     },
     "catalogueEmpty": "El catálogo todavía no tiene picos.",
     "catalogueEmptyHint": "Los datos se cargan desde Wikidata; vuelve en un momento."
@@ -435,7 +439,7 @@
       "errorTitle": "No hemos podido confirmar tu correo",
       "errorBody": "Este enlace no es válido, ya se ha usado o ha caducado.",
       "missingToken": "Este enlace no lleva token. Abre el último correo que te hemos enviado.",
-      "goToDashboard": "Ir a mi panel",
+      "goToDashboard": "Ir a mi actividad",
       "goToLogin": "Entrar",
       "requestNew": "Pedir un enlace nuevo"
     },
@@ -449,12 +453,12 @@
       "cooldown": "Podrás pedir otro enlace en <time>{value}</time>.",
       "cooldownDisabled": "El botón está deshabilitado hasta que acabe la cuenta atrás.",
       "alreadyConfirmed": "Tu correo ya está confirmado.",
-      "goToDashboard": "Ir a mi panel"
+      "goToDashboard": "Ir a mi actividad"
     }
   },
   "dashboard": {
     "greeting": {
-      "title": "Tu panel",
+      "title": "Tu actividad",
       "body": "Registra las cumbres que pisas y llévalas al día.",
       "logAscent": "Registrar cumbre",
       "titleNamed": "Hola, {name}"

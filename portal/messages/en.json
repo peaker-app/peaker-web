@@ -50,7 +50,7 @@
     "home": "Home",
     "peaks": "Peaks",
     "nearby": "Nearby",
-    "dashboard": "Dashboard",
+    "dashboard": "My activity",
     "myAscents": "My ascents",
     "collections": "Collections",
     "profile": "Profile",
@@ -133,7 +133,7 @@
       "heading": "Ready for your next summit?",
       "body": "Create a free account and start logging your ascents.",
       "signUp": "Create account",
-      "dashboard": "Go to my dashboard"
+      "dashboard": "Go to my activity"
     },
     "farewell": {
       "title": "Your account has been closed",
@@ -142,6 +142,7 @@
   },
   "peaks": {
     "title": "Peaks",
+    "unnamed": "Unnamed peak ({id})",
     "card": {
       "altitude": "{value} m",
       "prominence": "Prominence: {value} m",
@@ -171,7 +172,9 @@
       "maxAltitude": "Maximum altitude",
       "altitudeRange": "From {min} to {max} metres",
       "clearAll": "Clear all",
-      "remove": "Remove filter {name}"
+      "remove": "Remove filter {name}",
+      "search": "Search",
+      "searchLabel": "Search with these filters"
     },
     "map": {
       "label": "Map of peaks",
@@ -198,7 +201,8 @@
       "emptyAction": "Widen the radius",
       "listHeading": "Closest peaks",
       "showMap": "Map",
-      "showList": "List"
+      "showList": "List",
+      "radiusInput": "Radius in kilometres"
     },
     "catalogueEmpty": "The catalogue has no peaks yet.",
     "catalogueEmptyHint": "Data is loaded from Wikidata; come back in a moment."
@@ -435,7 +439,7 @@
       "errorTitle": "We couldn't confirm your email",
       "errorBody": "This link isn't valid, has already been used, or has expired.",
       "missingToken": "This link has no token. Open the most recent email we sent you.",
-      "goToDashboard": "Go to my dashboard",
+      "goToDashboard": "Go to my activity",
       "goToLogin": "Sign in",
       "requestNew": "Request a new link"
     },
@@ -449,12 +453,12 @@
       "cooldown": "You can ask for another link in <time>{value}</time>.",
       "cooldownDisabled": "The button is disabled until the countdown ends.",
       "alreadyConfirmed": "Your email is already confirmed.",
-      "goToDashboard": "Go to my dashboard"
+      "goToDashboard": "Go to my activity"
     }
   },
   "dashboard": {
     "greeting": {
-      "title": "Your dashboard",
+      "title": "Your activity",
       "titleNamed": "Hello, {name}",
       "body": "Log the summits you reach and keep track of them.",
       "logAscent": "Log a summit"

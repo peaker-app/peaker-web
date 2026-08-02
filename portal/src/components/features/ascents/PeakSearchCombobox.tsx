@@ -12,6 +12,7 @@ import { apiFetch, buildQuery } from "@/lib/api/client";
 import { endpoints } from "@/lib/api/endpoints";
 import { placeLabel } from "@/components/features/peaks/PeakCard";
 import { formatAltitude } from "@/lib/format";
+import { peakDisplayName } from "@/lib/peakName";
 import type { PagedResponse, PeakListItemResponse } from "@/types/api";
 
 const debounceMs = 350;
@@ -45,8 +46,11 @@ export const PeakSearchCombobox = ({
   describedBy,
 }: PeakSearchComboboxProps) => {
   const t = useTranslations("ascentForm.peak");
+  const peaks = useTranslations("peaks");
   const units = useTranslations("units");
   const locale = useLocale() as Locale;
+  const displayName = (name: string) =>
+    peakDisplayName(name, (id) => peaks("unnamed", { id }));
   const listId = useId();
   const generatedInputId = useId();
   const inputId = providedInputId ?? generatedInputId;
@@ -77,7 +81,7 @@ export const PeakSearchCombobox = ({
 
     onSelect({
       id: peak.id,
-      name: peak.name,
+      name: displayName(peak.name),
       altitudeMeters: peak.altitudeMeters,
     });
     setOpen(false);
@@ -186,8 +190,8 @@ export const PeakSearchCombobox = ({
                 isDisabled(peak.id) ? "cursor-not-allowed opacity-60" : "cursor-pointer"
               } ${index === active ? "bg-accent text-accent-foreground" : ""}`}
             >
-              <span className="block font-medium" dir="auto">
-                {peak.name}
+              <span className="block wrap-break-word font-medium" dir="auto">
+                {displayName(peak.name)}
               </span>
               <span className="block text-sm text-muted-foreground">
                 {units("meters", {

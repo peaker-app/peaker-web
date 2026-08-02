@@ -28,6 +28,7 @@ const peakPage = (
     longitude: 0,
     countryCode: "ES",
     region: null,
+    imageUrl: null,
   })),
   page: 1,
   size: 100,

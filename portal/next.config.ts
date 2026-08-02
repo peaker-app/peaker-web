@@ -7,7 +7,11 @@ const nextConfig: NextConfig = {
   ...(process.env.BUILD_STANDALONE ? { output: "standalone" as const } : {}),
   poweredByHeader: false,
   images: {
-    remotePatterns: [{ protocol: "https", hostname: "res.cloudinary.com" }],
+    remotePatterns: [
+      { protocol: "https", hostname: "res.cloudinary.com" },
+      { protocol: "https", hostname: "commons.wikimedia.org" },
+      { protocol: "https", hostname: "upload.wikimedia.org" },
+    ],
   },
 };
 

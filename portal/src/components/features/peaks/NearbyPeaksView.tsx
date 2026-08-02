@@ -7,6 +7,7 @@ import { ErrorState } from "@/components/feedback/ErrorState";
 import { Pagination } from "@/components/feedback/Pagination";
 import { PeakCard } from "@/components/features/peaks/PeakCard";
 import { Button } from "@/components/ui/Button";
+import { Input } from "@/components/ui/Input";
 import { Label } from "@/components/ui/Label";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { Slider } from "@/components/ui/Slider";
@@ -22,12 +23,16 @@ import {
   minRadiusMeters,
   radiusStepMeters,
 } from "@/lib/map";
+import { clamp } from "@/lib/number";
 import type { NearbyPeakResponse } from "@/types/api";
 import { LocationPicker, type Origin } from "./LocationPicker";
 import { PeakMap } from "./PeakMap";
 
 const pageSize = 20;
 const radiusDebounceMs = 400;
+const metersPerKilometer = 1000;
+
+const toKilometers = (meters: number) => String(meters / metersPerKilometer);
 
 export const NearbyPeaksView = () => {
   const t = useTranslations("peaks.nearby");
@@ -36,8 +41,24 @@ export const NearbyPeaksView = () => {
 
   const [origin, setOrigin] = useState<Origin | undefined>(undefined);
   const [radius, setRadius] = useState(defaultRadiusMeters);
+  const [radiusText, setRadiusText] = useState(toKilometers(defaultRadiusMeters));
   const [page, setPage] = useState(1);
   const debouncedRadius = useDebouncedValue(radius, radiusDebounceMs);
+
+  const changeRadius = (meters: number) => {
+    setRadius(meters);
+    setRadiusText(toKilometers(meters));
+    setPage(1);
+  };
+
+  const commitRadiusText = () => {
+    const parsed = Number.parseInt(radiusText, 10);
+    const meters = Number.isFinite(parsed)
+      ? parsed * metersPerKilometer
+      : radius;
+
+    changeRadius(clamp(meters, minRadiusMeters, maxRadiusMeters));
+  };
 
   const query = usePagedQuery<NearbyPeakResponse>(
     ["peaks", "nearby", origin?.latitude, origin?.longitude],
@@ -70,19 +91,40 @@ export const NearbyPeaksView = () => {
 
       <div className="flex flex-col gap-2">
         <Label htmlFor="radius">{t("radius")}</Label>
-        <Slider
-          id="radius"
-          min={minRadiusMeters}
-          max={maxRadiusMeters}
-          step={radiusStepMeters}
-          value={[radius]}
-          onValueChange={(value) => {
-            setRadius(value[0] ?? defaultRadiusMeters);
-            setPage(1);
-          }}
-          thumbLabel={t("radius")}
-          valueText={radiusLabel}
-        />
+        <div className="flex items-center gap-3">
+          <Slider
+            id="radius"
+            className="flex-1"
+            min={minRadiusMeters}
+            max={maxRadiusMeters}
+            step={radiusStepMeters}
+            value={[radius]}
+            onValueChange={(value) =>
+              changeRadius(value[0] ?? defaultRadiusMeters)
+            }
+            thumbLabel={t("radius")}
+            valueText={radiusLabel}
+          />
+          <Input
+            id="radius-value"
+            type="number"
+            inputMode="numeric"
+            className="w-24 shrink-0"
+            min={minRadiusMeters / metersPerKilometer}
+            max={maxRadiusMeters / metersPerKilometer}
+            step={radiusStepMeters / metersPerKilometer}
+            value={radiusText}
+            aria-label={t("radiusInput")}
+            onChange={(event) => setRadiusText(event.target.value)}
+            onBlur={commitRadiusText}
+            onKeyDown={(event) => {
+              if (event.key === "Enter") {
+                event.preventDefault();
+                commitRadiusText();
+              }
+            }}
+          />
+        </div>
         <p className="text-sm leading-relaxed text-muted-foreground">
           {radiusLabel}
         </p>
@@ -133,9 +175,7 @@ export const NearbyPeaksView = () => {
                 <Button
                   variant="outline"
                   onClick={() =>
-                    setRadius((current) =>
-                      Math.min(current * 2, maxRadiusMeters),
-                    )
+                    changeRadius(Math.min(radius * 2, maxRadiusMeters))
                   }
                 >
                   {t("emptyAction")}
