@@ -182,12 +182,16 @@ describe("DeleteAccountDialog", () => {
 
     const dialog = await openDialog(user);
     await user.type(within(dialog).getByLabelText("Confirmation"), "Rubén");
+    await user.type(within(dialog).getByLabelText("Enter your password to confirm."), "secret1234");
     await user.click(
       within(dialog).getByRole("button", { name: "Close my account" }),
     );
 
     await waitFor(() =>
-      expect(apiFetch).toHaveBeenCalledWith("auth/me", { method: "DELETE" }),
+      expect(apiFetch).toHaveBeenCalledWith("auth/me", {
+        method: "DELETE",
+        body: JSON.stringify({ password: "secret1234" }),
+      }),
     );
   });
 
@@ -202,6 +206,7 @@ describe("DeleteAccountDialog", () => {
 
     const dialog = await openDialog(user);
     await user.type(within(dialog).getByLabelText("Confirmation"), "Rubén");
+    await user.type(within(dialog).getByLabelText("Enter your password to confirm."), "secret1234");
     await user.click(
       within(dialog).getByRole("button", { name: "Close my account" }),
     );
@@ -225,6 +230,7 @@ describe("DeleteAccountDialog", () => {
 
     const dialog = await openDialog(user);
     await user.type(within(dialog).getByLabelText("Confirmation"), "Rubén");
+    await user.type(within(dialog).getByLabelText("Enter your password to confirm."), "secret1234");
     await user.click(
       within(dialog).getByRole("button", { name: "Close my account" }),
     );

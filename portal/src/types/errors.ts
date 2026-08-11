@@ -6,7 +6,6 @@ export const authErrorCodes = [
   "User.UsernameInvalid",
   "User.PasswordHashMissing",
   "User.PasswordBreached",
-  "User.EmailAlreadyRegistered",
   "User.UsernameAlreadyRegistered",
   "User.InvalidCredentials",
   "User.EmailAlreadyConfirmed",
@@ -16,6 +15,8 @@ export const authErrorCodes = [
   "EmailConfirmation.InvalidOrExpired",
   "EmailConfirmation.ResendTooSoon",
   "EmailConfirmation.DeliveryFailed",
+  "EmailConfirmation.RecipientQuotaExceeded",
+  "EmailConfirmation.GlobalQuotaExceeded",
 ] as const;
 
 export const profileErrorCodes = [

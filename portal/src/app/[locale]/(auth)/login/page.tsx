@@ -55,6 +55,12 @@ export default async function LoginPage({
         </Alert>
       ) : null}
 
+      {single(query.reset) === "1" ? (
+        <Alert role="status">
+          <AlertDescription>{t("reset")}</AlertDescription>
+        </Alert>
+      ) : null}
+
       <LoginForm next={sanitizeNextPath(single(query.next))} />
     </section>
   );

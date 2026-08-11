@@ -1,5 +1,6 @@
 import { expect, test, type Page } from "@playwright/test";
 import fixtures from "./fixtures.json";
+import { acceptCookies } from "./consent";
 
 const signIn = async (page: Page) => {
   await page.goto("/en/login");
@@ -12,6 +13,8 @@ const signIn = async (page: Page) => {
 test.beforeEach(async ({ page }) => {
   await signIn(page);
 });
+
+test.beforeEach(async ({ context }) => acceptCookies(context));
 
 test.describe("SC-11 · panel", () => {
   test("el panel compone saludo, cifras y ultimas ascensiones", async ({

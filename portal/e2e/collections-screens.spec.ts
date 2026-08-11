@@ -1,5 +1,6 @@
 import { expect, test, type Page } from "@playwright/test";
 import fixtures from "./fixtures.json";
+import { acceptCookies } from "./consent";
 
 const signIn = async (page: Page) => {
   await page.goto("/en/login");
@@ -15,6 +16,8 @@ const defaultPath = `/en/dashboard/collections/${fixtures.defaultCollectionId}`;
 test.beforeEach(async ({ page }) => {
   await signIn(page);
 });
+
+test.beforeEach(async ({ context }) => acceptCookies(context));
 
 test.describe("SC-18 · mis colecciones", () => {
   test("el panel ofrece la entrada de colecciones", async ({ page, isMobile }) => {

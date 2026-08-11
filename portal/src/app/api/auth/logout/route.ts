@@ -1,4 +1,5 @@
 import { NextResponse, type NextRequest } from "next/server";
+import { crossSiteProblem, isSameOriginRequest } from "@/lib/api/csrf";
 import { endpoints } from "@/lib/api/endpoints";
 import { correlationHeader, gatewayUrl } from "@/lib/api/gateway";
 import {
@@ -32,6 +33,10 @@ const revokeRefreshToken = async (
 };
 
 export async function POST(request: NextRequest): Promise<NextResponse> {
+  if (!isSameOriginRequest(request)) {
+    return crossSiteProblem();
+  }
+
   await revokeRefreshToken(
     request.headers.get(correlationHeader) ?? crypto.randomUUID(),
   );

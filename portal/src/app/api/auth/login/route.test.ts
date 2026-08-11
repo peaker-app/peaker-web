@@ -25,7 +25,10 @@ const loginRequest = (): NextRequest =>
   new NextRequest(
     new Request("http://localhost:3000/api/auth/login", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        "Sec-Fetch-Site": "same-origin",
+      },
       body: JSON.stringify({ identifier: "ruben", password: "secret1234" }),
     }),
   );

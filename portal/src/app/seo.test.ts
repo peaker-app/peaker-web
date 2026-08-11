@@ -127,6 +127,6 @@ describe("sitemap", () => {
     );
 
     expect(urls).toContain("https://peaker.app/en/peaks");
-    expect(urls).toHaveLength(locales.length * 2);
+    expect(urls).toHaveLength(locales.length * 6);
   });
 });

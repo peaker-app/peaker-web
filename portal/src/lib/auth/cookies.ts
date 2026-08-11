@@ -15,6 +15,14 @@ const baseOptions = {
   secure: process.env.NODE_ENV === "production",
 } as const;
 
+const accessOptions = { ...baseOptions, path: "/" } as const;
+
+const refreshOptions = {
+  ...baseOptions,
+  sameSite: "strict",
+  path: refreshTokenCookiePath,
+} as const;
+
 export const readAccessToken = async (): Promise<string | undefined> =>
   (await cookies()).get(accessTokenCookieName)?.value;
 
@@ -27,14 +35,12 @@ export const writeSessionCookies = async (
   const store = await cookies();
 
   store.set(accessTokenCookieName, tokens.accessToken, {
-    ...baseOptions,
-    path: "/",
+    ...accessOptions,
     maxAge: tokens.expiresInSeconds,
   });
 
   store.set(refreshTokenCookieName, tokens.refreshToken, {
-    ...baseOptions,
-    path: refreshTokenCookiePath,
+    ...refreshOptions,
     maxAge: refreshTokenMaxAge,
   });
 };
@@ -42,15 +48,6 @@ export const writeSessionCookies = async (
 export const clearSessionCookies = async (): Promise<void> => {
   const store = await cookies();
 
-  store.set(accessTokenCookieName, "", {
-    ...baseOptions,
-    path: "/",
-    maxAge: 0,
-  });
-
-  store.set(refreshTokenCookieName, "", {
-    ...baseOptions,
-    path: refreshTokenCookiePath,
-    maxAge: 0,
-  });
+  store.set(accessTokenCookieName, "", { ...accessOptions, maxAge: 0 });
+  store.set(refreshTokenCookieName, "", { ...refreshOptions, maxAge: 0 });
 };

@@ -62,8 +62,18 @@ describe("writeSessionCookies", () => {
       expect.objectContaining({
         httpOnly: true,
         path: "/api/auth",
-        sameSite: "lax",
+        sameSite: "strict",
       }),
+    );
+  });
+
+  it("writeSessionCookies_accessToken_staysLaxSoExternalLinksKeepTheSession", async () => {
+    await writeSessionCookies(tokens);
+
+    expect(store.set).toHaveBeenCalledWith(
+      "peaker_at",
+      "at",
+      expect.objectContaining({ path: "/", sameSite: "lax" }),
     );
   });
 
@@ -89,6 +99,16 @@ describe("clearSessionCookies", () => {
       "peaker_rt",
       "",
       expect.objectContaining({ maxAge: 0, path: "/api/auth" }),
+    );
+  });
+
+  it("clearSessionCookies_refreshToken_repeatsTheSameSiteItWasWrittenWith", async () => {
+    await clearSessionCookies();
+
+    expect(store.set).toHaveBeenCalledWith(
+      "peaker_rt",
+      "",
+      expect.objectContaining({ sameSite: "strict" }),
     );
   });
 });

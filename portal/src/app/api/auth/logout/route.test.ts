@@ -20,7 +20,10 @@ const { POST } = await import("./route");
 
 const logoutRequest = (): NextRequest =>
   new NextRequest(
-    new Request("http://localhost:3000/api/auth/logout", { method: "POST" }),
+    new Request("http://localhost:3000/api/auth/logout", {
+      method: "POST",
+      headers: { "Sec-Fetch-Site": "same-origin" },
+    }),
   );
 
 beforeEach(() => {

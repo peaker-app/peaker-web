@@ -7,7 +7,14 @@ import type { PagedResponse, PeakListItemResponse } from "@/types/api";
 
 export const revalidate = 86400;
 
-const staticPaths = ["/", "/peaks"] as const;
+const staticPaths = [
+  "/",
+  "/peaks",
+  "/legal/notice",
+  "/legal/privacy",
+  "/legal/cookies",
+  "/legal/terms",
+] as const;
 const urlsPerSitemap = 50_000;
 const catalogueBatchSize = 100;
 

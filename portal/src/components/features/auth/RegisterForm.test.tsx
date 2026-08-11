@@ -37,6 +37,7 @@ const fillAndSubmit = async (overrides: Partial<Record<string, string>> = {}) =>
     screen.getByLabelText("Password"),
     overrides.password ?? "montana2026segura",
   );
+  await userEvent.click(screen.getByRole("checkbox"));
   await userEvent.click(screen.getByRole("button", { name: "Create account" }));
 };
 
@@ -47,7 +48,7 @@ afterEach(() => {
 
 describe("RegisterForm", () => {
   it("registerForm_success_normalisesTheEmailAndTrimsTheUsername", async () => {
-    const fetchMock = vi.fn().mockResolvedValue({ ok: true, status: 201, json: async () => ({ id: "1" }) });
+    const fetchMock = vi.fn().mockResolvedValue({ ok: true, status: 202, json: async () => ({}) });
     vi.stubGlobal("fetch", fetchMock);
     render(<RegisterForm />, { wrapper: IntlWrapper });
 
@@ -58,11 +59,29 @@ describe("RegisterForm", () => {
     expect(JSON.parse(String(init.body))).toMatchObject({
       email: "ruben@correo.es",
       username: "ruben",
+      acceptedTerms: true,
     });
   });
 
+  it("registerForm_termsCheckbox_isNeitherPrecheckedNorOptional", async () => {
+    const fetchMock = vi.fn();
+    vi.stubGlobal("fetch", fetchMock);
+    render(<RegisterForm />, { wrapper: IntlWrapper });
+
+    expect(screen.getByRole("checkbox")).not.toBeChecked();
+
+    await userEvent.type(screen.getByLabelText("Email address"), "ruben@correo.es");
+    await userEvent.type(screen.getByLabelText("Username"), "ruben");
+    await userEvent.type(screen.getByLabelText("Password"), "montana2026segura");
+    await userEvent.click(
+      screen.getByRole("button", { name: "Create account" }),
+    );
+
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
+
   it("registerForm_success_doesNotSignInAndSendsToLogin", async () => {
-    respondWith(201, { id: "1" });
+    respondWith(202);
     render(<RegisterForm />, { wrapper: IntlWrapper });
 
     await fillAndSubmit();
@@ -102,21 +121,18 @@ describe("RegisterForm", () => {
     await waitFor(() => expect(fetchMock).not.toHaveBeenCalled());
   });
 
-  it("registerForm_takenEmail_marksTheFieldAndOffersToSignIn", async () => {
-    respondWith(409, { title: "User.EmailAlreadyRegistered" });
+  it("registerForm_takenUsername_marksTheUsernameField", async () => {
+    respondWith(409, { title: "User.UsernameAlreadyRegistered" });
     render(<RegisterForm />, { wrapper: IntlWrapper });
 
     await fillAndSubmit();
 
     await waitFor(() =>
-      expect(screen.getByLabelText("Email address")).toHaveAttribute(
+      expect(screen.getByLabelText("Username")).toHaveAttribute(
         "aria-invalid",
         "true",
       ),
     );
-    expect(
-      screen.getByRole("link", { name: "Sign in instead" }),
-    ).toBeInTheDocument();
   });
 
   it("registerForm_breachedPassword_marksThePasswordField", async () => {
@@ -153,7 +169,7 @@ describe("RegisterForm", () => {
   });
 
   it("registerForm_passwordStrength_isShownButNeverBlocks", async () => {
-    respondWith(201, { id: "1" });
+    respondWith(202);
     render(<RegisterForm />, { wrapper: IntlWrapper });
 
     await userEvent.type(screen.getByLabelText("Password"), "aaaaaaaaaa");

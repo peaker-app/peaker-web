@@ -1,5 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server";
+import { crossSiteProblem, isSameOriginRequest } from "@/lib/api/csrf";
 import { isAllowedGatewayPath } from "@/lib/api/endpoints";
+import { clientForwardedFor, forwardedForHeader } from "@/lib/api/forwarded";
 import { correlationHeader, gatewayUrl } from "@/lib/api/gateway";
 import { readAccessToken } from "@/lib/auth/cookies";
 import { refreshSession } from "@/lib/auth/refresh";
@@ -15,6 +17,11 @@ const strippedHeaders = new Set([
   "content-length",
   "cookie",
   "host",
+  "origin",
+  "referer",
+  "sec-fetch-dest",
+  "sec-fetch-mode",
+  "sec-fetch-site",
   "transfer-encoding",
 ]);
 
@@ -32,6 +39,12 @@ const forwardedHeaders = async (
 
   headers.delete("authorization");
   headers.set(correlationHeader, correlationId);
+
+  const forwardedFor = clientForwardedFor(request.headers);
+
+  if (forwardedFor) {
+    headers.set(forwardedForHeader, forwardedFor);
+  }
 
   const token = await readAccessToken();
 
@@ -86,6 +99,10 @@ const proxyToGateway = async (
   request: NextRequest,
   context: RouteContext,
 ): Promise<NextResponse> => {
+  if (!isSameOriginRequest(request)) {
+    return crossSiteProblem();
+  }
+
   const { path } = await context.params;
 
   if (!isAllowedGatewayPath(path)) {

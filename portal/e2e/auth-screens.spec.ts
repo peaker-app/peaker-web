@@ -1,5 +1,6 @@
 import { expect, test } from "@playwright/test";
 import fixtures from "./fixtures.json";
+import { acceptCookies } from "./consent";
 
 const fillRegister = async (
   page: import("@playwright/test").Page,
@@ -8,6 +9,7 @@ const fillRegister = async (
   await page.getByLabel("Email address", { exact: true }).fill(email);
   await page.getByLabel("Username", { exact: true }).fill(fixtures.validUsername);
   await page.getByLabel("Password", { exact: true }).fill(fixtures.validPassword);
+  await page.getByRole("checkbox").check();
   await page.getByRole("button", { name: "Create account" }).click();
 };
 
@@ -20,6 +22,8 @@ const signIn = async (
   await page.getByRole("button", { name: "Sign in" }).click();
 };
 
+test.beforeEach(async ({ context }) => acceptCookies(context));
+
 test.describe("SC-07 · registro", () => {
   test("el alta correcta no inicia sesion y lleva al login con aviso", async ({
     page,
@@ -29,24 +33,23 @@ test.describe("SC-07 · registro", () => {
 
     await expect(page).toHaveURL(/\/en\/login\?registered=1$/);
     await expect(page.getByRole("status")).toContainText(
-      "Check your inbox for the confirmation link",
+      "If that email address is valid, we have sent you a message",
     );
-    await expect(page.context().cookies()).resolves.toHaveLength(0);
+    const names = (await page.context().cookies()).map((cookie) => cookie.name);
+    expect(names).not.toContain("peaker_at");
+    expect(names).not.toContain("peaker_rt");
   });
 
-  test("un correo ya registrado se marca en su campo y ofrece entrar", async ({
+  test("un correo ya registrado es indistinguible de uno nuevo", async ({
     page,
   }) => {
     await page.goto("/en/register");
     await fillRegister(page, fixtures.registeredEmail);
 
-    await expect(page.getByLabel("Email address", { exact: true })).toHaveAttribute(
-      "aria-invalid",
-      "true",
+    await expect(page).toHaveURL(/\/en\/login\?registered=1$/);
+    await expect(page.getByRole("status")).toContainText(
+      "If that email address is valid, we have sent you a message",
     );
-    await expect(
-      page.getByRole("link", { name: "Sign in instead" }),
-    ).toBeVisible();
   });
 
   test("no se pintan botones de login social mientras no exista el endpoint", async ({
@@ -94,12 +97,12 @@ test.describe("SC-08 · inicio de sesión", () => {
     await expect(page).toHaveURL(/\/en\/login$/);
   });
 
-  test("no se ofrece recuperar la contrasena porque no hay endpoint", async ({
-    page,
-  }) => {
+  test("se ofrece recuperar la contrasena", async ({ page }) => {
     await page.goto("/en/login");
 
-    await expect(page.getByText(/forgot/i)).toHaveCount(0);
+    await page.getByRole("link", { name: "Forgot your password?" }).click();
+
+    await expect(page).toHaveURL(/\/en\/forgot-password$/);
   });
 
   test("un next relativo se respeta", async ({ page }) => {
@@ -123,10 +126,28 @@ test.describe("SC-09 · confirmación de correo", () => {
   }) => {
     await page.goto(`/confirm-email?token=${fixtures.validToken}`);
 
-    await expect(page).toHaveURL(
-      new RegExp(`/(en|es|zh|fr|ar)/confirm-email\\?token=${fixtures.validToken}$`),
-    );
     await expect(page.getByText("Your email is confirmed")).toBeVisible();
+    await expect(page).toHaveURL(
+      new RegExp("/(en|es|zh|fr|ar)/confirm-email$"),
+    );
+  });
+
+  test("el token desaparece de la barra de direcciones", async ({ page }) => {
+    await page.goto(`/en/confirm-email?token=${fixtures.validToken}`);
+
+    await expect(page.getByText("Your email is confirmed")).toBeVisible();
+    expect(new URL(page.url()).search).toBe("");
+  });
+
+  test("la pagina del token no se indexa ni filtra el referer", async ({
+    page,
+  }) => {
+    const response = await page.goto(
+      `/en/confirm-email?token=${fixtures.validToken}`,
+    );
+
+    expect(response?.headers()["x-robots-tag"]).toBe("noindex, nofollow");
+    expect(response?.headers()["referrer-policy"]).toBe("no-referrer");
   });
 
   test("un correo ya confirmado se trata como exito", async ({ page }) => {
@@ -179,6 +200,71 @@ test.describe("SC-10 · reenvío", () => {
 
     await expect(page.getByRole("status")).toContainText("Link sent");
     await expect(page.getByRole("button", { name: "Resend link" })).toBeDisabled();
+  });
+});
+
+test.describe("SC-22 · solicitar recuperación de contraseña", () => {
+  test("un correo desconocido recibe la misma confirmacion generica", async ({
+    page,
+  }) => {
+    await page.goto("/en/forgot-password");
+    await page
+      .getByLabel("Email address", { exact: true })
+      .fill("nobody@peaker.io");
+    await page.getByRole("button", { name: "Send me the link" }).click();
+
+    await expect(page.getByRole("status")).toContainText(
+      "If that email address has an account",
+    );
+  });
+});
+
+test.describe("SC-23 · fijar la contraseña nueva", () => {
+  test("el enlace del correo sin locale funciona y borra el token de la URL", async ({
+    page,
+  }) => {
+    await page.goto(`/reset-password?token=${fixtures.validToken}`);
+
+    await expect(page).toHaveURL(/\/(en|es|zh|fr|ar)\/reset-password$/);
+    await expect(
+      page.getByRole("heading", { name: "Choose a new password" }),
+    ).toBeVisible();
+  });
+
+  test("una contrasena valida lleva al login con el aviso", async ({ page }) => {
+    await page.goto(`/en/reset-password?token=${fixtures.validToken}`);
+    await page.getByLabel("New password", { exact: true }).fill(fixtures.validPassword);
+    await page.getByRole("button", { name: "Change my password" }).click();
+
+    await expect(page).toHaveURL(/\/en\/login\?reset=1$/);
+    await expect(page.getByRole("status")).toContainText(
+      "Your password has been changed",
+    );
+  });
+
+  test("un token caducado se explica y ofrece empezar de nuevo", async ({
+    page,
+  }) => {
+    await page.goto(`/en/reset-password?token=${fixtures.expiredToken}`);
+    await page.getByLabel("New password", { exact: true }).fill(fixtures.validPassword);
+    await page.getByRole("button", { name: "Change my password" }).click();
+
+    await expect(page.getByRole("alert").first()).toContainText(
+      "isn't valid, has already been used, or has expired",
+    );
+  });
+
+  test("sin token se explica y se enlaza la pantalla de solicitud", async ({
+    page,
+  }) => {
+    await page.goto("/en/reset-password");
+
+    await expect(page.getByRole("alert").first()).toContainText(
+      "This link has no token",
+    );
+    await page.getByRole("link", { name: "Request a new link" }).click();
+
+    await expect(page).toHaveURL(/\/en\/forgot-password$/);
   });
 });
 

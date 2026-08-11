@@ -62,7 +62,14 @@
   },
   "footer": {
     "tagline": "搜索世界各地的山峰，记录你的每一次登顶。",
-    "rights": "保留所有权利。"
+    "rights": "保留所有权利。",
+    "legalHeading": "法律",
+    "legal": {
+      "notice": "法律声明",
+      "privacy": "隐私",
+      "cookies": "Cookie",
+      "terms": "使用条款"
+    }
   },
   "units": {
     "meters": "{value} 米",
@@ -180,7 +187,9 @@
       "label": "山峰地图",
       "textualAlternative": "地图仅作装饰：下方列出了每座山峰及其坐标。",
       "zoomIn": "放大",
-      "zoomOut": "缩小"
+      "zoomOut": "缩小",
+      "consentRequired": "地图从 OpenStreetMap 加载，对方会看到你的 IP 地址。",
+      "loadMap": "加载地图"
     },
     "nearby": {
       "title": "你附近的山峰",
@@ -414,9 +423,8 @@
       "submitting": "正在创建账户…",
       "haveAccount": "已经有账户了？",
       "signIn": "登录",
-      "emailTaken": "该电子邮箱已被注册。",
-      "emailTakenAction": "改为登录",
-      "rateLimited": "尝试次数过多，请等待一分钟后再试。"
+      "rateLimited": "尝试次数过多，请等待一分钟后再试。",
+      "acceptTerms": "我确认已年满 14 岁，并接受<terms>使用条款</terms>与<privacy>隐私政策</privacy>。"
     },
     "login": {
       "title": "登录",
@@ -425,9 +433,11 @@
       "submitting": "正在登录…",
       "noAccount": "还没有账户？",
       "signUp": "创建一个",
-      "registered": "账户已创建。请查收邮箱中的验证链接，邮件可能需要一点时间才能送达。",
+      "registered": "如果该电子邮箱地址有效，我们已向你发送了一封邮件。请查收收件箱，邮件可能需要一点时间才能送达。",
       "failed": "登录信息无效。",
-      "rateLimited": "尝试次数过多，请等待一分钟后再试。"
+      "rateLimited": "尝试次数过多，请等待一分钟后再试。",
+      "forgotPassword": "忘记密码？",
+      "reset": "密码已更改。请使用新密码登录。"
     },
     "confirmEmail": {
       "title": "正在验证你的邮箱",
@@ -454,6 +464,28 @@
       "cooldownDisabled": "倒计时结束前按钮不可用。",
       "alreadyConfirmed": "你的邮箱已完成验证。",
       "goToDashboard": "查看我的活动"
+    },
+    "forgotPassword": {
+      "title": "找回密码",
+      "subtitle": "输入你的邮箱地址，我们会发送一个链接让你设置新密码。",
+      "submit": "发送链接",
+      "submitting": "发送中…",
+      "sentTitle": "请查收邮件",
+      "sentBody": "如果该邮箱已注册，我们已发送设置新密码的链接。链接一小时后失效，且只能使用一次。",
+      "backToLogin": "返回登录",
+      "rateLimited": "尝试次数过多。请等待一分钟后重试。"
+    },
+    "resetPassword": {
+      "title": "设置新密码",
+      "subtitle": "此链接只能使用一次，发送一小时后失效。",
+      "newPassword": "新密码",
+      "submit": "更改密码",
+      "submitting": "更改中…",
+      "invalidToken": "此链接无效、已被使用或已过期。请重新申请。",
+      "missingTokenTitle": "此链接缺少令牌",
+      "missingToken": "请打开我们发送给你的最新邮件。",
+      "requestNew": "申请新链接",
+      "rateLimited": "尝试次数过多。请等待一分钟后重试。"
     }
   },
   "dashboard": {
@@ -519,7 +551,6 @@
       "UsernameInvalid": "请使用 3 到 30 个字符：字母、数字、点、连字符或下划线。必须以字母或数字开头和结尾，且不能连续使用两个分隔符。",
       "PasswordHashMissing": "该账户尚未设置密码。",
       "PasswordBreached": "该密码出现在已知的数据泄露中，请换一个。",
-      "EmailAlreadyRegistered": "该电子邮箱已被注册。",
       "UsernameAlreadyRegistered": "该用户名已被占用。",
       "InvalidCredentials": "登录信息无效。",
       "EmailAlreadyConfirmed": "你的电子邮箱已完成验证。",
@@ -532,7 +563,9 @@
     "EmailConfirmation": {
       "InvalidOrExpired": "该链接无效、已使用或已过期。",
       "ResendTooSoon": "你刚刚已请求过链接，请等待两分钟后再试。",
-      "DeliveryFailed": "邮件发送失败，请稍后再试。"
+      "DeliveryFailed": "邮件发送失败，请稍后再试。",
+      "RecipientQuotaExceeded": "向该地址发送的邮件过多，请稍后再试。",
+      "GlobalQuotaExceeded": "目前无法发送邮件，请稍后再试。"
     },
     "Profile": {
       "DisplayNameEmpty": "请输入显示名称。",
@@ -551,7 +584,7 @@
       "NotFound": "未找到该山峰。",
       "LatitudeOutOfRange": "纬度必须介于 -90 和 90 之间。",
       "LongitudeOutOfRange": "经度必须介于 -180 和 180 之间。",
-      "RadiusOutOfRange": "半径必须介于 1 至 200 公里之间。",
+      "RadiusOutOfRange": "半径必须介于 1 至 50 公里之间。",
       "AltitudeRangeInvalid": "最低海拔不能高于最高海拔。",
       "CountryCodeInvalid": "该国家或地区无效。",
       "RegionTooLong": "该地区名称过长。"
@@ -742,7 +775,13 @@
         },
         "confirmPrompt": "输入 {name} 以确认。",
         "confirmLabel": "确认",
-        "confirmAction": "注销我的账户"
+        "confirmAction": "注销我的账户",
+        "passwordPrompt": "输入密码以确认。"
+      },
+      "privacy": {
+        "heading": "你的数据",
+        "body": "下载 Peaker 保存的全部个人数据：账户、个人资料、收藏，以及每一次登顶记录及其照片。",
+        "download": "下载我的数据"
       }
     }
   }

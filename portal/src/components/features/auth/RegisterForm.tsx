@@ -29,6 +29,7 @@ const schema = z.object({
   email: z.string().refine(isValidEmail),
   username: z.string().refine(isValidUsername),
   password: z.string().min(passwordMinLength),
+  acceptedTerms: z.literal(true),
 });
 
 type RegisterValues = z.infer<typeof schema>;
@@ -40,12 +41,16 @@ export const RegisterForm = () => {
   const toMessage = useProblemMessage();
   const router = useRouter();
   const [formError, setFormError] = useState<string | undefined>(undefined);
-  const [emailTaken, setEmailTaken] = useState(false);
 
   const form = useForm<RegisterValues>({
     resolver: zodResolver(schema),
     mode: "onBlur",
-    defaultValues: { email: "", username: "", password: "" },
+    defaultValues: {
+      email: "",
+      username: "",
+      password: "",
+      acceptedTerms: false as true,
+    },
   });
 
   const applyProblem = (error: unknown) => {
@@ -62,7 +67,6 @@ export const RegisterForm = () => {
     }
 
     const fieldOf: [string, keyof RegisterValues][] = [
-      ["User.EmailAlreadyRegistered", "email"],
       ["User.EmailEmpty", "email"],
       ["User.EmailInvalid", "email"],
       ["User.EmailTooLong", "email"],
@@ -72,8 +76,6 @@ export const RegisterForm = () => {
       ["User.PasswordBreached", "password"],
     ];
     const match = fieldOf.find(([code]) => hasCode(problem, code));
-
-    setEmailTaken(hasCode(problem, "User.EmailAlreadyRegistered"));
 
     if (match) {
       form.setError(match[1], { message: toMessage(error) });
@@ -86,7 +88,6 @@ export const RegisterForm = () => {
 
   const submit = form.handleSubmit(async (values) => {
     setFormError(undefined);
-    setEmailTaken(false);
 
     try {
       await apiFetch(endpoints.auth.register, {
@@ -95,6 +96,7 @@ export const RegisterForm = () => {
           email: normalizeEmail(values.email),
           username: values.username.trim(),
           password: values.password,
+          acceptedTerms: values.acceptedTerms,
         }),
       });
 
@@ -134,14 +136,6 @@ export const RegisterForm = () => {
         )}
       </FormField>
 
-      {emailTaken ? (
-        <p className="text-sm leading-relaxed text-start">
-          <Link href="/login" className="font-medium underline">
-            {t("emailTakenAction")}
-          </Link>
-        </p>
-      ) : null}
-
       <FormField
         id="username"
         label={fields("username")}
@@ -178,6 +172,33 @@ export const RegisterForm = () => {
       </FormField>
 
       <PasswordStrengthMeter value={password} />
+
+      <div className="flex items-start gap-3">
+        <input
+          id="acceptedTerms"
+          type="checkbox"
+          className="mt-1 size-4"
+          aria-invalid={form.formState.errors.acceptedTerms ? true : undefined}
+          {...form.register("acceptedTerms")}
+        />
+        <label
+          htmlFor="acceptedTerms"
+          className="text-sm leading-relaxed text-start"
+        >
+          {t.rich("acceptTerms", {
+            terms: (chunks) => (
+              <Link href="/legal/terms" className="font-medium underline">
+                {chunks}
+              </Link>
+            ),
+            privacy: (chunks) => (
+              <Link href="/legal/privacy" className="font-medium underline">
+                {chunks}
+              </Link>
+            ),
+          })}
+        </label>
+      </div>
 
       <Button type="submit" disabled={form.formState.isSubmitting} aria-busy={form.formState.isSubmitting}>
         {form.formState.isSubmitting ? t("submitting") : t("submit")}

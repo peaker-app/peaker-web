@@ -22,6 +22,14 @@ const jsonHeaders = (init?: RequestInit): HeadersInit => ({
   ...init?.headers,
 });
 
+const readJson = async <T>(response: Response): Promise<T> => {
+  try {
+    return (await response.json()) as T;
+  } catch {
+    return undefined as T;
+  }
+};
+
 export const apiFetch = async <T>(
   path: string,
   init?: RequestInit,
@@ -35,9 +43,7 @@ export const apiFetch = async <T>(
     throw new ApiError(await readProblem(response));
   }
 
-  return response.status === 204
-    ? (undefined as T)
-    : ((await response.json()) as T);
+  return readJson<T>(response);
 };
 
 export const apiUpload = async <T>(
@@ -55,9 +61,7 @@ export const apiUpload = async <T>(
     throw new ApiError(await readProblem(response));
   }
 
-  return response.status === 204
-    ? (undefined as T)
-    : ((await response.json()) as T);
+  return readJson<T>(response);
 };
 
 export const buildQuery = (

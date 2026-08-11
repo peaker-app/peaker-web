@@ -4,6 +4,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 import type { ReactNode } from "react";
 import { Toaster } from "sonner";
+import { CookieConsentGate } from "@/components/features/legal/CookieConsentGate";
 import { QueryProvider } from "@/components/layout/QueryProvider";
 import { SkipLink } from "@/components/layout/SkipLink";
 import { getDirection, locales, type Locale } from "@/i18n/config";
@@ -59,6 +60,7 @@ export default async function LocaleLayout({
           <QueryProvider>
             <SkipLink />
             {children}
+            <CookieConsentGate />
             <Toaster position="bottom-center" closeButton />
           </QueryProvider>
         </NextIntlClientProvider>

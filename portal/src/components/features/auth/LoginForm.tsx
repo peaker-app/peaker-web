@@ -118,6 +118,15 @@ export const LoginForm = ({ next }: LoginFormProps) => {
       </Button>
 
       <p className="text-sm leading-relaxed text-muted-foreground text-start">
+        <Link
+          href="/forgot-password"
+          className="font-medium text-foreground underline"
+        >
+          {t("forgotPassword")}
+        </Link>
+      </p>
+
+      <p className="text-sm leading-relaxed text-muted-foreground text-start">
         {t("noAccount")}{" "}
         <Link href="/register" className="font-medium text-foreground underline">
           {t("signUp")}

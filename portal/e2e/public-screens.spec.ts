@@ -1,5 +1,8 @@
 import { expect, test, type Page } from "@playwright/test";
 import fixtures from "./fixtures.json";
+import { acceptCookies } from "./consent";
+
+test.beforeEach(async ({ context }) => acceptCookies(context));
 
 test.describe("SC-01 · landing", () => {
   test("el buscador de la landing solo navega al catalogo", async ({ page }) => {

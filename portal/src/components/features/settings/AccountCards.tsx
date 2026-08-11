@@ -87,6 +87,19 @@ export const AccountCards = ({ displayName }: { displayName: string }) => {
         </p>
       </Card>
 
+      <Card heading={t("privacy.heading")}>
+        <p className="max-w-prose text-sm leading-relaxed text-muted-foreground text-start">
+          {t("privacy.body")}
+        </p>
+        <div className="self-start">
+          <Button asChild variant="outline">
+            <a href="/api/export" download>
+              {t("privacy.download")}
+            </a>
+          </Button>
+        </div>
+      </Card>
+
       <section className="flex flex-col gap-3 rounded-md border border-destructive/40 p-6">
         <h2 className="flex items-center gap-2 text-lg leading-relaxed font-semibold text-start">
           <TriangleAlertIcon aria-hidden className="size-5 text-destructive" />

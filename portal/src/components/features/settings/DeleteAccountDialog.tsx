@@ -13,6 +13,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/AlertDialog";
+import { PasswordField } from "@/components/features/auth/PasswordField";
 import { buttonVariants, Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Label } from "@/components/ui/Label";
@@ -37,22 +38,27 @@ export const DeleteAccountDialog = ({
 
   const [open, setOpen] = useState(false);
   const [typed, setTyped] = useState("");
+  const [password, setPassword] = useState("");
   const [failure, setFailure] = useState<string | undefined>(undefined);
   const [busy, setBusy] = useState(false);
 
-  const matches = typed.trim() === confirmationName;
+  const matches = typed.trim() === confirmationName && password.length > 0;
 
   const close = async () => {
     setBusy(true);
     setFailure(undefined);
 
     try {
-      await apiFetch(endpoints.auth.deleteAccount, { method: "DELETE" });
+      await apiFetch(endpoints.auth.deleteAccount, {
+        method: "DELETE",
+        body: JSON.stringify({ password }),
+      });
       await fetch("/api/auth/logout", { method: "POST" });
       queryClient.clear();
       router.replace("/?deleted=1");
     } catch (error) {
       setFailure(toMessage(error));
+      setPassword("");
       setBusy(false);
     }
   };
@@ -91,6 +97,16 @@ export const DeleteAccountDialog = ({
               aria-label={t("confirmLabel")}
               value={typed}
               onChange={(event) => setTyped(event.target.value)}
+            />
+          </div>
+
+          <div className="mt-4 flex flex-col gap-1.5">
+            <Label htmlFor="deletePassword">{t("passwordPrompt")}</Label>
+            <PasswordField
+              id="deletePassword"
+              autoComplete="current-password"
+              value={password}
+              onChange={(event) => setPassword(event.target.value)}
             />
           </div>
 

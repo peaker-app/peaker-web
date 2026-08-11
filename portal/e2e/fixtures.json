@@ -29,5 +29,6 @@
   "validPassword": "montana2026segura",
   "expiredToken": "expired-token",
   "validToken": "valid-token",
-  "confirmedToken": "already-confirmed-token"
+  "confirmedToken": "already-confirmed-token",
+  "takenUsername": "ocupado"
 }

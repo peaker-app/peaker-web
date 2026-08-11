@@ -1,8 +1,21 @@
 import createNextIntlPlugin from "next-intl/plugin";
 import type { NextConfig } from "next";
 
-// Motivo: standalone solo interesa a la imagen de Docker; con él activado
-// `next start` no sirve la aplicación y romperia los e2e locales.
+const tokenBearingPageHeaders = [
+  { key: "Referrer-Policy", value: "no-referrer" },
+  { key: "X-Robots-Tag", value: "noindex, nofollow" },
+];
+
+const globalSecurityHeaders = [
+  { key: "X-Content-Type-Options", value: "nosniff" },
+  { key: "X-Frame-Options", value: "DENY" },
+  { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+  {
+    key: "Permissions-Policy",
+    value: "camera=(), microphone=(), payment=(), geolocation=(self)",
+  },
+];
+
 const nextConfig: NextConfig = {
   ...(process.env.BUILD_STANDALONE ? { output: "standalone" as const } : {}),
   poweredByHeader: false,
@@ -12,6 +25,13 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "commons.wikimedia.org" },
       { protocol: "https", hostname: "upload.wikimedia.org" },
     ],
+  },
+  async headers() {
+    return [
+      { source: "/:path*", headers: globalSecurityHeaders },
+      { source: "/:locale/confirm-email", headers: tokenBearingPageHeaders },
+      { source: "/:locale/reset-password", headers: tokenBearingPageHeaders },
+    ];
   },
 };
 

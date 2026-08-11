@@ -8,7 +8,7 @@ import { routing } from "@/i18n/routing";
 const intlProxy = createMiddleware(routing);
 
 const localeCookieName = "NEXT_LOCALE";
-const unprefixedRoutes = ["/confirm-email"];
+const unprefixedRoutes = ["/confirm-email", "/reset-password"];
 const permanentRedirect = 308;
 
 const parseAcceptLanguage = (header: string | null): Locale | undefined => {

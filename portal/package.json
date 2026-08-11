@@ -15,7 +15,8 @@
     "check:messages": "node scripts/check-messages.mjs",
     "check:rtl": "node scripts/check-rtl.mjs",
     "check:detail": "node scripts/check-problem-detail.mjs",
-    "verify": "npm run typecheck && npm run lint && npm run check:messages && npm run check:rtl && npm run check:detail && npm run test:coverage"
+    "verify": "npm run typecheck && npm run lint && npm run check:messages && npm run check:rtl && npm run check:detail && npm run test:coverage",
+    "check:legal": "node scripts/check-legal.mjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.5.7",

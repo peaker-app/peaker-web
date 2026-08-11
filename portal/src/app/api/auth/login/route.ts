@@ -1,5 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { readProblem } from "@/lib/api/client";
+import { crossSiteProblem, isSameOriginRequest } from "@/lib/api/csrf";
 import { endpoints } from "@/lib/api/endpoints";
 import { withForwardedFor } from "@/lib/api/forwarded";
 import { correlationHeader, gatewayUrl } from "@/lib/api/gateway";
@@ -7,6 +8,10 @@ import { writeSessionCookies } from "@/lib/auth/cookies";
 import type { AuthTokensResponse, LoginRequest } from "@/types/api";
 
 export async function POST(request: NextRequest): Promise<NextResponse> {
+  if (!isSameOriginRequest(request)) {
+    return crossSiteProblem();
+  }
+
   const credentials = (await request.json()) as LoginRequest;
 
   const upstream = await fetch(

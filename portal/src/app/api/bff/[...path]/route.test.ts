@@ -22,7 +22,12 @@ const { DELETE, GET, POST } = await import("./route");
 const context = (...path: string[]) => ({ params: Promise.resolve({ path }) });
 
 const request = (url: string, init?: RequestInit): NextRequest =>
-  new NextRequest(new Request(url, init));
+  new NextRequest(
+    new Request(url, {
+      ...init,
+      headers: { "Sec-Fetch-Site": "same-origin", ...init?.headers },
+    }),
+  );
 
 const upstream = (status: number, body = "{}"): Response =>
   new Response(status === 204 ? null : body, { status });
@@ -160,6 +165,38 @@ describe("reenvío al gateway", () => {
 
     expect(callArgs(fetchMock)[1].headers.get("X-Correlation-Id")).toBe("abc-123");
   });
+
+  it("bff_forwardedFor_isPropagatedSoTheGatewayCanTellVisitorsApart", async () => {
+    const fetchMock = vi.fn().mockResolvedValue(upstream(200));
+    vi.stubGlobal("fetch", fetchMock);
+
+    await GET(
+      request("http://localhost:3000/api/bff/peaks", {
+        headers: { "X-Forwarded-For": "203.0.113.7" },
+      }),
+      context("peaks"),
+    );
+
+    expect(callArgs(fetchMock)[1].headers.get("X-Forwarded-For")).toBe(
+      "203.0.113.7",
+    );
+  });
+
+  it("bff_realIpWithoutForwardedFor_isPromotedToForwardedFor", async () => {
+    const fetchMock = vi.fn().mockResolvedValue(upstream(200));
+    vi.stubGlobal("fetch", fetchMock);
+
+    await GET(
+      request("http://localhost:3000/api/bff/peaks", {
+        headers: { "X-Real-IP": "203.0.113.9" },
+      }),
+      context("peaks"),
+    );
+
+    expect(callArgs(fetchMock)[1].headers.get("X-Forwarded-For")).toBe(
+      "203.0.113.9",
+    );
+  });
 });
 
 describe("respuesta sin transformar", () => {
@@ -252,5 +289,71 @@ describe("rotación ante 401", () => {
     );
 
     expect(refreshSession).not.toHaveBeenCalled();
+  });
+});
+
+describe("defensa CSRF", () => {
+  const crossSite = (url: string, method: string): NextRequest =>
+    new NextRequest(
+      new Request(url, { method, headers: { "Sec-Fetch-Site": "cross-site" } }),
+    );
+
+  it("bff_crossSiteDelete_isRejectedWithoutCallingTheGateway", async () => {
+    const fetchMock = vi.fn();
+    vi.stubGlobal("fetch", fetchMock);
+
+    const response = await DELETE(
+      crossSite("http://localhost:3000/api/bff/auth/me", "DELETE"),
+      context("auth", "me"),
+    );
+
+    expect(response.status).toBe(403);
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
+
+  it("bff_crossSitePost_isRejectedWithAStableProblemCode", async () => {
+    vi.stubGlobal("fetch", vi.fn());
+
+    const response = await POST(
+      crossSite("http://localhost:3000/api/bff/ascents", "POST"),
+      context("ascents"),
+    );
+
+    expect((await response.json()).title).toBe("Bff.CrossSiteRequest");
+  });
+
+  it("bff_crossSiteGet_isStillAllowedBecauseReadsAreSafe", async () => {
+    const fetchMock = vi.fn().mockResolvedValue(upstream(200));
+    vi.stubGlobal("fetch", fetchMock);
+
+    const response = await GET(
+      crossSite("http://localhost:3000/api/bff/peaks", "GET"),
+      context("peaks"),
+    );
+
+    expect(response.status).toBe(200);
+    expect(fetchMock).toHaveBeenCalledOnce();
+  });
+
+  it("bff_clientSuppliedOriginAndSecFetchHeaders_neverReachTheGateway", async () => {
+    const fetchMock = vi.fn().mockResolvedValue(upstream(200));
+    vi.stubGlobal("fetch", fetchMock);
+
+    await POST(
+      request("http://localhost:3000/api/bff/ascents", {
+        method: "POST",
+        headers: {
+          Origin: "https://evil.example",
+          Referer: "https://evil.example/attack",
+        },
+      }),
+      context("ascents"),
+    );
+
+    const headers = callArgs(fetchMock)[1].headers;
+
+    expect(headers.get("origin")).toBeNull();
+    expect(headers.get("referer")).toBeNull();
+    expect(headers.get("sec-fetch-site")).toBeNull();
   });
 });

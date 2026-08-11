@@ -1,5 +1,6 @@
 import { expect, test, type Page } from "@playwright/test";
 import fixtures from "./fixtures.json";
+import { acceptCookies } from "./consent";
 
 const pngBytes = Buffer.from(
   "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==",
@@ -31,6 +32,8 @@ const recordBffCalls = (page: Page) => {
 test.beforeEach(async ({ page }) => {
   await signIn(page);
 });
+
+test.beforeEach(async ({ context }) => acceptCookies(context));
 
 test.describe("SC-16 · ajustes de perfil", () => {
   test("las tres tarjetas son formularios independientes", async ({ page }) => {
@@ -223,6 +226,11 @@ test.describe("SC-17 · ajustes de cuenta", () => {
     await expect(confirm).toBeDisabled();
 
     await dialog.getByLabel("Confirmation").fill(fixtures.climberName);
+    await expect(confirm).toBeDisabled();
+
+    await dialog
+      .getByLabel("Enter your password to confirm.")
+      .fill(fixtures.validPassword);
     await expect(confirm).toBeEnabled();
   });
 
@@ -234,6 +242,9 @@ test.describe("SC-17 · ajustes de cuenta", () => {
 
     const dialog = page.getByRole("alertdialog");
     await dialog.getByLabel("Confirmation").fill(fixtures.climberName);
+    await dialog
+      .getByLabel("Enter your password to confirm.")
+      .fill(fixtures.validPassword);
     await dialog.getByRole("button", { name: "Close my account" }).click();
 
     await expect(page).toHaveURL(/\/en\?deleted=1$/);
@@ -249,6 +260,9 @@ test.describe("SC-17 · ajustes de cuenta", () => {
 
     const dialog = page.getByRole("alertdialog");
     await dialog.getByLabel("Confirmation").fill(fixtures.climberName);
+    await dialog
+      .getByLabel("Enter your password to confirm.")
+      .fill(fixtures.validPassword);
     await dialog.getByRole("button", { name: "Close my account" }).click();
     await expect(page).toHaveURL(/\/en\?deleted=1$/);
 

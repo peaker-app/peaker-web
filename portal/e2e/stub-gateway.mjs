@@ -151,9 +151,9 @@ const readBody = async (request) => {
 };
 
 const register = (body) =>
-  body.email === fixtures.registeredEmail
-    ? problem(409, "User.EmailAlreadyRegistered")
-    : { status: 201, body: { id: fixtures.userId } };
+  body.username === fixtures.takenUsername
+    ? problem(409, "User.UsernameAlreadyRegistered")
+    : { status: 202, body: null };
 
 const login = (body) =>
   body.password === fixtures.validPassword
@@ -181,10 +181,19 @@ const confirmEmail = (body) => {
     : problem(400, "EmailConfirmation.InvalidOrExpired");
 };
 
+const forgotPassword = () => ({ status: 202, body: null });
+
+const resetPassword = (body) =>
+  body.token === fixtures.validToken
+    ? { status: 204, body: null }
+    : problem(400, "PasswordReset.InvalidOrExpired");
+
 const bodyRoutes = [
   [/^\/api\/auth\/register/, register],
   [/^\/api\/auth\/login/, login],
   [/^\/api\/auth\/email\/confirm/, confirmEmail],
+  [/^\/api\/auth\/password\/forgot/, forgotPassword],
+  [/^\/api\/auth\/password\/reset/, resetPassword],
 ];
 
 const saveSlug = async (url, request) => {
