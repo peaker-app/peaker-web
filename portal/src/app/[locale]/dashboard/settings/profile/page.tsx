@@ -6,7 +6,7 @@ import { ProfileDataForm } from "@/components/features/settings/ProfileDataForm"
 import { SlugForm } from "@/components/features/settings/SlugForm";
 import { Link } from "@/i18n/navigation";
 import { endpoints } from "@/lib/api/endpoints";
-import { serverFetch } from "@/lib/api/server";
+import { loadProfileState } from "@/lib/api/profileState";
 import { noIndex } from "@/lib/seo";
 import type { ProfileResponse } from "@/types/api";
 
@@ -23,31 +23,28 @@ export async function generateMetadata({
   return { title: t("title"), robots: noIndex() };
 }
 
-const loadProfile = async (): Promise<ProfileResponse | undefined> => {
-  try {
-    return await serverFetch<ProfileResponse>(endpoints.profiles.me, {
-      authenticated: true,
-    });
-  } catch {
-    return undefined;
-  }
-};
-
 export default async function ProfileSettingsPage({
   params,
 }: ProfileSettingsPageProps) {
   const { locale } = await params;
   setRequestLocale(locale);
 
-  const profile = await loadProfile();
+  const state = await loadProfileState<ProfileResponse>(endpoints.profiles.me);
   const t = await getTranslations("settings.profile");
-  const dashboard = await getTranslations("dashboard.profilePending");
+  const pending = await getTranslations("dashboard.profilePending");
+  const common = await getTranslations("common.states");
 
-  if (!profile) {
+  if (state.status === "pending") {
     return (
-      <EmptyState title={dashboard("title")} description={dashboard("body")} />
+      <EmptyState title={pending("title")} description={pending("body")} />
     );
   }
+
+  if (state.status === "failed") {
+    return <EmptyState title={common("errorTitle")} />;
+  }
+
+  const profile = state.data;
 
   return (
     <div className="flex max-w-2xl flex-col gap-6">

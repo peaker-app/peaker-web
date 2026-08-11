@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { AccountCards } from "@/components/features/settings/AccountCards";
 import { endpoints } from "@/lib/api/endpoints";
-import { serverFetch } from "@/lib/api/server";
+import { loadProfileState } from "@/lib/api/profileState";
 import { noIndex } from "@/lib/seo";
 import type { ProfileResponse } from "@/types/api";
 
@@ -19,25 +19,15 @@ export async function generateMetadata({
   return { title: t("title"), robots: noIndex() };
 }
 
-const loadDisplayName = async (): Promise<string> => {
-  try {
-    const profile = await serverFetch<ProfileResponse>(endpoints.profiles.me, {
-      authenticated: true,
-    });
-
-    return profile.displayName;
-  } catch {
-    return "";
-  }
-};
-
 export default async function AccountSettingsPage({
   params,
 }: AccountSettingsPageProps) {
   const { locale } = await params;
   setRequestLocale(locale);
 
-  const displayName = await loadDisplayName();
+  const profile = await loadProfileState<ProfileResponse>(endpoints.profiles.me);
+  const displayName =
+    profile.status === "ready" ? profile.data.displayName : "";
   const t = await getTranslations("settings.account");
 
   return (

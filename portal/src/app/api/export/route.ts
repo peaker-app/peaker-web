@@ -1,4 +1,5 @@
 import { NextResponse, type NextRequest } from "next/server";
+import { ApiError } from "@/lib/api/client";
 import { crossSiteProblem, isSameOriginRequest } from "@/lib/api/csrf";
 import { endpoints } from "@/lib/api/endpoints";
 import { serverFetch } from "@/lib/api/server";
@@ -14,10 +15,24 @@ interface PersonalDataExport {
 const fileName = (): string =>
   `peaker-export-${new Date().toISOString().slice(0, 10)}.json`;
 
+const collectProfile = async (): Promise<unknown> => {
+  try {
+    return await serverFetch<unknown>(endpoints.profiles.myExport, {
+      authenticated: true,
+    });
+  } catch (error) {
+    if (error instanceof ApiError && error.problem.status === 404) {
+      return null;
+    }
+
+    throw error;
+  }
+};
+
 const collect = async (): Promise<PersonalDataExport> => {
   const [account, profile, ascents] = await Promise.all([
     serverFetch<unknown>(endpoints.auth.exportMyData, { authenticated: true }),
-    serverFetch<unknown>(endpoints.profiles.myExport, { authenticated: true }),
+    collectProfile(),
     serverFetch<unknown>(endpoints.ascents.myExport, { authenticated: true }),
   ]);
 

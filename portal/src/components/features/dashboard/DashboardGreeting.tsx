@@ -2,24 +2,18 @@ import { getTranslations } from "next-intl/server";
 import { Button } from "@/components/ui/Button";
 import { Link } from "@/i18n/navigation";
 import { endpoints } from "@/lib/api/endpoints";
-import { serverFetch } from "@/lib/api/server";
+import { loadProfileState } from "@/lib/api/profileState";
 import type { ProfileResponse } from "@/types/api";
 
-const loadDisplayName = async (): Promise<string | undefined> => {
-  try {
-    const profile = await serverFetch<ProfileResponse>(endpoints.profiles.me, {
-      authenticated: true,
-    });
-
-    return profile.displayName;
-  } catch {
-    return undefined;
-  }
-};
-
 export const DashboardGreeting = async () => {
-  const displayName = await loadDisplayName();
+  const profile = await loadProfileState<ProfileResponse>(
+    endpoints.profiles.me,
+  );
   const t = await getTranslations("dashboard.greeting");
+  const pending = await getTranslations("dashboard.profilePending");
+
+  const displayName =
+    profile.status === "ready" ? profile.data.displayName : undefined;
 
   return (
     <header className="flex flex-wrap items-start justify-between gap-4">
@@ -28,7 +22,7 @@ export const DashboardGreeting = async () => {
           {displayName ? t("titleNamed", { name: displayName }) : t("title")}
         </h1>
         <p className="max-w-prose leading-relaxed text-muted-foreground text-start">
-          {t("body")}
+          {profile.status === "pending" ? pending("body") : t("body")}
         </p>
       </div>
       <Button asChild>
