@@ -56,6 +56,8 @@ const peak: PeakListItemResponse = {
   countryCode: "ES",
   region: null,
   imageUrl: null,
+  imageAuthor: null,
+  imageLicense: null,
 };
 
 const ascent: AscentSummaryResponse = {

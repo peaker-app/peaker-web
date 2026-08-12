@@ -106,7 +106,6 @@ describe("AccountCards", () => {
     render(<AccountCards displayName="Rubén" />, { wrapper: Wrapper });
 
     expect(screen.getByText("Units: Metres")).toBeInTheDocument();
-    expect(screen.getByText("Feet aren't available yet.")).toBeInTheDocument();
   });
 
   it("accountCards_signOut_clearsTheSessionThroughTheRouteHandler", async () => {

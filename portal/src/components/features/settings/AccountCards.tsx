@@ -10,7 +10,6 @@ import { Button } from "@/components/ui/Button";
 import { useSessionState } from "@/components/layout/HeaderAuthActions";
 import { Link, useRouter } from "@/i18n/navigation";
 import { useEmailConfirmation } from "@/stores/emailConfirmation";
-import { usePreferences } from "@/stores/preferences";
 import { DeleteAccountDialog } from "./DeleteAccountDialog";
 
 const Card = ({
@@ -32,7 +31,6 @@ export const AccountCards = ({ displayName }: { displayName: string }) => {
   const t = useTranslations("settings.account");
   const { data } = useSessionState();
   const unconfirmed = useEmailConfirmation((state) => state.unconfirmed);
-  const unitSystem = usePreferences((state) => state.unitSystem);
   const router = useRouter();
   const queryClient = useQueryClient();
   const [signingOut, setSigningOut] = useState(false);
@@ -80,10 +78,7 @@ export const AccountCards = ({ displayName }: { displayName: string }) => {
         <p className="text-sm leading-relaxed text-start">
           {t("preferences.units")}
           {": "}
-          {unitSystem === "metric" ? t("preferences.metric") : ""}
-        </p>
-        <p className="text-sm leading-relaxed text-muted-foreground text-start">
-          {t("preferences.unitsHelp")}
+          {t("preferences.metric")}
         </p>
       </Card>
 

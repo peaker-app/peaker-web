@@ -62,6 +62,25 @@ export const ascentErrorCodes = [
   "Ascent.ProfileDirectoryUnavailable",
 ] as const;
 
+export const collectionErrorCodes = [
+  "Collection.NameRequired",
+  "Collection.NameTooLong",
+  "Collection.DescriptionTooLong",
+  "Collection.NameAlreadyUsed",
+  "Collection.DefaultNotEditable",
+  "Collection.DefaultNotDeletable",
+  "Collection.PeakAlreadyAdded",
+  "Collection.PeakLimitReached",
+  "Collection.CollectionLimitReached",
+  "Collection.PeakRequired",
+  "Collection.PeakNameRequired",
+  "Collection.PeakNameTooLong",
+  "Collection.PeakCatalogUnavailable",
+  "Collection.NotFound",
+  "Collection.PeakNotFound",
+  "Collection.PeakNotInCollection",
+] as const;
+
 export const paginationErrorCodes = [
   "Pagination.PageOutOfRange",
   "Pagination.SizeOutOfRange",
@@ -72,6 +91,7 @@ export const knownErrorCodes = [
   ...profileErrorCodes,
   ...peakErrorCodes,
   ...ascentErrorCodes,
+  ...collectionErrorCodes,
   ...paginationErrorCodes,
 ] as const;
 

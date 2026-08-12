@@ -4,6 +4,7 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import { Breadcrumb } from "@/components/layout/Breadcrumb";
 import { PeakActions } from "@/components/features/peaks/PeakActions";
+import { PhotoCredit } from "@/components/features/peaks/PhotoCredit";
 import { PeakFactsList } from "@/components/features/peaks/PeakFactsList";
 import { PeakMap } from "@/components/features/peaks/PeakMap";
 import { Badge } from "@/components/ui/Badge";
@@ -148,13 +149,18 @@ export default async function PeakDetailPage({ params }: PeakPageProps) {
       <div className="grid gap-6 lg:grid-cols-2">
         <div className="flex flex-col gap-6">
           {peak.imageUrl ? (
-            <Image
-              src={peakThumbnail(peak.imageUrl, photoWidth)}
-              alt={name}
-              width={photoWidth}
-              height={photoHeight}
-              className="h-auto w-full rounded-md object-cover"
-            />
+            <figure className="flex flex-col gap-2">
+              <Image
+                src={peakThumbnail(peak.imageUrl, photoWidth)}
+                alt={name}
+                width={photoWidth}
+                height={photoHeight}
+                className="h-auto w-full rounded-md object-cover"
+              />
+              <figcaption>
+                <PhotoCredit peak={peak} />
+              </figcaption>
+            </figure>
           ) : null}
           <PeakFactsList peak={peak} />
         </div>

@@ -6,10 +6,6 @@ beforeEach(() => {
 });
 
 describe("usePreferences", () => {
-  it("usePreferences_defaults_useMetricUnits", () => {
-    expect(usePreferences.getState().unitSystem).toBe("metric");
-  });
-
   it("usePreferences_defaults_showAscentsAsCards", () => {
     expect(usePreferences.getState().ascentListView).toBe("cards");
   });
