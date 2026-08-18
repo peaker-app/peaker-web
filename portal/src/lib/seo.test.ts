@@ -24,6 +24,12 @@ describe("siteUrl", () => {
 
     expect(siteUrl()).toBe("http://localhost:3000");
   });
+
+  it("siteUrl_emptyVariable_fallsBackToLocalhost", () => {
+    process.env.NEXT_PUBLIC_SITE_URL = "";
+
+    expect(siteUrl()).toBe("http://localhost:3000");
+  });
 });
 
 describe("languageAlternates", () => {

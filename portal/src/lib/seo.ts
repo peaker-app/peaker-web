@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { defaultLocale, locales, type Locale } from "@/i18n/config";
 
 export const siteUrl = (): string =>
-  (process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000").replace(
+  (process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000").replace(
     /\/$/,
     "",
   );

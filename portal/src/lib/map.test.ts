@@ -36,7 +36,19 @@ describe("tileUrl", () => {
     expect(tileUrl()).toBe("https://tiles.example/{z}/{x}/{y}.png");
   });
 
+  it("tileUrl_emptyVariable_fallsBackToOpenStreetMap", () => {
+    process.env.NEXT_PUBLIC_MAP_TILE_URL = "";
+
+    expect(tileUrl()).toBe(defaultTileUrl);
+  });
+
   it("tileAttribution_withoutConfiguration_creditsOpenStreetMap", () => {
+    expect(tileAttribution()).toBe(defaultAttribution);
+  });
+
+  it("tileAttribution_emptyVariable_creditsOpenStreetMap", () => {
+    process.env.NEXT_PUBLIC_MAP_ATTRIBUTION = "";
+
     expect(tileAttribution()).toBe(defaultAttribution);
   });
 });
