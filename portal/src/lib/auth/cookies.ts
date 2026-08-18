@@ -9,19 +9,26 @@ import {
 
 const refreshTokenMaxAge = 60 * 60 * 24 * 30;
 
-const baseOptions = {
-  httpOnly: true,
-  sameSite: "lax",
-  secure: process.env.NODE_ENV === "production",
-} as const;
+const secureCookies = (): boolean =>
+  process.env.AUTH_COOKIE_SECURE
+    ? process.env.AUTH_COOKIE_SECURE === "true"
+    : process.env.NODE_ENV === "production";
 
-const accessOptions = { ...baseOptions, path: "/" } as const;
+const baseOptions = () =>
+  ({
+    httpOnly: true,
+    sameSite: "lax",
+    secure: secureCookies(),
+  }) as const;
 
-const refreshOptions = {
-  ...baseOptions,
-  sameSite: "strict",
-  path: refreshTokenCookiePath,
-} as const;
+const accessOptions = () => ({ ...baseOptions(), path: "/" }) as const;
+
+const refreshOptions = () =>
+  ({
+    ...baseOptions(),
+    sameSite: "strict",
+    path: refreshTokenCookiePath,
+  }) as const;
 
 export const readAccessToken = async (): Promise<string | undefined> =>
   (await cookies()).get(accessTokenCookieName)?.value;
@@ -35,12 +42,12 @@ export const writeSessionCookies = async (
   const store = await cookies();
 
   store.set(accessTokenCookieName, tokens.accessToken, {
-    ...accessOptions,
+    ...accessOptions(),
     maxAge: tokens.expiresInSeconds,
   });
 
   store.set(refreshTokenCookieName, tokens.refreshToken, {
-    ...refreshOptions,
+    ...refreshOptions(),
     maxAge: refreshTokenMaxAge,
   });
 };
@@ -48,6 +55,6 @@ export const writeSessionCookies = async (
 export const clearSessionCookies = async (): Promise<void> => {
   const store = await cookies();
 
-  store.set(accessTokenCookieName, "", { ...accessOptions, maxAge: 0 });
-  store.set(refreshTokenCookieName, "", { ...refreshOptions, maxAge: 0 });
+  store.set(accessTokenCookieName, "", { ...accessOptions(), maxAge: 0 });
+  store.set(refreshTokenCookieName, "", { ...refreshOptions(), maxAge: 0 });
 };

@@ -16,6 +16,57 @@ const tokens = {
 
 afterEach(() => {
   vi.clearAllMocks();
+  vi.unstubAllEnvs();
+});
+
+const secureOf = (name: string): boolean | undefined =>
+  store.set.mock.calls.find(([cookie]) => cookie === name)?.[2]?.secure;
+
+describe("secure flag", () => {
+  it("writeSessionCookies_explicitlyDisabled_dropsSecureSoHttpLocalhostKeepsTheSession", async () => {
+    vi.stubEnv("AUTH_COOKIE_SECURE", "false");
+
+    await writeSessionCookies(tokens);
+
+    expect(secureOf("peaker_at")).toBe(false);
+    expect(secureOf("peaker_rt")).toBe(false);
+  });
+
+  it("writeSessionCookies_explicitlyEnabled_setsSecureEvenOutsideProduction", async () => {
+    vi.stubEnv("NODE_ENV", "development");
+    vi.stubEnv("AUTH_COOKIE_SECURE", "true");
+
+    await writeSessionCookies(tokens);
+
+    expect(secureOf("peaker_at")).toBe(true);
+  });
+
+  it("writeSessionCookies_unset_fallsBackToProductionMeaningSecure", async () => {
+    vi.stubEnv("AUTH_COOKIE_SECURE", "");
+    vi.stubEnv("NODE_ENV", "production");
+
+    await writeSessionCookies(tokens);
+
+    expect(secureOf("peaker_at")).toBe(true);
+  });
+
+  it("writeSessionCookies_unsetOutsideProduction_leavesSecureOff", async () => {
+    vi.stubEnv("AUTH_COOKIE_SECURE", "");
+    vi.stubEnv("NODE_ENV", "development");
+
+    await writeSessionCookies(tokens);
+
+    expect(secureOf("peaker_at")).toBe(false);
+  });
+
+  it("clearSessionCookies_repeatsTheSecureFlagItWasWrittenWith", async () => {
+    vi.stubEnv("AUTH_COOKIE_SECURE", "false");
+
+    await clearSessionCookies();
+
+    expect(secureOf("peaker_at")).toBe(false);
+    expect(secureOf("peaker_rt")).toBe(false);
+  });
 });
 
 describe("readAccessToken", () => {
