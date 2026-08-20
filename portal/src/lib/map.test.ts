@@ -2,10 +2,13 @@ import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import {
   clampRadius,
   defaultAttribution,
+  defaultProviderName,
   defaultTileUrl,
   isLatitude,
   isLongitude,
   isRadius,
+  mapProviderName,
+  mapsEnabled,
   maxRadiusMeters,
   minRadiusMeters,
   tileAttribution,
@@ -14,15 +17,21 @@ import {
 
 const originalUrl = process.env.NEXT_PUBLIC_MAP_TILE_URL;
 const originalAttribution = process.env.NEXT_PUBLIC_MAP_ATTRIBUTION;
+const originalProviderName = process.env.NEXT_PUBLIC_MAP_PROVIDER_NAME;
+const originalEnabled = process.env.NEXT_PUBLIC_MAP_ENABLED;
 
 beforeEach(() => {
   delete process.env.NEXT_PUBLIC_MAP_TILE_URL;
   delete process.env.NEXT_PUBLIC_MAP_ATTRIBUTION;
+  delete process.env.NEXT_PUBLIC_MAP_PROVIDER_NAME;
+  delete process.env.NEXT_PUBLIC_MAP_ENABLED;
 });
 
 afterEach(() => {
   process.env.NEXT_PUBLIC_MAP_TILE_URL = originalUrl;
   process.env.NEXT_PUBLIC_MAP_ATTRIBUTION = originalAttribution;
+  process.env.NEXT_PUBLIC_MAP_PROVIDER_NAME = originalProviderName;
+  process.env.NEXT_PUBLIC_MAP_ENABLED = originalEnabled;
 });
 
 describe("tileUrl", () => {
@@ -50,6 +59,42 @@ describe("tileUrl", () => {
     process.env.NEXT_PUBLIC_MAP_ATTRIBUTION = "";
 
     expect(tileAttribution()).toBe(defaultAttribution);
+  });
+});
+
+describe("mapProviderName", () => {
+  it("mapProviderName_withoutConfiguration_isOpenStreetMap", () => {
+    expect(mapProviderName()).toBe(defaultProviderName);
+  });
+
+  it("mapProviderName_configuredProvider_isUsed", () => {
+    process.env.NEXT_PUBLIC_MAP_PROVIDER_NAME = "MapTiler";
+
+    expect(mapProviderName()).toBe("MapTiler");
+  });
+
+  it("mapProviderName_emptyVariable_isOpenStreetMap", () => {
+    process.env.NEXT_PUBLIC_MAP_PROVIDER_NAME = "";
+
+    expect(mapProviderName()).toBe(defaultProviderName);
+  });
+});
+
+describe("mapsEnabled", () => {
+  it("mapsEnabled_withoutConfiguration_isEnabled", () => {
+    expect(mapsEnabled()).toBe(true);
+  });
+
+  it("mapsEnabled_false_isDisabled", () => {
+    process.env.NEXT_PUBLIC_MAP_ENABLED = "false";
+
+    expect(mapsEnabled()).toBe(false);
+  });
+
+  it("mapsEnabled_anyOtherValue_isEnabled", () => {
+    process.env.NEXT_PUBLIC_MAP_ENABLED = "true";
+
+    expect(mapsEnabled()).toBe(true);
   });
 });
 

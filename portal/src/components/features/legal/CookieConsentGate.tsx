@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/Dialog";
 import { Label } from "@/components/ui/Label";
 import { Link } from "@/i18n/navigation";
+import { mapProviderName } from "@/lib/map";
 import {
   closeCookiePreferences,
   openCookiePreferences,
@@ -31,7 +32,7 @@ const CookieBanner = () => {
     >
       <div className="mx-auto flex w-full max-w-5xl flex-col gap-3">
         <p className="max-w-prose text-sm leading-relaxed text-start">
-          {t("body")}{" "}
+          {t("body", { mapProvider: mapProviderName() })}{" "}
           <Link href="/legal/cookies" className="font-medium underline">
             {t("readPolicy")}
           </Link>
@@ -108,7 +109,9 @@ const CookiePreferencesDialog = () => {
               className="mt-1 size-4"
             />
             <div className="flex flex-col gap-1">
-              <Label htmlFor="cookiesMaps">{t("mapsLabel")}</Label>
+              <Label htmlFor="cookiesMaps">
+                {t("mapsLabel", { mapProvider: mapProviderName() })}
+              </Label>
               <p className="text-sm leading-relaxed text-muted-foreground text-start">
                 {t("mapsBody")}
               </p>
