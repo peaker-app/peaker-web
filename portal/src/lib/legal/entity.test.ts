@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import {
   legalEntity,
   termsVersion,
@@ -6,7 +6,46 @@ import {
   type LegalEntity,
 } from "./entity";
 
+const originalEnvironment = { ...process.env };
+
+afterEach(() => {
+  process.env = { ...originalEnvironment };
+  vi.resetModules();
+});
+
+const reloadWith = async (values: Record<string, string>) => {
+  Object.assign(process.env, values);
+  vi.resetModules();
+
+  return import("./entity");
+};
+
 describe("legalEntity", () => {
+  it("legalEntity_anEmptyEnvironmentVariable_fallsBackToThePlaceholder", async () => {
+    const { legalEntity: reloaded, unresolvedLegalFields: report } = await reloadWith({
+      LEGAL_HOLDER: "",
+      LEGAL_TAX_ID: "",
+      LEGAL_ADDRESS: "",
+      LEGAL_EMAIL: "",
+    });
+
+    expect(report(reloaded)).toEqual(["holder", "taxId", "address", "email"]);
+  });
+
+  it("legalEntity_anEmptyDpo_isTreatedAsNotDesignated", async () => {
+    const { legalEntity: reloaded } = await reloadWith({ LEGAL_DPO: "" });
+
+    expect(reloaded.dpo).toBeUndefined();
+  });
+
+  it("legalEntity_aConfiguredHolder_isUsed", async () => {
+    const { legalEntity: reloaded } = await reloadWith({
+      LEGAL_HOLDER: "Peaker SL",
+    });
+
+    expect(reloaded.holder).toBe("Peaker SL");
+  });
+
   it("legalEntity_everyRequiredField_isPresent", () => {
     expect(Object.keys(legalEntity)).toEqual(
       expect.arrayContaining(["holder", "taxId", "address", "email"]),

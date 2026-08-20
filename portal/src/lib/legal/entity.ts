@@ -16,11 +16,11 @@ const placeholders: LegalEntity = {
 };
 
 export const legalEntity: LegalEntity = {
-  holder: process.env.LEGAL_HOLDER ?? placeholders.holder,
-  taxId: process.env.LEGAL_TAX_ID ?? placeholders.taxId,
-  address: process.env.LEGAL_ADDRESS ?? placeholders.address,
-  email: process.env.LEGAL_EMAIL ?? placeholders.email,
-  dpo: process.env.LEGAL_DPO,
+  holder: process.env.LEGAL_HOLDER || placeholders.holder,
+  taxId: process.env.LEGAL_TAX_ID || placeholders.taxId,
+  address: process.env.LEGAL_ADDRESS || placeholders.address,
+  email: process.env.LEGAL_EMAIL || placeholders.email,
+  dpo: process.env.LEGAL_DPO || undefined,
 };
 
 export const termsVersion = "2026-08-11";
