@@ -38,9 +38,26 @@ const parseEnvFile = (path) => {
   return values;
 };
 
-const fromEnvFile = parseEnvFile(join(root, ".env"));
+const requestedEnvPath = () => {
+  const flag = process.argv.indexOf("--env-path");
 
-const resolve = (key) => process.env[key] ?? fromEnvFile[key] ?? "";
+  return flag === -1 ? undefined : process.argv[flag + 1];
+};
+
+const chosenEnvPath = requestedEnvPath();
+const envPath = chosenEnvPath ?? join(root, ".env");
+
+if (chosenEnvPath !== undefined && !existsSync(envPath)) {
+  console.error(`No existe el fichero de entorno ${envPath}.`);
+  process.exit(1);
+}
+
+const fromEnvFile = parseEnvFile(envPath);
+
+const resolve = (key) =>
+  chosenEnvPath === undefined
+    ? process.env[key] ?? fromEnvFile[key] ?? ""
+    : fromEnvFile[key] ?? "";
 
 const findings = [];
 
@@ -61,7 +78,7 @@ for (const file of readdirSync(legalMessagesDir)) {
 }
 
 if (findings.length === 0) {
-  console.log("Ficha del titular completa y textos legales sin marcadores.");
+  console.log(`Ficha del titular completa (${envPath}) y textos legales sin marcadores.`);
   process.exit(0);
 }
 
@@ -72,8 +89,8 @@ for (const finding of findings) {
 }
 
 console.error(
-  "\nDefine esas variables en peaker-web/portal/.env (no se versiona) o en el entorno de\n" +
-    "despliegue. La plantilla está en .env.example y el detalle en .claude/docs/LEGAL.md.",
+  `\nDefine esas variables en ${envPath} o en el entorno de despliegue.\n` +
+    "La plantilla está en .env.example y el detalle en .claude/docs/LEGAL.md.",
 );
 
 process.exit(1);
