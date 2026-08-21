@@ -1,24 +1,36 @@
 "use client";
 
+import { useQuery } from "@tanstack/react-query";
 import {
   ActivityIcon,
   ListChecksIcon,
   MountainIcon,
   SettingsIcon,
   UserIcon,
+  UserRoundSearchIcon,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import type { ComponentType } from "react";
+import { shouldRetry } from "@/hooks/usePagedQuery";
 import { Link, usePathname } from "@/i18n/navigation";
+import { apiFetch } from "@/lib/api/client";
+import { endpoints } from "@/lib/api/endpoints";
 import { cn } from "@/lib/cn";
+import type { ProfileResponse } from "@/types/api";
 
 interface SidebarItem {
   href: string;
-  labelKey: "dashboard" | "myAscents" | "collections" | "profile" | "account";
+  labelKey:
+    | "dashboard"
+    | "myAscents"
+    | "collections"
+    | "profile"
+    | "publicProfile"
+    | "account";
   Icon: ComponentType<{ className?: string }>;
 }
 
-const items: readonly SidebarItem[] = [
+const sections = (publicProfileHref?: string): readonly SidebarItem[] => [
   { href: "/dashboard", labelKey: "dashboard", Icon: ActivityIcon },
   { href: "/dashboard/ascents", labelKey: "myAscents", Icon: MountainIcon },
   {
@@ -31,6 +43,15 @@ const items: readonly SidebarItem[] = [
     labelKey: "profile",
     Icon: UserIcon,
   },
+  ...(publicProfileHref
+    ? ([
+        {
+          href: publicProfileHref,
+          labelKey: "publicProfile",
+          Icon: UserRoundSearchIcon,
+        },
+      ] as const)
+    : []),
   {
     href: "/dashboard/settings/account",
     labelKey: "account",
@@ -41,14 +62,25 @@ const items: readonly SidebarItem[] = [
 const isActive = (pathname: string, href: string): boolean =>
   href === "/dashboard" ? pathname === href : pathname.startsWith(href);
 
+const usePublicProfileHref = (): string | undefined => {
+  const { data } = useQuery({
+    queryKey: ["profile", "me"],
+    queryFn: () => apiFetch<ProfileResponse>(endpoints.profiles.me),
+    retry: shouldRetry,
+  });
+
+  return data ? `/climbers/${data.slug}` : undefined;
+};
+
 export const Sidebar = ({ className }: { className?: string }) => {
   const t = useTranslations("nav");
   const pathname = usePathname();
+  const publicProfileHref = usePublicProfileHref();
 
   return (
     <nav aria-label={t("label")} className={cn("flex flex-col gap-1", className)}>
-      {items.map(({ href, labelKey, Icon }) => {
-        const active = isActive(pathname, href);
+      {sections(publicProfileHref).map(({ href, labelKey, Icon }) => {
+        const active = labelKey !== "publicProfile" && isActive(pathname, href);
 
         return (
           <Link
