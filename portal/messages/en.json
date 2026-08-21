@@ -54,6 +54,7 @@
     "myAscents": "My ascents",
     "collections": "Collections",
     "profile": "Profile",
+    "publicProfile": "Public profile",
     "account": "Account",
     "signIn": "Sign in",
     "signUp": "Create account",
@@ -428,6 +429,7 @@
       "submitting": "Creating account…",
       "haveAccount": "Already have an account?",
       "signIn": "Sign in",
+      "emailTakenAction": "Sign in instead",
       "rateLimited": "Too many attempts. Wait a minute before trying again.",
       "acceptTerms": "I confirm that I am at least 14 years old and I accept the <terms>Terms of use</terms> and the <privacy>Privacy policy</privacy>."
     },
@@ -627,6 +629,7 @@
       "UsernameInvalid": "Use 3 to 30 characters: letters, digits, dots, hyphens or underscores. It must start and end with a letter or digit, and can't have two separators in a row.",
       "PasswordHashMissing": "This account has no password set.",
       "PasswordBreached": "This password appears in known data breaches. Choose a different one.",
+      "EmailAlreadyRegistered": "That email address is already registered.",
       "UsernameAlreadyRegistered": "That username is already taken.",
       "InvalidCredentials": "Those credentials aren't valid.",
       "EmailAlreadyConfirmed": "Your email is already confirmed.",
@@ -760,8 +763,8 @@
       },
       "session": {
         "heading": "Session",
-        "warning": "Signing out revokes this device's session, but the access token stays valid for up to 15 minutes. On a shared computer, close the browser as well.",
-        "signOut": "Sign out"
+        "signOut": "Sign out",
+        "signOutAll": "Sign out on all devices"
       },
       "preferences": {
         "heading": "Language and units",

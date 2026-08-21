@@ -54,6 +54,7 @@
     "myAscents": "Mes ascensions",
     "collections": "Collections",
     "profile": "Profil",
+    "publicProfile": "Profil public",
     "account": "Compte",
     "signIn": "Se connecter",
     "signUp": "Créer un compte",
@@ -428,6 +429,7 @@
       "submitting": "Création du compte…",
       "haveAccount": "Vous avez déjà un compte ?",
       "signIn": "Se connecter",
+      "emailTakenAction": "Connectez-vous plutôt",
       "rateLimited": "Trop de tentatives. Patientez une minute avant de réessayer.",
       "acceptTerms": "Je confirme avoir au moins 14 ans et j'accepte les <terms>Conditions d'utilisation</terms> et la <privacy>Politique de confidentialité</privacy>."
     },
@@ -556,6 +558,7 @@
       "UsernameInvalid": "Utilisez de 3 à 30 caractères : lettres, chiffres, points, tirets ou traits de soulignement. Il doit commencer et finir par une lettre ou un chiffre, sans deux séparateurs consécutifs.",
       "PasswordHashMissing": "Ce compte n'a pas de mot de passe défini.",
       "PasswordBreached": "Ce mot de passe figure dans des fuites de données connues. Choisissez-en un autre.",
+      "EmailAlreadyRegistered": "Cette adresse e-mail est déjà enregistrée.",
       "UsernameAlreadyRegistered": "Ce nom d'utilisateur est déjà pris.",
       "InvalidCredentials": "Ces identifiants ne sont pas valides.",
       "EmailAlreadyConfirmed": "Votre adresse e-mail est déjà confirmée.",
@@ -760,8 +763,8 @@
       },
       "session": {
         "heading": "Session",
-        "warning": "La déconnexion révoque la session de cet appareil, mais le jeton d'accès reste valide jusqu'à 15 minutes. Sur un ordinateur partagé, fermez aussi le navigateur.",
-        "signOut": "Se déconnecter"
+        "signOut": "Se déconnecter",
+        "signOutAll": "Se déconnecter de tous les appareils"
       },
       "preferences": {
         "heading": "Langue et unités",

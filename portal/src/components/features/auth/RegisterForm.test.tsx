@@ -121,6 +121,23 @@ describe("RegisterForm", () => {
     await waitFor(() => expect(fetchMock).not.toHaveBeenCalled());
   });
 
+  it("registerForm_takenEmail_marksTheFieldAndOffersToSignIn", async () => {
+    respondWith(409, { title: "User.EmailAlreadyRegistered" });
+    render(<RegisterForm />, { wrapper: IntlWrapper });
+
+    await fillAndSubmit();
+
+    await waitFor(() =>
+      expect(screen.getByLabelText("Email address")).toHaveAttribute(
+        "aria-invalid",
+        "true",
+      ),
+    );
+    expect(
+      screen.getByRole("link", { name: "Sign in instead" }),
+    ).toBeInTheDocument();
+  });
+
   it("registerForm_takenUsername_marksTheUsernameField", async () => {
     respondWith(409, { title: "User.UsernameAlreadyRegistered" });
     render(<RegisterForm />, { wrapper: IntlWrapper });

@@ -72,13 +72,13 @@ afterEach(() => {
 });
 
 describe("AccountCards", () => {
-  it("accountCards_session_warnsAboutTheFifteenMinuteToken", () => {
+  it("accountCards_session_offersBothWaysOut", () => {
     render(<AccountCards displayName="Rubén" />, { wrapper: Wrapper });
 
+    expect(screen.getByRole("button", { name: "Sign out" })).toBeInTheDocument();
     expect(
-      screen.getByText(/the access token stays valid for up to 15 minutes/),
+      screen.getByRole("button", { name: "Sign out on all devices" }),
     ).toBeInTheDocument();
-    expect(screen.getByText(/close the browser as well/)).toBeInTheDocument();
   });
 
   it("accountCards_email_isShownLeftToRight", async () => {
@@ -121,6 +121,27 @@ describe("AccountCards", () => {
 
     await waitFor(() =>
       expect(fetchMock).toHaveBeenCalledWith("/api/auth/logout", {
+        method: "POST",
+      }),
+    );
+    expect(replace).toHaveBeenCalledWith("/");
+  });
+
+  it("accountCards_signOutOnAllDevices_callsItsOwnRouteHandler", async () => {
+    const fetchMock = vi.fn().mockResolvedValue({
+      ok: true,
+      status: 204,
+      json: async () => ({ authenticated: false, userId: null, email: null }),
+    });
+    vi.stubGlobal("fetch", fetchMock);
+    render(<AccountCards displayName="Rubén" />, { wrapper: Wrapper });
+
+    await userEvent.click(
+      screen.getByRole("button", { name: "Sign out on all devices" }),
+    );
+
+    await waitFor(() =>
+      expect(fetchMock).toHaveBeenCalledWith("/api/auth/logout/all", {
         method: "POST",
       }),
     );

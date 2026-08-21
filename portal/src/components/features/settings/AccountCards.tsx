@@ -1,14 +1,13 @@
 "use client";
 
-import { useQueryClient } from "@tanstack/react-query";
 import { TriangleAlertIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useState } from "react";
 import { LocaleSwitcher } from "@/components/layout/LocaleSwitcher";
 import { Alert, AlertDescription } from "@/components/ui/Alert";
 import { Button } from "@/components/ui/Button";
 import { useSessionState } from "@/components/layout/HeaderAuthActions";
-import { Link, useRouter } from "@/i18n/navigation";
+import { useSignOut } from "@/hooks/useSignOut";
+import { Link } from "@/i18n/navigation";
 import { useEmailConfirmation } from "@/stores/emailConfirmation";
 import { DeleteAccountDialog } from "./DeleteAccountDialog";
 
@@ -31,17 +30,7 @@ export const AccountCards = ({ displayName }: { displayName: string }) => {
   const t = useTranslations("settings.account");
   const { data } = useSessionState();
   const unconfirmed = useEmailConfirmation((state) => state.unconfirmed);
-  const router = useRouter();
-  const queryClient = useQueryClient();
-  const [signingOut, setSigningOut] = useState(false);
-
-  const signOut = async () => {
-    setSigningOut(true);
-    await fetch("/api/auth/logout", { method: "POST" });
-    queryClient.clear();
-    router.replace("/");
-    router.refresh();
-  };
+  const { signOut, signOutEverywhere, pending } = useSignOut();
 
   return (
     <div className="flex flex-col gap-6">
@@ -60,17 +49,22 @@ export const AccountCards = ({ displayName }: { displayName: string }) => {
       </Card>
 
       <Card heading={t("session.heading")}>
-        <p className="max-w-prose text-sm leading-relaxed text-muted-foreground text-start">
-          {t("session.warning")}
-        </p>
-        <Button
-          variant="outline"
-          className="self-start"
-          disabled={signingOut}
-          onClick={() => void signOut()}
-        >
-          {t("session.signOut")}
-        </Button>
+        <div className="flex flex-wrap gap-3">
+          <Button
+            variant="outline"
+            disabled={pending}
+            onClick={() => void signOut()}
+          >
+            {t("session.signOut")}
+          </Button>
+          <Button
+            variant="outline"
+            disabled={pending}
+            onClick={() => void signOutEverywhere()}
+          >
+            {t("session.signOutAll")}
+          </Button>
+        </div>
       </Card>
 
       <Card heading={t("preferences.heading")}>

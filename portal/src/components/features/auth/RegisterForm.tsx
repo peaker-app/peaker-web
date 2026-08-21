@@ -41,6 +41,7 @@ export const RegisterForm = () => {
   const toMessage = useProblemMessage();
   const router = useRouter();
   const [formError, setFormError] = useState<string | undefined>(undefined);
+  const [emailTaken, setEmailTaken] = useState(false);
 
   const form = useForm<RegisterValues>({
     resolver: zodResolver(schema),
@@ -67,6 +68,7 @@ export const RegisterForm = () => {
     }
 
     const fieldOf: [string, keyof RegisterValues][] = [
+      ["User.EmailAlreadyRegistered", "email"],
       ["User.EmailEmpty", "email"],
       ["User.EmailInvalid", "email"],
       ["User.EmailTooLong", "email"],
@@ -76,6 +78,8 @@ export const RegisterForm = () => {
       ["User.PasswordBreached", "password"],
     ];
     const match = fieldOf.find(([code]) => hasCode(problem, code));
+
+    setEmailTaken(hasCode(problem, "User.EmailAlreadyRegistered"));
 
     if (match) {
       form.setError(match[1], { message: toMessage(error) });
@@ -88,6 +92,7 @@ export const RegisterForm = () => {
 
   const submit = form.handleSubmit(async (values) => {
     setFormError(undefined);
+    setEmailTaken(false);
 
     try {
       await apiFetch(endpoints.auth.register, {
@@ -135,6 +140,14 @@ export const RegisterForm = () => {
           />
         )}
       </FormField>
+
+      {emailTaken ? (
+        <p className="text-sm leading-relaxed text-start">
+          <Link href="/login" className="font-medium underline">
+            {t("emailTakenAction")}
+          </Link>
+        </p>
+      ) : null}
 
       <FormField
         id="username"
