@@ -54,6 +54,7 @@
     "myAscents": "Mis ascensiones",
     "collections": "Colecciones",
     "profile": "Perfil",
+    "publicProfile": "Perfil público",
     "account": "Cuenta",
     "signIn": "Entrar",
     "signUp": "Crear cuenta",
@@ -428,6 +429,7 @@
       "submitting": "Creando la cuenta…",
       "haveAccount": "¿Ya tienes cuenta?",
       "signIn": "Entrar",
+      "emailTakenAction": "Entra en su lugar",
       "rateLimited": "Demasiados intentos. Espera un minuto antes de volver a probar.",
       "acceptTerms": "Confirmo que tengo al menos 14 años y acepto las <terms>Condiciones de uso</terms> y la <privacy>Política de privacidad</privacy>."
     },
@@ -556,6 +558,7 @@
       "UsernameInvalid": "Usa de 3 a 30 caracteres: letras, dígitos, puntos, guiones o guiones bajos. Debe empezar y acabar en letra o dígito, y no puede llevar dos separadores seguidos.",
       "PasswordHashMissing": "Esta cuenta no tiene contraseña definida.",
       "PasswordBreached": "Esta contraseña aparece en filtraciones conocidas. Elige otra.",
+      "EmailAlreadyRegistered": "Ese correo electrónico ya está registrado.",
       "UsernameAlreadyRegistered": "Ese nombre de usuario ya está en uso.",
       "InvalidCredentials": "Esas credenciales no son válidas.",
       "EmailAlreadyConfirmed": "Tu correo ya está confirmado.",
@@ -760,8 +763,8 @@
       },
       "session": {
         "heading": "Sesión",
-        "warning": "Cerrar sesión revoca la sesión de este dispositivo, pero el token de acceso sigue siendo válido hasta 15 minutos. En un equipo compartido, cierra también el navegador.",
-        "signOut": "Cerrar sesión"
+        "signOut": "Cerrar sesión",
+        "signOutAll": "Cerrar sesión en todos los dispositivos"
       },
       "preferences": {
         "heading": "Idioma y unidades",
