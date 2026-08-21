@@ -1,11 +1,16 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { render, screen, waitFor } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { NextIntlClientProvider } from "next-intl";
 import type { ReactNode } from "react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import messages from "../../../messages/en.json";
 
+const replace = vi.fn();
+const refresh = vi.fn();
+
 vi.mock("@/i18n/navigation", () => ({
+  useRouter: () => ({ replace, refresh }),
   Link: ({ href, children }: { href: string; children: ReactNode }) => (
     <a href={href}>{children}</a>
   ),
@@ -46,6 +51,29 @@ describe("HeaderAuthActions", () => {
       ),
     );
     expect(screen.queryByRole("link", { name: "Sign in" })).toBeNull();
+  });
+
+  it("headerAuthActions_signOut_revokesTheSessionAndGoesHome", async () => {
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValue({
+        ok: true,
+        json: async () => ({ authenticated: true, userId: "u1", email: "a@b.es" }),
+      });
+    vi.stubGlobal("fetch", fetchMock);
+    render(<HeaderAuthActions />, { wrapper: Wrapper });
+
+    await waitFor(() =>
+      expect(screen.getByRole("button", { name: "Sign out" })).toBeEnabled(),
+    );
+    await userEvent.click(screen.getByRole("button", { name: "Sign out" }));
+
+    await waitFor(() =>
+      expect(fetchMock).toHaveBeenCalledWith("/api/auth/logout", {
+        method: "POST",
+      }),
+    );
+    expect(replace).toHaveBeenCalledWith("/");
   });
 
   it("headerAuthActions_anonymousVisitor_offersSignInAndSignUp", async () => {

@@ -1,10 +1,11 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { ActivityIcon } from "lucide-react";
+import { ActivityIcon, LogOutIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/Button";
 import { Skeleton } from "@/components/ui/Skeleton";
+import { useSignOut } from "@/hooks/useSignOut";
 import { Link } from "@/i18n/navigation";
 import type { SessionStateResponse } from "@/app/api/auth/session/route";
 
@@ -25,6 +26,7 @@ export const useSessionState = () =>
 export const HeaderAuthActions = () => {
   const t = useTranslations("nav");
   const { data, isPending } = useSessionState();
+  const { signOut, pending } = useSignOut();
 
   if (isPending) {
     return <Skeleton className="h-9 w-40" />;
@@ -32,12 +34,23 @@ export const HeaderAuthActions = () => {
 
   if (data?.authenticated) {
     return (
-      <Button asChild variant="outline" size="sm">
-        <Link href="/dashboard">
-          <ActivityIcon aria-hidden />
-          {t("dashboard")}
-        </Link>
-      </Button>
+      <>
+        <Button asChild variant="outline" size="sm">
+          <Link href="/dashboard">
+            <ActivityIcon aria-hidden />
+            {t("dashboard")}
+          </Link>
+        </Button>
+        <Button
+          variant="ghost"
+          size="sm"
+          disabled={pending}
+          onClick={() => void signOut()}
+        >
+          <LogOutIcon aria-hidden />
+          {t("signOut")}
+        </Button>
+      </>
     );
   }
 
