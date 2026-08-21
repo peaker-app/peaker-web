@@ -19,6 +19,7 @@ import { endpoints } from "@/lib/api/endpoints";
 import { formatDistance } from "@/lib/format";
 import {
   defaultRadiusMeters,
+  mapsEnabled,
   maxRadiusMeters,
   minRadiusMeters,
   radiusStepMeters,
@@ -85,6 +86,8 @@ export const NearbyPeaksView = () => {
     value: (debouncedRadius / 1000).toString(),
   });
 
+  const showMap = mapsEnabled();
+
   return (
     <div className="flex flex-col gap-6">
       <LocationPicker origin={origin} onChange={changeOrigin} />
@@ -130,21 +133,23 @@ export const NearbyPeaksView = () => {
         </p>
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-2">
-        <div className="order-first flex flex-col gap-2 lg:order-0">
-          <PeakMap
-            points={query.data?.items ?? []}
-            origin={origin}
-            radiusMeters={origin ? debouncedRadius : undefined}
-            onPick={(latitude, longitude) =>
-              changeOrigin({ latitude, longitude })
-            }
-            className="h-[45svh] lg:h-[60svh]"
-          />
-          <p className="text-sm leading-relaxed text-muted-foreground">
-            {t("mapHint")}
-          </p>
-        </div>
+      <div className={showMap ? "grid gap-6 lg:grid-cols-2" : "grid gap-6"}>
+        {showMap ? (
+          <div className="order-first flex flex-col gap-2 lg:order-0">
+            <PeakMap
+              points={query.data?.items ?? []}
+              origin={origin}
+              radiusMeters={origin ? debouncedRadius : undefined}
+              onPick={(latitude, longitude) =>
+                changeOrigin({ latitude, longitude })
+              }
+              className="h-[45svh] lg:h-[60svh]"
+            />
+            <p className="text-sm leading-relaxed text-muted-foreground">
+              {t("mapHint")}
+            </p>
+          </div>
+        ) : null}
 
         <section className="flex min-w-0 flex-col gap-4">
           <h2 className="text-lg leading-relaxed font-semibold text-start">

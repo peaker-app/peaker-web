@@ -45,6 +45,16 @@ describe("CookieConsentGate", () => {
     ).toBeInTheDocument();
   });
 
+  it("cookieBanner_inFrench_keepsTheElisionBeforeTheProviderName", () => {
+    render(
+      <IntlWrapper locale="fr">
+        <CookieConsentGate />
+      </IntlWrapper>,
+    );
+
+    expect(screen.getByText(/serveurs d'OpenStreetMap/)).toBeInTheDocument();
+  });
+
   it("cookieBanner_offersAcceptAndRejectWithEqualProminence", () => {
     render(<CookieConsentGate />, { wrapper: IntlWrapper });
 
