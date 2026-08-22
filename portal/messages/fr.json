@@ -430,7 +430,7 @@
       "haveAccount": "Vous avez déjà un compte ?",
       "signIn": "Se connecter",
       "emailTakenAction": "Connectez-vous plutôt",
-      "rateLimited": "Trop de tentatives. Patientez une minute avant de réessayer.",
+      "rateLimited": "Trop de tentatives. Patientez quelques minutes avant de réessayer.",
       "acceptTerms": "Je confirme avoir au moins 14 ans et j'accepte les <terms>Conditions d'utilisation</terms> et la <privacy>Politique de confidentialité</privacy>."
     },
     "login": {
