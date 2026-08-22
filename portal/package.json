@@ -17,7 +17,8 @@
     "check:detail": "node scripts/check-problem-detail.mjs",
     "verify": "npm run typecheck && npm run lint && npm run check:messages && npm run check:rtl && npm run check:detail && npm run test:coverage",
     "check:legal": "node scripts/check-legal.mjs",
-    "check:tiles": "node scripts/check-tiles.mjs"
+    "check:tiles": "node scripts/check-tiles.mjs",
+    "icons": "node scripts/generate-icons.mjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.5.7",
