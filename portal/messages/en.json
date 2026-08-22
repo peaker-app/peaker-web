@@ -430,7 +430,7 @@
       "haveAccount": "Already have an account?",
       "signIn": "Sign in",
       "emailTakenAction": "Sign in instead",
-      "rateLimited": "Too many attempts. Wait a minute before trying again.",
+      "rateLimited": "Too many attempts. Wait a few minutes before trying again.",
       "acceptTerms": "I confirm that I am at least 14 years old and I accept the <terms>Terms of use</terms> and the <privacy>Privacy policy</privacy>."
     },
     "login": {
