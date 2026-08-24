@@ -37,6 +37,7 @@ export const RegisterAscentForm = ({
   const errors = useTranslations("errors");
   const router = useRouter();
   const markUnconfirmed = useEmailConfirmation((state) => state.markUnconfirmed);
+  const clearUnconfirmed = useEmailConfirmation((state) => state.clear);
 
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
   const [formError, setFormError] =
@@ -114,6 +115,8 @@ export const RegisterAscentForm = ({
         photos: values.photos,
         onProgress: setProgress,
       });
+
+      clearUnconfirmed();
 
       router.replace(
         failedPhotos > 0

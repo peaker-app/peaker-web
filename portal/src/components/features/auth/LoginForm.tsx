@@ -12,6 +12,7 @@ import { Link, useRouter } from "@/i18n/navigation";
 import { readProblem } from "@/lib/api/client";
 import { resolveNextPath } from "@/lib/auth/nextPath";
 import { FormField } from "@/components/forms/FormField";
+import { useEmailConfirmation } from "@/stores/emailConfirmation";
 import { PasswordField } from "./PasswordField";
 
 const unauthorizedStatus = 401;
@@ -37,6 +38,7 @@ export const LoginForm = ({ next }: LoginFormProps) => {
   const router = useRouter();
   const [formError, setFormError] = useState<string | undefined>(undefined);
   const [throttled, setThrottled] = useState(false);
+  const clearUnconfirmed = useEmailConfirmation((state) => state.clear);
 
   const form = useForm<LoginValues>({
     resolver: zodResolver(schema),
@@ -59,6 +61,7 @@ export const LoginForm = ({ next }: LoginFormProps) => {
     });
 
     if (response.ok) {
+      clearUnconfirmed();
       router.replace(resolveNextPath(next, locale));
       router.refresh();
       return;
