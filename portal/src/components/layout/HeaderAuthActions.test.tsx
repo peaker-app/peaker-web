@@ -17,6 +17,7 @@ vi.mock("@/i18n/navigation", () => ({
 }));
 
 const { HeaderAuthActions } = await import("./HeaderAuthActions");
+const { useEmailConfirmation } = await import("@/stores/emailConfirmation");
 
 const Wrapper = ({ children }: { children: ReactNode }) => (
   <NextIntlClientProvider locale="en" messages={messages}>
@@ -74,6 +75,21 @@ describe("HeaderAuthActions", () => {
       }),
     );
     expect(replace).toHaveBeenCalledWith("/");
+  });
+
+  it("headerAuthActions_signOut_forgetsTheUnconfirmedMark", async () => {
+    useEmailConfirmation.setState({ unconfirmed: true });
+    respondWith({ authenticated: true, userId: "u1", email: "a@b.es" });
+    render(<HeaderAuthActions />, { wrapper: Wrapper });
+
+    await waitFor(() =>
+      expect(screen.getByRole("button", { name: "Sign out" })).toBeEnabled(),
+    );
+    await userEvent.click(screen.getByRole("button", { name: "Sign out" }));
+
+    await waitFor(() =>
+      expect(useEmailConfirmation.getState().unconfirmed).toBe(false),
+    );
   });
 
   it("headerAuthActions_anonymousVisitor_offersSignInAndSignUp", async () => {

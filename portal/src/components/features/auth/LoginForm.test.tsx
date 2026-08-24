@@ -14,6 +14,7 @@ vi.mock("@/i18n/navigation", () => ({
 }));
 
 const { LoginForm } = await import("./LoginForm");
+const { useEmailConfirmation } = await import("@/stores/emailConfirmation");
 
 const respondWith = (status: number, body: unknown = {}) =>
   vi.stubGlobal(
@@ -77,6 +78,29 @@ describe("LoginForm", () => {
     await signIn();
 
     await waitFor(() => expect(replace).toHaveBeenCalledWith("/dashboard"));
+  });
+
+  it("loginForm_success_dropsTheUnconfirmedMarkOfWhoeverUsedTheBrowserBefore", async () => {
+    useEmailConfirmation.setState({ unconfirmed: true });
+    respondWith(204);
+    render(<LoginForm />, { wrapper: IntlWrapper });
+
+    await signIn();
+
+    await waitFor(() =>
+      expect(useEmailConfirmation.getState().unconfirmed).toBe(false),
+    );
+  });
+
+  it("loginForm_rejectedCredentials_leavesTheUnconfirmedMarkAlone", async () => {
+    useEmailConfirmation.setState({ unconfirmed: true });
+    respondWith(401);
+    render(<LoginForm />, { wrapper: IntlWrapper });
+
+    await signIn();
+
+    await waitFor(() => expect(screen.getByRole("alert")).toBeInTheDocument());
+    expect(useEmailConfirmation.getState().unconfirmed).toBe(true);
   });
 
   it("loginForm_successWithSafeNext_honoursTheDestination", async () => {

@@ -216,6 +216,18 @@ describe("RegisterAscentForm", () => {
     );
   });
 
+  it("registerAscent_successAfterA403_forgetsTheUnconfirmedMark", async () => {
+    useEmailConfirmation.setState({ unconfirmed: true });
+    submitAscent.mockResolvedValue({ ascentId: "ascent-1", failedPhotos: 0 });
+    render(<RegisterAscentForm preselectedPeak={peak} />, { wrapper: Wrapper });
+
+    await save();
+
+    await waitFor(() =>
+      expect(useEmailConfirmation.getState().unconfirmed).toBe(false),
+    );
+  });
+
   it("registerAscent_catalogueUnavailable_offersToRetryKeepingTheForm", async () => {
     submitAscent.mockRejectedValue(
       new ApiError({ status: 503, title: "Ascent.PeakCatalogUnavailable" }),
