@@ -10,6 +10,7 @@ import { Alert, AlertDescription } from "@/components/ui/Alert";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { FormField } from "@/components/forms/FormField";
+import { useFieldMessage } from "@/hooks/useFieldMessage";
 import { useProblemMessage } from "@/hooks/useProblemToast";
 import { Link } from "@/i18n/navigation";
 import { ApiError, apiFetch } from "@/lib/api/client";
@@ -18,7 +19,12 @@ import { isValidEmail, normalizeEmail } from "@/lib/auth/validation";
 
 const rateLimitStatus = 429;
 
-const schema = z.object({ email: z.string().refine(isValidEmail) });
+const schema = z.object({
+  email: z
+    .string()
+    .min(1, { error: "field.required" })
+    .refine(isValidEmail, { error: "User.EmailInvalid" }),
+});
 
 type ForgotPasswordValues = z.infer<typeof schema>;
 
@@ -27,6 +33,7 @@ export const ForgotPasswordForm = () => {
   const fields = useTranslations("auth.fields");
   const errors = useTranslations("errors");
   const toMessage = useProblemMessage();
+  const fieldError = useFieldMessage();
   const [formError, setFormError] = useState<string | undefined>(undefined);
   const [sent, setSent] = useState(false);
 
@@ -93,7 +100,7 @@ export const ForgotPasswordForm = () => {
       <FormField
         id="email"
         label={fields("email")}
-        error={form.formState.errors.email?.message}
+        error={fieldError(form.formState.errors.email?.message)}
       >
         {({ describedBy, invalid }) => (
           <Input
