@@ -8,6 +8,7 @@ import { z } from "zod";
 import { Alert, AlertDescription } from "@/components/ui/Alert";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
+import { useFieldMessage } from "@/hooks/useFieldMessage";
 import { Link, useRouter } from "@/i18n/navigation";
 import { readProblem } from "@/lib/api/client";
 import { resolveNextPath } from "@/lib/auth/nextPath";
@@ -20,8 +21,8 @@ const rateLimitStatus = 429;
 const rateLimitCooldownMs = 60_000;
 
 const schema = z.object({
-  identifier: z.string().min(1),
-  password: z.string().min(1),
+  identifier: z.string().min(1, { error: "field.required" }),
+  password: z.string().min(1, { error: "field.required" }),
 });
 
 type LoginValues = z.infer<typeof schema>;
@@ -34,6 +35,7 @@ export const LoginForm = ({ next }: LoginFormProps) => {
   const t = useTranslations("auth.login");
   const fields = useTranslations("auth.fields");
   const errors = useTranslations("errors");
+  const fieldError = useFieldMessage();
   const locale = useLocale();
   const router = useRouter();
   const [formError, setFormError] = useState<string | undefined>(undefined);
@@ -93,23 +95,33 @@ export const LoginForm = ({ next }: LoginFormProps) => {
         </Alert>
       ) : null}
 
-      <FormField id="identifier" label={fields("identifier")}>
-        {({ describedBy }) => (
+      <FormField
+        id="identifier"
+        label={fields("identifier")}
+        error={fieldError(form.formState.errors.identifier?.message)}
+      >
+        {({ describedBy, invalid }) => (
           <Input
             id="identifier"
             autoComplete="username"
             dir="ltr"
+            aria-invalid={invalid}
             aria-describedby={describedBy}
             {...form.register("identifier")}
           />
         )}
       </FormField>
 
-      <FormField id="password" label={fields("password")}>
-        {({ describedBy }) => (
+      <FormField
+        id="password"
+        label={fields("password")}
+        error={fieldError(form.formState.errors.password?.message)}
+      >
+        {({ describedBy, invalid }) => (
           <PasswordField
             id="password"
             autoComplete="current-password"
+            aria-invalid={invalid}
             aria-describedby={describedBy}
             {...form.register("password")}
           />

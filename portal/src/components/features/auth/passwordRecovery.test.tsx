@@ -69,6 +69,23 @@ describe("ForgotPasswordForm", () => {
     expect(confirmation).toHaveTextContent("If that email address has an account");
   });
 
+  it("forgotPassword_invalidEmail_saysSoInTheReadersLanguage", async () => {
+    const user = userEvent.setup();
+    render(<ForgotPasswordForm />, {
+      wrapper: ({ children }) => (
+        <IntlWrapper locale="es">{children}</IntlWrapper>
+      ),
+    });
+
+    await user.type(screen.getByLabelText("Correo electrónico"), "hiker@peaker");
+    await user.click(screen.getByRole("button", { name: "Enviarme el enlace" }));
+
+    expect(
+      await screen.findByText("Ese correo electrónico no es válido."),
+    ).toBeInTheDocument();
+    expect(apiFetch).not.toHaveBeenCalled();
+  });
+
   it("forgotPassword_rateLimited_saysSoWithoutLeakingTheProblemDetail", async () => {
     apiFetch.mockRejectedValue(
       new ApiError({ status: 429, title: "Too many requests" }),
@@ -112,6 +129,23 @@ describe("ResetPasswordForm", () => {
       }),
     );
     expect(replace).toHaveBeenCalledWith("/login?reset=1");
+  });
+
+  it("resetPassword_shortPassword_explainsTheMinimumLength", async () => {
+    const user = userEvent.setup();
+    render(<ResetPasswordForm token="abc" />, { wrapper: IntlWrapper });
+
+    await user.type(screen.getByLabelText("New password"), "corta");
+    await user.click(
+      screen.getByRole("button", { name: "Change my password" }),
+    );
+
+    expect(
+      await screen.findByText(
+        "The password must be at least 10 characters long.",
+      ),
+    ).toBeInTheDocument();
+    expect(apiFetch).not.toHaveBeenCalled();
   });
 
   it("resetPassword_expiredToken_offersToStartOverInsteadOfARawError", async () => {

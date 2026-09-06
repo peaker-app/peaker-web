@@ -166,6 +166,38 @@ describe("LoginForm", () => {
     );
   });
 
+  it("loginForm_emptyFields_reportBothAsRequired", async () => {
+    const fetchMock = vi.fn();
+    vi.stubGlobal("fetch", fetchMock);
+    render(<LoginForm />, { wrapper: IntlWrapper });
+
+    await userEvent.click(screen.getByRole("button", { name: "Sign in" }));
+
+    await waitFor(() =>
+      expect(screen.getAllByText("This field is required.")).toHaveLength(2),
+    );
+    expect(screen.getByLabelText("Email or username")).toHaveAttribute(
+      "aria-invalid",
+      "true",
+    );
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
+
+  it("loginForm_spanishLocale_translatesTheRequiredMessage", async () => {
+    vi.stubGlobal("fetch", vi.fn());
+    render(<LoginForm />, {
+      wrapper: ({ children }) => (
+        <IntlWrapper locale="es">{children}</IntlWrapper>
+      ),
+    });
+
+    await userEvent.click(screen.getByRole("button", { name: "Entrar" }));
+
+    await waitFor(() =>
+      expect(screen.getAllByText("Este campo es obligatorio.")).toHaveLength(2),
+    );
+  });
+
   it("loginForm_serverError_showsTheStatusFallback", async () => {
     respondWith(503, {});
     render(<LoginForm />, { wrapper: IntlWrapper });
