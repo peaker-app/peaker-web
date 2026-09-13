@@ -158,6 +158,11 @@
       "distance": "على بُعد {value}",
       "unknownCountry": "موقع غير معروف"
     },
+    "link": {
+      "heading": "القمة",
+      "action": "عرض صفحة القمة",
+      "accessibleName": "عرض صفحة {name}"
+    },
     "search": {
       "label": "البحث عن القمم",
       "placeholder": "Matterhorn، Aneto، Fuji…",
@@ -268,8 +273,7 @@
     "public": {
       "metaTitle": "{peak} — {climber}",
       "breadcrumb": "الصعودات",
-      "byClimber": "سجّله {name}",
-      "viewPeak": "عرض هذه القمة"
+      "byClimber": "سجّله {name}"
     },
     "header": {
       "date": "تم الصعود في {date}"

@@ -158,6 +158,11 @@
       "distance": "{value} away",
       "unknownCountry": "Unknown location"
     },
+    "link": {
+      "heading": "The peak",
+      "action": "See the peak page",
+      "accessibleName": "See the page for {name}"
+    },
     "search": {
       "label": "Search peaks",
       "placeholder": "Matterhorn, Aneto, Fuji…",
@@ -321,8 +326,7 @@
     "public": {
       "metaTitle": "{peak} — {climber}",
       "breadcrumb": "Ascents",
-      "byClimber": "Logged by {name}",
-      "viewPeak": "See this peak"
+      "byClimber": "Logged by {name}"
     },
     "header": {
       "date": "Climbed on {date}"

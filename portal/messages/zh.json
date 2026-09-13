@@ -158,6 +158,11 @@
       "distance": "相距 {value}",
       "unknownCountry": "位置未知"
     },
+    "link": {
+      "heading": "山峰",
+      "action": "查看山峰页面",
+      "accessibleName": "查看 {name} 的页面"
+    },
     "search": {
       "label": "搜索山峰",
       "placeholder": "Matterhorn、Aneto、Fuji…",
@@ -268,8 +273,7 @@
     "public": {
       "metaTitle": "{peak} — {climber}",
       "breadcrumb": "登顶记录",
-      "byClimber": "由 {name} 记录",
-      "viewPeak": "查看这座山峰"
+      "byClimber": "由 {name} 记录"
     },
     "header": {
       "date": "登顶日期：{date}"
