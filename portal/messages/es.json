@@ -158,6 +158,11 @@
       "distance": "a {value}",
       "unknownCountry": "Ubicación desconocida"
     },
+    "link": {
+      "heading": "El pico",
+      "action": "Ver ficha del pico",
+      "accessibleName": "Ver la ficha de {name}"
+    },
     "search": {
       "label": "Buscar picos",
       "placeholder": "Matterhorn, Aneto, Fuji…",
@@ -268,8 +273,7 @@
     "public": {
       "metaTitle": "{peak} — {climber}",
       "breadcrumb": "Ascensiones",
-      "byClimber": "Registrada por {name}",
-      "viewPeak": "Ver este pico"
+      "byClimber": "Registrada por {name}"
     },
     "header": {
       "date": "Ascendida el {date}"

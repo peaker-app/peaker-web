@@ -158,6 +158,11 @@
       "distance": "à {value}",
       "unknownCountry": "Localisation inconnue"
     },
+    "link": {
+      "heading": "Le sommet",
+      "action": "Voir la fiche du sommet",
+      "accessibleName": "Voir la fiche de {name}"
+    },
     "search": {
       "label": "Rechercher des sommets",
       "placeholder": "Matterhorn, Aneto, Fuji…",
@@ -268,8 +273,7 @@
     "public": {
       "metaTitle": "{peak} — {climber}",
       "breadcrumb": "Ascensions",
-      "byClimber": "Enregistrée par {name}",
-      "viewPeak": "Voir ce sommet"
+      "byClimber": "Enregistrée par {name}"
     },
     "header": {
       "date": "Gravi le {date}"

@@ -132,6 +132,15 @@ test.describe("SC-14 · detalle propio", () => {
     );
   });
 
+  test("el detalle lleva a la ficha del pico", async ({ page }) => {
+    await page.goto(`/en/dashboard/ascents/${fixtures.ascentId}`);
+
+    await expect(
+      page.getByRole("link", { name: `See the page for ${fixtures.peakName}` }),
+    ).toHaveAttribute("href", `/en/peaks/${fixtures.peakId}`);
+    await expect(page.getByText("See the peak page")).toBeVisible();
+  });
+
   test("el aviso de fotos pendientes aparece al volver de registrar", async ({
     page,
   }) => {

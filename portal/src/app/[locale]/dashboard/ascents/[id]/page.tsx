@@ -6,6 +6,10 @@ import { Button } from "@/components/ui/Button";
 import { ConditionsSummary } from "@/components/features/ascents/ConditionsSummary";
 import { PhotoManager } from "@/components/features/ascents/PhotoManager";
 import { VisibilityBadge } from "@/components/features/ascents/VisibilityBadge";
+import {
+  PeakLinkCard,
+  peakCardFromAscent,
+} from "@/components/features/peaks/PeakLinkCard";
 import { Breadcrumb } from "@/components/layout/Breadcrumb";
 import type { Locale } from "@/i18n/config";
 import { Link } from "@/i18n/navigation";
@@ -14,7 +18,7 @@ import { endpoints } from "@/lib/api/endpoints";
 import { serverFetch } from "@/lib/api/server";
 import { formatAltitude, parseDateOnly } from "@/lib/format";
 import { noIndex } from "@/lib/seo";
-import type { AscentResponse } from "@/types/api";
+import type { AscentResponse, PeakDetailResponse } from "@/types/api";
 
 interface AscentDetailPageProps {
   params: Promise<{ locale: string; id: string }>;
@@ -32,6 +36,14 @@ const loadAscent = async (id: string): Promise<AscentResponse | undefined> => {
     }
 
     throw error;
+  }
+};
+
+const loadPeak = async (id: string): Promise<PeakDetailResponse | undefined> => {
+  try {
+    return await serverFetch<PeakDetailResponse>(endpoints.peaks.byId(id));
+  } catch {
+    return undefined;
   }
 };
 
@@ -64,6 +76,7 @@ export default async function AscentDetailPage({
     notFound();
   }
 
+  const peak = await loadPeak(ascent.peakId);
   const pendingPhotos = failedCount((await searchParams).photosFailed);
   const t = await getTranslations("ascents.detail");
   const nav = await getTranslations("nav");
@@ -152,13 +165,8 @@ export default async function AscentDetailPage({
         </div>
 
         <div className="flex flex-col gap-6">
+          <PeakLinkCard peak={peakCardFromAscent(ascent, peak)} />
           <ConditionsSummary conditions={ascent.conditions} />
-          <Link
-            href={`/peaks/${ascent.peakId}`}
-            className="text-start font-medium hover:underline"
-          >
-            {ascent.peakName}
-          </Link>
         </div>
       </div>
     </div>
