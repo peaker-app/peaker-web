@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getSession } from "@/lib/auth/session";
+import { ensureSession } from "@/lib/auth/refresh";
 
 export interface SessionStateResponse {
   authenticated: boolean;
@@ -8,7 +8,7 @@ export interface SessionStateResponse {
 }
 
 export async function GET(): Promise<NextResponse<SessionStateResponse>> {
-  const session = await getSession();
+  const session = await ensureSession();
 
   return NextResponse.json({
     authenticated: session !== undefined,
