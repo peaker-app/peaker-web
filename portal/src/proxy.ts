@@ -1,9 +1,18 @@
 import createMiddleware from "next-intl/middleware";
 import { NextResponse, type NextRequest } from "next/server";
 import { isAccessTokenUsable } from "@/lib/auth/accessToken";
-import { accessTokenCookieName } from "@/lib/auth/cookieNames";
+import {
+  accessTokenCookieName,
+  refreshTokenCookieName,
+} from "@/lib/auth/cookieNames";
+import {
+  refreshTokenMaxAge,
+  sessionCookieOptions,
+} from "@/lib/auth/cookieOptions";
+import { rotateTokens, type RotationOutcome } from "@/lib/auth/rotate";
 import { defaultLocale, isLocale, locales, type Locale } from "@/i18n/config";
 import { routing } from "@/i18n/routing";
+import type { AuthTokensResponse } from "@/types/api";
 
 const intlProxy = createMiddleware(routing);
 
@@ -68,7 +77,61 @@ const redirectToLogin = (request: NextRequest): NextResponse => {
   return NextResponse.redirect(target);
 };
 
-export function proxy(request: NextRequest): NextResponse {
+const withRotatedSession = (
+  request: NextRequest,
+  tokens: AuthTokensResponse,
+): NextResponse => {
+  request.cookies.set(accessTokenCookieName, tokens.accessToken);
+  request.cookies.set(refreshTokenCookieName, tokens.refreshToken);
+
+  const response = intlProxy(request);
+
+  response.cookies.set(
+    accessTokenCookieName,
+    tokens.accessToken,
+    sessionCookieOptions(tokens.expiresInSeconds),
+  );
+
+  response.cookies.set(
+    refreshTokenCookieName,
+    tokens.refreshToken,
+    sessionCookieOptions(refreshTokenMaxAge),
+  );
+
+  return response;
+};
+
+const rejectSession = (
+  request: NextRequest,
+  outcome: RotationOutcome,
+): NextResponse => {
+  const response = redirectToLogin(request);
+
+  if (outcome.status === "rejected") {
+    response.cookies.set(accessTokenCookieName, "", sessionCookieOptions(0));
+    response.cookies.set(refreshTokenCookieName, "", sessionCookieOptions(0));
+  }
+
+  return response;
+};
+
+const guardProtectedRoute = async (
+  request: NextRequest,
+): Promise<NextResponse> => {
+  const refreshToken = request.cookies.get(refreshTokenCookieName)?.value;
+
+  if (!refreshToken) {
+    return rejectSession(request, { status: "unreachable" });
+  }
+
+  const outcome = await rotateTokens(refreshToken);
+
+  return outcome.status === "rotated"
+    ? withRotatedSession(request, outcome.tokens)
+    : rejectSession(request, outcome);
+};
+
+export async function proxy(request: NextRequest): Promise<NextResponse> {
   const { pathname } = request.nextUrl;
 
   if (!hasLocalePrefix(pathname) && unprefixedRoutes.includes(pathname)) {
@@ -77,11 +140,11 @@ export function proxy(request: NextRequest): NextResponse {
 
   const accessToken = request.cookies.get(accessTokenCookieName)?.value;
 
-  if (isProtectedRoute(pathname) && !isAccessTokenUsable(accessToken)) {
-    return redirectToLogin(request);
+  if (!isProtectedRoute(pathname) || isAccessTokenUsable(accessToken)) {
+    return intlProxy(request);
   }
 
-  return intlProxy(request);
+  return guardProtectedRoute(request);
 }
 
 export const config = {

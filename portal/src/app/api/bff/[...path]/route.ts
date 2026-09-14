@@ -4,7 +4,7 @@ import { isAllowedGatewayPath } from "@/lib/api/endpoints";
 import { clientForwardedFor, forwardedForHeader } from "@/lib/api/forwarded";
 import { correlationHeader, gatewayUrl } from "@/lib/api/gateway";
 import { readAccessToken } from "@/lib/auth/cookies";
-import { refreshSession } from "@/lib/auth/refresh";
+import { ensureSession, refreshSession } from "@/lib/auth/refresh";
 
 interface RouteContext {
   params: Promise<{ path: string[] }>;
@@ -114,9 +114,11 @@ const proxyToGateway = async (
     request.headers.get(correlationHeader) ?? crypto.randomUUID();
   const replay = request.clone() as NextRequest;
 
+  await ensureSession();
+
   const first = await callGateway(target, request, correlationId);
 
-  if (first.status !== 401 || !(await refreshSession())) {
+  if (first.status !== 401 || (await refreshSession()).status !== "rotated") {
     return respond(first);
   }
 

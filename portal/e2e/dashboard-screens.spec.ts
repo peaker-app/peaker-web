@@ -1,4 +1,4 @@
-import { expect, test, type Page } from "@playwright/test";
+import { expect, test, type BrowserContext, type Page } from "@playwright/test";
 import fixtures from "./fixtures.json";
 import { acceptCookies } from "./consent";
 
@@ -188,5 +188,66 @@ test.describe("SC-15 · editar y borrar", () => {
     await dialog.getByRole("button", { name: "Delete ascent" }).click();
 
     await expect(page).toHaveURL(/\/en\/dashboard\/ascents$/);
+  });
+});
+
+test.describe("SC-11 · renovacion de la sesion", () => {
+  const expireAccessToken = async (context: BrowserContext) => {
+    const payload = Buffer.from(
+      JSON.stringify({
+        sub: fixtures.userId,
+        email: fixtures.validEmail,
+        exp: Math.floor(Date.now() / 1000) - 60,
+      }),
+    ).toString("base64url");
+
+    await context.addCookies([
+      {
+        name: "peaker_at",
+        value: `header.${payload}.signature`,
+        domain: "localhost",
+        path: "/",
+        httpOnly: true,
+      },
+    ]);
+  };
+
+  test("la cookie de refresco viaja por todo el sitio", async ({ context }) => {
+    const refresh = (await context.cookies()).find(
+      (cookie) => cookie.name === "peaker_rt",
+    );
+
+    expect(refresh?.path).toBe("/");
+    expect(refresh?.sameSite).toBe("Lax");
+  });
+
+  test("un access token caducado se renueva sin volver a pedir login", async ({
+    page,
+    context,
+  }) => {
+    await expireAccessToken(context);
+
+    await page.goto("/en/dashboard");
+
+    await expect(page).toHaveURL(/\/en\/dashboard$/);
+    await expect(
+      page.getByRole("heading", { level: 1, name: `Hello, ${fixtures.climberName}` }),
+    ).toBeVisible();
+    expect(
+      (await context.cookies()).find((cookie) => cookie.name === "peaker_rt")
+        ?.value,
+    ).toBe("rotated-refresh-token");
+  });
+
+  test("sin cookie de refresco el panel rebota al login", async ({
+    page,
+    context,
+  }) => {
+    await expireAccessToken(context);
+    await context.clearCookies({ name: "peaker_rt" });
+
+    await page.goto("/en/dashboard");
+
+    await expect(page).toHaveURL(/\/en\/login\?next=/);
   });
 });

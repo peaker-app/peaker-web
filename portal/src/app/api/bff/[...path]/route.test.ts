@@ -3,6 +3,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 const readAccessToken = vi.fn();
 const refreshSession = vi.fn();
+const ensureSession = vi.fn();
 
 vi.mock("@/lib/auth/cookies", () => ({
   readAccessToken: () => readAccessToken(),
@@ -10,6 +11,7 @@ vi.mock("@/lib/auth/cookies", () => ({
 
 vi.mock("@/lib/auth/refresh", () => ({
   refreshSession: () => refreshSession(),
+  ensureSession: () => ensureSession(),
 }));
 
 vi.mock("@/lib/api/gateway", () => ({
@@ -37,7 +39,8 @@ const callArgs = (mock: ReturnType<typeof vi.fn>, index = 0) =>
 
 beforeEach(() => {
   readAccessToken.mockResolvedValue("access-token");
-  refreshSession.mockResolvedValue(undefined);
+  refreshSession.mockResolvedValue({ status: "rejected" });
+  ensureSession.mockResolvedValue(undefined);
 });
 
 afterEach(() => {
@@ -235,7 +238,10 @@ describe("rotación ante 401", () => {
       .mockResolvedValueOnce(upstream(401))
       .mockResolvedValueOnce(upstream(200, '{"ok":true}'));
     vi.stubGlobal("fetch", fetchMock);
-    refreshSession.mockResolvedValue({ accessToken: "new" });
+    refreshSession.mockResolvedValue({
+      status: "rotated",
+      tokens: { accessToken: "new" },
+    });
 
     const response = await GET(
       request("http://localhost:3000/api/bff/profiles/me"),
@@ -249,7 +255,7 @@ describe("rotación ante 401", () => {
   it("bff_401WithFailedRotation_returnsTheOriginal401", async () => {
     const fetchMock = vi.fn().mockResolvedValue(upstream(401));
     vi.stubGlobal("fetch", fetchMock);
-    refreshSession.mockResolvedValue(undefined);
+    refreshSession.mockResolvedValue({ status: "rejected" });
 
     const response = await GET(
       request("http://localhost:3000/api/bff/profiles/me"),
@@ -266,7 +272,10 @@ describe("rotación ante 401", () => {
       .mockResolvedValueOnce(upstream(401))
       .mockResolvedValueOnce(upstream(200));
     vi.stubGlobal("fetch", fetchMock);
-    refreshSession.mockResolvedValue({ accessToken: "new" });
+    refreshSession.mockResolvedValue({
+      status: "rotated",
+      tokens: { accessToken: "new" },
+    });
 
     await GET(
       request("http://localhost:3000/api/bff/profiles/me", {
@@ -278,6 +287,44 @@ describe("rotación ante 401", () => {
     expect(callArgs(fetchMock, 1)[1].headers.get("X-Correlation-Id")).toBe(
       "trace-1",
     );
+  });
+
+  it("bff_retriedRequest_carriesTheRotatedBearerToken", async () => {
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValueOnce(upstream(401))
+      .mockResolvedValueOnce(upstream(200));
+    vi.stubGlobal("fetch", fetchMock);
+    readAccessToken
+      .mockResolvedValueOnce("stale-token")
+      .mockResolvedValue("rotated-token");
+    refreshSession.mockResolvedValue({
+      status: "rotated",
+      tokens: { accessToken: "rotated-token" },
+    });
+
+    await GET(
+      request("http://localhost:3000/api/bff/profiles/me"),
+      context("profiles", "me"),
+    );
+
+    expect(callArgs(fetchMock, 0)[1].headers.get("Authorization")).toBe(
+      "Bearer stale-token",
+    );
+    expect(callArgs(fetchMock, 1)[1].headers.get("Authorization")).toBe(
+      "Bearer rotated-token",
+    );
+  });
+
+  it("bff_expiredAccessToken_isRotatedBeforeTheFirstCall", async () => {
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue(upstream(200)));
+
+    await GET(
+      request("http://localhost:3000/api/bff/profiles/me"),
+      context("profiles", "me"),
+    );
+
+    expect(ensureSession).toHaveBeenCalledOnce();
   });
 
   it("bff_nonAuthErrorStatus_doesNotTriggerRotation", async () => {

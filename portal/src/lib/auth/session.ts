@@ -8,9 +8,9 @@ export interface Session {
   accessToken: string;
 }
 
-export const getSession = async (): Promise<Session | undefined> => {
-  const accessToken = await readAccessToken();
-
+export const sessionFrom = (
+  accessToken: string | undefined,
+): Session | undefined => {
   if (!accessToken) {
     return undefined;
   }
@@ -27,3 +27,6 @@ export const getSession = async (): Promise<Session | undefined> => {
 
   return { userId: claims.userId, email: claims.email, accessToken };
 };
+
+export const getSession = async (): Promise<Session | undefined> =>
+  sessionFrom(await readAccessToken());
