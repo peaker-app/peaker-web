@@ -155,21 +155,35 @@ const register = (body) =>
     ? problem(409, "User.UsernameAlreadyRegistered")
     : { status: 202, body: null };
 
+const initialRefreshToken = "refresh-token";
+const rotatedRefreshToken = "rotated-refresh-token";
+
+const accessTokenFor = (secondsToLive) =>
+  `header.${Buffer.from(
+    JSON.stringify({
+      sub: fixtures.userId,
+      email: fixtures.validEmail,
+      exp: Math.floor(Date.now() / 1000) + secondsToLive,
+    }),
+  ).toString("base64url")}.signature`;
+
+const tokenPair = (refreshToken) => ({
+  accessToken: accessTokenFor(900),
+  refreshToken,
+  expiresInSeconds: 900,
+  tokenType: "Bearer",
+});
+
 const login = (body) =>
   body.password === fixtures.validPassword
-    ? {
-        accessToken: `header.${Buffer.from(
-          JSON.stringify({
-            sub: fixtures.userId,
-            email: fixtures.validEmail,
-            exp: Math.floor(Date.now() / 1000) + 900,
-          }),
-        ).toString("base64url")}.signature`,
-        refreshToken: "refresh-token",
-        expiresInSeconds: 900,
-        tokenType: "Bearer",
-      }
+    ? tokenPair(initialRefreshToken)
     : problem(401, "User.InvalidCredentials");
+
+const refresh = (body) =>
+  body.refreshToken === initialRefreshToken ||
+  body.refreshToken === rotatedRefreshToken
+    ? tokenPair(rotatedRefreshToken)
+    : problem(401, "RefreshToken.InvalidOrExpired");
 
 const confirmEmail = (body) => {
   if (body.token === fixtures.confirmedToken) {
@@ -191,6 +205,7 @@ const resetPassword = (body) =>
 const bodyRoutes = [
   [/^\/api\/auth\/register/, register],
   [/^\/api\/auth\/login/, login],
+  [/^\/api\/auth\/refresh/, refresh],
   [/^\/api\/auth\/email\/confirm/, confirmEmail],
   [/^\/api\/auth\/password\/forgot/, forgotPassword],
   [/^\/api\/auth\/password\/reset/, resetPassword],

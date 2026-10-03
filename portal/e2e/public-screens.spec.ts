@@ -226,7 +226,7 @@ test.describe("SC-06 · ascensión pública", () => {
     await expect(page.getByText("Vía normal desde La Renclusa.")).toBeVisible();
     await expect(page.getByText("Patchy")).toBeVisible();
     await expect(
-      page.getByRole("link", { name: "See this peak" }),
+      page.getByRole("link", { name: `See the page for ${fixtures.peakName}` }),
     ).toHaveAttribute("href", `/en/peaks/${fixtures.peakId}`);
   });
 

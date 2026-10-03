@@ -9,6 +9,7 @@ import { z } from "zod";
 import { Alert, AlertDescription } from "@/components/ui/Alert";
 import { Button } from "@/components/ui/Button";
 import { FormField } from "@/components/forms/FormField";
+import { useFieldMessage } from "@/hooks/useFieldMessage";
 import { useProblemMessage } from "@/hooks/useProblemToast";
 import { Link, useRouter } from "@/i18n/navigation";
 import { ApiError, apiFetch } from "@/lib/api/client";
@@ -21,7 +22,12 @@ import { PasswordStrengthMeter } from "./PasswordStrengthMeter";
 
 const rateLimitStatus = 429;
 
-const schema = z.object({ newPassword: z.string().min(passwordMinLength) });
+const schema = z.object({
+  newPassword: z
+    .string()
+    .min(1, { error: "field.required" })
+    .min(passwordMinLength, { error: "field.passwordTooShort" }),
+});
 
 type ResetPasswordValues = z.infer<typeof schema>;
 
@@ -30,6 +36,7 @@ export const ResetPasswordForm = ({ token }: { token?: string }) => {
   const fields = useTranslations("auth.fields");
   const errors = useTranslations("errors");
   const toMessage = useProblemMessage();
+  const fieldError = useFieldMessage();
   const router = useRouter();
   const [formError, setFormError] = useState<string | undefined>(undefined);
 
@@ -114,7 +121,7 @@ export const ResetPasswordForm = ({ token }: { token?: string }) => {
         id="newPassword"
         label={t("newPassword")}
         help={fields("passwordHelp", { min: passwordMinLength })}
-        error={form.formState.errors.newPassword?.message}
+        error={fieldError(form.formState.errors.newPassword?.message)}
       >
         {({ describedBy, invalid }) => (
           <PasswordField

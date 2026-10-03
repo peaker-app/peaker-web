@@ -104,7 +104,7 @@ describe("writeSessionCookies", () => {
     );
   });
 
-  it("writeSessionCookies_refreshToken_isScopedToTheAuthRoutes", async () => {
+  it("writeSessionCookies_refreshToken_isScopedToTheWholeSiteSoEveryRouteCanRotate", async () => {
     await writeSessionCookies(tokens);
 
     expect(store.set).toHaveBeenCalledWith(
@@ -112,8 +112,8 @@ describe("writeSessionCookies", () => {
       "rt",
       expect.objectContaining({
         httpOnly: true,
-        path: "/api/auth",
-        sameSite: "strict",
+        path: "/",
+        sameSite: "lax",
       }),
     );
   });
@@ -138,7 +138,7 @@ describe("writeSessionCookies", () => {
 });
 
 describe("clearSessionCookies", () => {
-  it("clearSessionCookies_bothCookies_areExpiredOnTheirOwnPath", async () => {
+  it("clearSessionCookies_bothCookies_areExpiredOnTheSharedPath", async () => {
     await clearSessionCookies();
 
     expect(store.set).toHaveBeenCalledWith(
@@ -149,7 +149,7 @@ describe("clearSessionCookies", () => {
     expect(store.set).toHaveBeenCalledWith(
       "peaker_rt",
       "",
-      expect.objectContaining({ maxAge: 0, path: "/api/auth" }),
+      expect.objectContaining({ maxAge: 0, path: "/" }),
     );
   });
 
@@ -159,7 +159,7 @@ describe("clearSessionCookies", () => {
     expect(store.set).toHaveBeenCalledWith(
       "peaker_rt",
       "",
-      expect.objectContaining({ sameSite: "strict" }),
+      expect.objectContaining({ sameSite: "lax" }),
     );
   });
 });

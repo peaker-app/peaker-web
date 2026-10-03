@@ -1,119 +1,124 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
+const readAccessToken = vi.fn();
 const readRefreshToken = vi.fn();
 const writeSessionCookies = vi.fn();
 const clearSessionCookies = vi.fn();
+const rotateTokens = vi.fn();
 
 vi.mock("./cookies", () => ({
+  readAccessToken: () => readAccessToken(),
   readRefreshToken: () => readRefreshToken(),
   writeSessionCookies: (tokens: unknown) => writeSessionCookies(tokens),
   clearSessionCookies: () => clearSessionCookies(),
 }));
 
-vi.mock("@/lib/api/gateway", () => ({
-  gatewayUrl: () => "http://gateway:8080",
-  correlationHeader: "X-Correlation-Id",
+vi.mock("./rotate", () => ({
+  rotateTokens: (refreshToken: string) => rotateTokens(refreshToken),
 }));
 
-const tokens = {
-  accessToken: "new-at",
+const encode = (payload: Record<string, unknown>): string =>
+  `header.${Buffer.from(JSON.stringify(payload)).toString("base64url")}.signature`;
+
+const usableToken = (): string =>
+  encode({ sub: "u1", email: "a@b.es", exp: Math.floor(Date.now() / 1000) + 900 });
+
+const expiredToken = (): string =>
+  encode({ sub: "u1", email: "a@b.es", exp: Math.floor(Date.now() / 1000) - 1 });
+
+const rotatedTokens = {
+  accessToken: usableToken(),
   refreshToken: "new-rt",
   expiresInSeconds: 900,
   tokenType: "Bearer",
 };
 
-const importRefresh = async () => {
-  vi.resetModules();
-  return import("./refresh");
-};
-
-const deferredResponse = () => {
-  let release: () => void = () => undefined;
-  const gate = new Promise<void>((resolve) => {
-    release = resolve;
-  });
-
-  return {
-    release,
-    respond: async () => {
-      await gate;
-      return { ok: true, json: async () => tokens } as Response;
-    },
-  };
-};
-
 beforeEach(() => {
+  readAccessToken.mockResolvedValue(undefined);
   readRefreshToken.mockResolvedValue("current-rt");
   writeSessionCookies.mockResolvedValue(undefined);
   clearSessionCookies.mockResolvedValue(undefined);
+  rotateTokens.mockResolvedValue({ status: "rotated", tokens: rotatedTokens });
 });
 
 afterEach(() => {
-  vi.restoreAllMocks();
   vi.clearAllMocks();
 });
 
 describe("refreshSession", () => {
   it("refreshSession_validRefreshToken_storesTheRotatedPair", async () => {
-    vi.stubGlobal(
-      "fetch",
-      vi.fn().mockResolvedValue({ ok: true, json: async () => tokens }),
-    );
-    const { refreshSession } = await importRefresh();
+    const { refreshSession } = await import("./refresh");
 
-    await expect(refreshSession()).resolves.toEqual(tokens);
-    expect(writeSessionCookies).toHaveBeenCalledWith(tokens);
+    await expect(refreshSession()).resolves.toEqual({
+      status: "rotated",
+      tokens: rotatedTokens,
+    });
+    expect(rotateTokens).toHaveBeenCalledWith("current-rt");
+    expect(writeSessionCookies).toHaveBeenCalledWith(rotatedTokens);
     expect(clearSessionCookies).not.toHaveBeenCalled();
   });
 
-  it("refreshSession_concurrentCallers_rotatesOnlyOnce", async () => {
-    const gate = deferredResponse();
-    const fetchMock = vi.fn().mockImplementation(gate.respond);
-    vi.stubGlobal("fetch", fetchMock);
-    const { refreshSession } = await importRefresh();
-
-    const first = refreshSession();
-    const second = refreshSession();
-    gate.release();
-
-    await expect(Promise.all([first, second])).resolves.toEqual([
-      tokens,
-      tokens,
-    ]);
-    expect(fetchMock).toHaveBeenCalledOnce();
-    expect(writeSessionCookies).toHaveBeenCalledOnce();
-  });
-
-  it("refreshSession_afterCompletion_allowsANewRotation", async () => {
-    const fetchMock = vi
-      .fn()
-      .mockResolvedValue({ ok: true, json: async () => tokens });
-    vi.stubGlobal("fetch", fetchMock);
-    const { refreshSession } = await importRefresh();
-
-    await refreshSession();
-    await refreshSession();
-
-    expect(fetchMock).toHaveBeenCalledTimes(2);
-  });
-
   it("refreshSession_rejectedByGateway_clearsTheSessionCookies", async () => {
-    vi.stubGlobal("fetch", vi.fn().mockResolvedValue({ ok: false, status: 401 }));
-    const { refreshSession } = await importRefresh();
+    rotateTokens.mockResolvedValue({ status: "rejected" });
+    const { refreshSession } = await import("./refresh");
 
-    await expect(refreshSession()).resolves.toBeUndefined();
+    await expect(refreshSession()).resolves.toEqual({ status: "rejected" });
     expect(clearSessionCookies).toHaveBeenCalledOnce();
+    expect(writeSessionCookies).not.toHaveBeenCalled();
+  });
+
+  it("refreshSession_unreachableGateway_keepsTheSessionCookies", async () => {
+    rotateTokens.mockResolvedValue({ status: "unreachable" });
+    const { refreshSession } = await import("./refresh");
+
+    await expect(refreshSession()).resolves.toEqual({ status: "unreachable" });
+    expect(clearSessionCookies).not.toHaveBeenCalled();
     expect(writeSessionCookies).not.toHaveBeenCalled();
   });
 
   it("refreshSession_withoutRefreshCookie_doesNotCallTheGateway", async () => {
     readRefreshToken.mockResolvedValue(undefined);
-    const fetchMock = vi.fn();
-    vi.stubGlobal("fetch", fetchMock);
-    const { refreshSession } = await importRefresh();
+    const { refreshSession } = await import("./refresh");
 
-    await expect(refreshSession()).resolves.toBeUndefined();
-    expect(fetchMock).not.toHaveBeenCalled();
+    await expect(refreshSession()).resolves.toEqual({ status: "rejected" });
+    expect(rotateTokens).not.toHaveBeenCalled();
     expect(clearSessionCookies).not.toHaveBeenCalled();
+  });
+});
+
+describe("ensureSession", () => {
+  it("ensureSession_withAUsableAccessToken_doesNotRotate", async () => {
+    readAccessToken.mockResolvedValue(usableToken());
+    const { ensureSession } = await import("./refresh");
+
+    await expect(ensureSession()).resolves.toMatchObject({ userId: "u1" });
+    expect(rotateTokens).not.toHaveBeenCalled();
+  });
+
+  it("ensureSession_withAnExpiredAccessToken_rotatesAndReturnsTheNewSession", async () => {
+    readAccessToken.mockResolvedValue(expiredToken());
+    const { ensureSession } = await import("./refresh");
+
+    await expect(ensureSession()).resolves.toMatchObject({
+      userId: "u1",
+      accessToken: rotatedTokens.accessToken,
+    });
+    expect(rotateTokens).toHaveBeenCalledWith("current-rt");
+  });
+
+  it("ensureSession_whenRotationIsRejected_reportsNoSession", async () => {
+    readAccessToken.mockResolvedValue(expiredToken());
+    rotateTokens.mockResolvedValue({ status: "rejected" });
+    const { ensureSession } = await import("./refresh");
+
+    await expect(ensureSession()).resolves.toBeUndefined();
+  });
+
+  it("ensureSession_withoutAnyCookie_neverCallsTheGateway", async () => {
+    readRefreshToken.mockResolvedValue(undefined);
+    const { ensureSession } = await import("./refresh");
+
+    await expect(ensureSession()).resolves.toBeUndefined();
+    expect(rotateTokens).not.toHaveBeenCalled();
   });
 });
