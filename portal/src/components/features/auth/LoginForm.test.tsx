@@ -14,6 +14,7 @@ vi.mock("@/i18n/navigation", () => ({
 }));
 
 const { LoginForm } = await import("./LoginForm");
+const { useEmailConfirmation } = await import("@/stores/emailConfirmation");
 
 const respondWith = (status: number, body: unknown = {}) =>
   vi.stubGlobal(
@@ -79,6 +80,29 @@ describe("LoginForm", () => {
     await waitFor(() => expect(replace).toHaveBeenCalledWith("/dashboard"));
   });
 
+  it("loginForm_success_dropsTheUnconfirmedMarkOfWhoeverUsedTheBrowserBefore", async () => {
+    useEmailConfirmation.setState({ unconfirmed: true });
+    respondWith(204);
+    render(<LoginForm />, { wrapper: IntlWrapper });
+
+    await signIn();
+
+    await waitFor(() =>
+      expect(useEmailConfirmation.getState().unconfirmed).toBe(false),
+    );
+  });
+
+  it("loginForm_rejectedCredentials_leavesTheUnconfirmedMarkAlone", async () => {
+    useEmailConfirmation.setState({ unconfirmed: true });
+    respondWith(401);
+    render(<LoginForm />, { wrapper: IntlWrapper });
+
+    await signIn();
+
+    await waitFor(() => expect(screen.getByRole("alert")).toBeInTheDocument());
+    expect(useEmailConfirmation.getState().unconfirmed).toBe(true);
+  });
+
   it("loginForm_successWithSafeNext_honoursTheDestination", async () => {
     respondWith(204);
     render(<LoginForm next="/en/dashboard/ascents" />, { wrapper: IntlWrapper });
@@ -139,6 +163,38 @@ describe("LoginForm", () => {
 
     await waitFor(() =>
       expect(screen.getByRole("button", { name: "Sign in" })).toBeDisabled(),
+    );
+  });
+
+  it("loginForm_emptyFields_reportBothAsRequired", async () => {
+    const fetchMock = vi.fn();
+    vi.stubGlobal("fetch", fetchMock);
+    render(<LoginForm />, { wrapper: IntlWrapper });
+
+    await userEvent.click(screen.getByRole("button", { name: "Sign in" }));
+
+    await waitFor(() =>
+      expect(screen.getAllByText("This field is required.")).toHaveLength(2),
+    );
+    expect(screen.getByLabelText("Email or username")).toHaveAttribute(
+      "aria-invalid",
+      "true",
+    );
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
+
+  it("loginForm_spanishLocale_translatesTheRequiredMessage", async () => {
+    vi.stubGlobal("fetch", vi.fn());
+    render(<LoginForm />, {
+      wrapper: ({ children }) => (
+        <IntlWrapper locale="es">{children}</IntlWrapper>
+      ),
+    });
+
+    await userEvent.click(screen.getByRole("button", { name: "Entrar" }));
+
+    await waitFor(() =>
+      expect(screen.getAllByText("Este campo es obligatorio.")).toHaveLength(2),
     );
   });
 

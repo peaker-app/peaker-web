@@ -1,8 +1,10 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-const getSession = vi.fn();
+const ensureSession = vi.fn();
 
-vi.mock("@/lib/auth/session", () => ({ getSession: () => getSession() }));
+vi.mock("@/lib/auth/refresh", () => ({
+  ensureSession: () => ensureSession(),
+}));
 
 const { GET } = await import("./route");
 
@@ -12,7 +14,7 @@ afterEach(() => {
 
 describe("GET /api/auth/session", () => {
   it("session_activeSession_reportsTheUserWithoutTheToken", async () => {
-    getSession.mockResolvedValue({
+    ensureSession.mockResolvedValue({
       userId: "u1",
       email: "ruben@correo.es",
       accessToken: "eyJhbGciOiJSUzI1NiJ9.payload.signature",
@@ -30,7 +32,7 @@ describe("GET /api/auth/session", () => {
   });
 
   it("session_noSession_reportsAnonymous", async () => {
-    getSession.mockResolvedValue(undefined);
+    ensureSession.mockResolvedValue(undefined);
 
     await expect((await GET()).json()).resolves.toEqual({
       authenticated: false,

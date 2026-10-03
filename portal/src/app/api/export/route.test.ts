@@ -1,11 +1,11 @@
 import { NextRequest } from "next/server";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-const readAccessToken = vi.fn();
+const ensureSession = vi.fn();
 const serverFetch = vi.fn();
 
-vi.mock("@/lib/auth/cookies", () => ({
-  readAccessToken: () => readAccessToken(),
+vi.mock("@/lib/auth/refresh", () => ({
+  ensureSession: () => ensureSession(),
 }));
 
 vi.mock("@/lib/api/server", () => ({
@@ -23,7 +23,7 @@ const request = (init?: RequestInit): NextRequest =>
   );
 
 beforeEach(() => {
-  readAccessToken.mockResolvedValue("at");
+  ensureSession.mockResolvedValue({ userId: "u1", email: "a@b.es", accessToken: "at" });
   serverFetch.mockImplementation((path: string) => Promise.resolve({ path }));
 });
 
@@ -34,7 +34,7 @@ afterEach(() => {
 
 describe("GET /api/export", () => {
   it("export_withoutSession_returns401WithoutCallingTheGateway", async () => {
-    readAccessToken.mockResolvedValue(undefined);
+    ensureSession.mockResolvedValue(undefined);
 
     const response = await GET(request());
 

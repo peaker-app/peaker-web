@@ -3,7 +3,7 @@ import { ApiError } from "@/lib/api/client";
 import { crossSiteProblem, isSameOriginRequest } from "@/lib/api/csrf";
 import { endpoints } from "@/lib/api/endpoints";
 import { serverFetch } from "@/lib/api/server";
-import { readAccessToken } from "@/lib/auth/cookies";
+import { ensureSession } from "@/lib/auth/refresh";
 
 interface PersonalDataExport {
   exportedAtUtc: string;
@@ -49,7 +49,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     return crossSiteProblem();
   }
 
-  if (!(await readAccessToken())) {
+  if (!(await ensureSession())) {
     return NextResponse.json(
       { status: 401, title: "Export.NotAuthenticated" },
       { status: 401 },

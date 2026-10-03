@@ -1,34 +1,8 @@
 import "server-only";
 import { cookies } from "next/headers";
 import type { AuthTokensResponse } from "@/types/api";
-import {
-  accessTokenCookieName,
-  refreshTokenCookieName,
-  refreshTokenCookiePath,
-} from "./cookieNames";
-
-const refreshTokenMaxAge = 60 * 60 * 24 * 30;
-
-const secureCookies = (): boolean =>
-  process.env.AUTH_COOKIE_SECURE
-    ? process.env.AUTH_COOKIE_SECURE === "true"
-    : process.env.NODE_ENV === "production";
-
-const baseOptions = () =>
-  ({
-    httpOnly: true,
-    sameSite: "lax",
-    secure: secureCookies(),
-  }) as const;
-
-const accessOptions = () => ({ ...baseOptions(), path: "/" }) as const;
-
-const refreshOptions = () =>
-  ({
-    ...baseOptions(),
-    sameSite: "strict",
-    path: refreshTokenCookiePath,
-  }) as const;
+import { accessTokenCookieName, refreshTokenCookieName } from "./cookieNames";
+import { refreshTokenMaxAge, sessionCookieOptions } from "./cookieOptions";
 
 export const readAccessToken = async (): Promise<string | undefined> =>
   (await cookies()).get(accessTokenCookieName)?.value;
@@ -41,20 +15,22 @@ export const writeSessionCookies = async (
 ): Promise<void> => {
   const store = await cookies();
 
-  store.set(accessTokenCookieName, tokens.accessToken, {
-    ...accessOptions(),
-    maxAge: tokens.expiresInSeconds,
-  });
+  store.set(
+    accessTokenCookieName,
+    tokens.accessToken,
+    sessionCookieOptions(tokens.expiresInSeconds),
+  );
 
-  store.set(refreshTokenCookieName, tokens.refreshToken, {
-    ...refreshOptions(),
-    maxAge: refreshTokenMaxAge,
-  });
+  store.set(
+    refreshTokenCookieName,
+    tokens.refreshToken,
+    sessionCookieOptions(refreshTokenMaxAge),
+  );
 };
 
 export const clearSessionCookies = async (): Promise<void> => {
   const store = await cookies();
 
-  store.set(accessTokenCookieName, "", { ...accessOptions(), maxAge: 0 });
-  store.set(refreshTokenCookieName, "", { ...refreshOptions(), maxAge: 0 });
+  store.set(accessTokenCookieName, "", sessionCookieOptions(0));
+  store.set(refreshTokenCookieName, "", sessionCookieOptions(0));
 };

@@ -3,6 +3,10 @@ import { getFormatter, getTranslations, setRequestLocale } from "next-intl/serve
 import { notFound } from "next/navigation";
 import { ConditionsSummary } from "@/components/features/ascents/ConditionsSummary";
 import { PhotoGallery } from "@/components/features/ascents/PhotoGallery";
+import {
+  PeakLinkCard,
+  peakCardFromAscent,
+} from "@/components/features/peaks/PeakLinkCard";
 import { Breadcrumb } from "@/components/layout/Breadcrumb";
 import type { Locale } from "@/i18n/config";
 import { Link } from "@/i18n/navigation";
@@ -11,7 +15,11 @@ import { endpoints } from "@/lib/api/endpoints";
 import { serverFetch } from "@/lib/api/server";
 import { formatAltitude, parseDateOnly } from "@/lib/format";
 import { alternatesFor } from "@/lib/seo";
-import type { AscentResponse, PublicProfileResponse } from "@/types/api";
+import type {
+  AscentResponse,
+  PeakDetailResponse,
+  PublicProfileResponse,
+} from "@/types/api";
 
 export const revalidate = 300;
 export const generateStaticParams = () => [];
@@ -42,6 +50,16 @@ const loadAuthor = async (
       endpoints.profiles.byUserId(userId),
       { revalidate },
     );
+  } catch {
+    return undefined;
+  }
+};
+
+const loadPeak = async (id: string): Promise<PeakDetailResponse | undefined> => {
+  try {
+    return await serverFetch<PeakDetailResponse>(endpoints.peaks.byId(id), {
+      revalidate,
+    });
   } catch {
     return undefined;
   }
@@ -86,7 +104,10 @@ export default async function PublicAscentPage({ params }: AscentPageProps) {
     notFound();
   }
 
-  const author = await loadAuthor(ascent.userId);
+  const [author, peak] = await Promise.all([
+    loadAuthor(ascent.userId),
+    loadPeak(ascent.peakId),
+  ]);
   const t = await getTranslations("ascents.public");
   const header = await getTranslations("ascents.header");
   const notes = await getTranslations("ascents.notes");
@@ -156,13 +177,8 @@ export default async function PublicAscentPage({ params }: AscentPageProps) {
         </div>
 
         <div className="flex flex-col gap-6">
+          <PeakLinkCard peak={peakCardFromAscent(ascent, peak)} />
           <ConditionsSummary conditions={ascent.conditions} />
-          <Link
-            href={`/peaks/${ascent.peakId}`}
-            className="text-start font-medium hover:underline"
-          >
-            {t("viewPeak")}
-          </Link>
         </div>
       </div>
     </div>
